@@ -11,11 +11,28 @@
 /**
  * Enum defining the possible horizontal text alignment options
  * @readonly
- * @enum {const}
+ * @enum {number}
  */
 var TextHAlign = {
-	LEFT: 0,
-	RIGHT: 1,
-	CENTER: 2
+	START: 'start',
+	END: 'end',
+	LEFT: 'left',
+	RIGHT: 'right',
+	CENTER: 'center'
 };
 if (Object.freeze) Object.freeze(TextHAlign); // Make the enum immutable
+
+/**
+ * Enum defining the possible vertical text alignment options
+ * @readonly
+ * @enum {string}
+ */
+var TextVAlign = {
+	TOP: 'top',
+	BOTTOM: 'bottom',
+	MIDDLE: 'middle',
+	ALPHABETIC: 'alphabetic',
+	HANGING: 'hanging',
+	IDEOGRAPHIC: 'ideographic'
+};
+if (Object.freeze) Object.freeze(TextVAlign); // Make the enum immutable

@@ -20,16 +20,26 @@
  * @param {string} [style="rgb(0, 0, 0)"] - Text style. Could be a text color, rgb color,
  * 											gradient, etc.
  * @param {string} [font="normal 12px Arial"]
- * @param {TextHAlign} [textAlignment=TextHAlign.LEFT]
+ * @param {TextHAlign|string} [textAlignment=TextHAlign.START] - Horizontal alignment string to
+ *                                                            	 pass to the context.textAlign
+ *                                                            	 property. You may pass this
+ *                                                            	 using the provided enum values
+ *                                                            	 or as a literal string.
+ * @param {TextVAlign|string} [textAlignment=TextVAlign.ALPHABETIC] - Vertical alignment string to
+ *                                                            	 pass to the context.textBaseline
+ *                                                            	 property. You may pass this
+ *                                                            	 using the provided enum values
+ *                                                            	 or as a literal string.
  * @param {boolean} [visible=true]
  */
-function Label(text, x, y, width, height, style, font, textHAlignment, visible) {
+function Label(text, x, y, width, height, style, font, textHAlignment, textVAlignment, visible) {
 	Component.call(this, x, y, width, height, visible); // super constructor
 	
 	this.text = defaultVal(text, "");
 	this.style = defaultVal(style, "rgb(0, 0, 0)");
 	this.font = defaultVal(font, "normal 12px Arial");
-	this.textHAlignment = defaultVal(textHAlignment, TextHAlign.LEFT);
+	this.textHAlignment = defaultVal(textHAlignment, TextHAlign.START);
+	this.textVAlignment = defaultVal(textVAlignment, TextVAlign.ALPHABETIC);
 
 	/**
 	 * Handles all the drawing to the canvas for this object.
@@ -40,18 +50,8 @@ function Label(text, x, y, width, height, style, font, textHAlignment, visible) 
 		    context.font = this.font;
 		    context.fillStyle = this.style;
 			// Set canvas text alignment accordingly
-		    switch(this.textHAlignment) {
-		    	case TextHAlign.RIGHT:
-		    		context.textAlign = 'right';
-		    		break;
-		    	case TextHAlign.CENTER:
-		    		context.textAlign = 'center';
-		    		break;
-		    	case TextHAlign.LEFT:
-		    	default:
-		    		context.textAlign = 'left';
-		    		break;
-		    }
+    		context.textAlign = this.textHAlignment;
+    		context.textBaseline = this.textVAlignment;
 		    context.fillText(this.text, this.x, this.y, this.width);
 		}
 	}

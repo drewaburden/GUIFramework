@@ -47,7 +47,7 @@ function Init() {
 	canvas.addEventListener('mousemove',   	MouseEvent.bind(null, OnMouseMove), false);
     btnBg = new NinePatch("assets/buttonbg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
     btnLabel = new Label("test", btnBg.x+btnBg.width/2, btnBg.y+btnBg.height/2, 150, 50,
-    	"rgb(255, 255, 255)", "bold 12px Arial", TextHAlign.CENTER, true);
+    	"rgb(255, 255, 255)", "bold 18px Arial", TextHAlign.CENTER, TextVAlign.MIDDLE, true);
     setInterval(Update, 20); // Start Update loop
 }
 ////////////
