@@ -12,10 +12,12 @@
 //////////////
 // Includes //
 //////////////
+include('helpers/MathClamp.js');
 include('helpers/DefaultVal.js');
 include('ui/Drawable.js');
 include('ui/NinePatch.js');
 include('ui/TextAlign.js');
+include('ui/events/EventManager.js');
 include('ui/components/Component.js');
 include('ui/components/Label.js');
 function include(file) {
@@ -79,8 +81,8 @@ function Update() {
     DrawGUI();
 }
 function DrawGUI() {
-    btnBg.draw();
-    btnLabel.draw();
+    btnBg.Draw();
+    btnLabel.Draw();
 }
 function DrawRect(x, y, width, height, filled, color) {
     if (filled) {

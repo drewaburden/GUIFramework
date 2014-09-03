@@ -29,9 +29,9 @@ function Drawable(x, y, width, height, visible) {
 	 * Handles all the drawing to the canvas for this Drawable. Override in subclasses.
 	 * @abstract
 	 */
-	Drawable.prototype.draw = function() {
+	Drawable.prototype.Draw = function() {
 		// Give a warning if the subclass didn't override the draw function
-		console.log("Warning: Attempting to draw an abstract Drawable. " +
+		console.warn("Attempting to draw an abstract Drawable. " +
 			"Did you forget to override the draw() function in your subclass?");
 	}
 }

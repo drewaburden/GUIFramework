@@ -24,22 +24,38 @@
  * @param {number} [bottomMargin=0]
  * @param {boolean} [fillCenter=true]
  * @param {boolean} [visible=true]
+ * @example
+ *  var ninePatchImage = new NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
  */
 function NinePatch(imgsrc, x, y, width, height, leftMargin, topMargin, rightMargin, bottomMargin, fillCenter, visible) {
 	Drawable.call(this, x, y, width, height, visible); // super constructor
 
-	this.image = new Image();
-	this.image.src = imgsrc;
 	this.leftMargin = defaultVal(leftMargin, 0);
 	this.topMargin = defaultVal(topMargin, 0);
 	this.rightMargin = defaultVal(rightMargin, 0);
 	this.bottomMargin = defaultVal(bottomMargin, 0);
-	this.fillCenter = defaultVal(fillCenter, true);
-	
+	this.fillCenter = defaultVal(fillCenter, true);	
+	this.image = new Image();
+	this.image.src = imgsrc;
+	this.image.onload = function() {
+		// Clamp the margins to make sure they make sense
+		// Executed after the image has successfully loaded, because we need to use the width and height
+		this.leftMargin = Math.clamp(this.leftMargin, 0, this.image.width);
+		this.topMargin = Math.clamp(this.topMargin, 0, this.image.height);
+		this.rightMargin = Math.clamp(this.rightMargin, 0, this.image.width-this.leftMargin);
+		this.bottomMargin = Math.clamp(this.bottomMargin, 0, this.image.height-this.topMargin);
+	}.bind(this);
+
 	/**
 	 * Handles all the drawing to the canvas for this object.
 	 */
-	NinePatch.prototype.draw = function() {
+	NinePatch.prototype.Draw = function() {
+		if (!this.image.complete
+			|| typeof this.image.naturalWidth == 'undefined'
+			|| this.image.naturalWidth <= 0) {
+			return; // We are still be loading the image, so we cannot draw it yet
+		}
+
 		// Re-scope the variables so we don't have to use the "this" keyword so much throughout this function
 		var image = this.image,
 			x = this.x,
