@@ -23,5 +23,15 @@
  */
 function Component(x, y, width, height, visible) {
 	Drawable.call(this, x, y, width, height, visible); // super constructor
+	/** @type {Boolean} */
+	this.enabled = true;
+
+	/**
+	 * Unregister events.
+	 */
+	Component.prototype.Destroy = function() {
+		// Unregister events
+		
+	}
 }
 Component.prototype = new Drawable(); // Inherits from Drawable

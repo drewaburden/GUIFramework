@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  ui\components\MathClamp.js
+//  helpers\MathClamp.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -26,14 +26,16 @@
  * @param  {number} max
  * @returns {number} The `value` number clamped between the `min` and `max` values.
  * @example
- *  Math.clamp(42, 1, 10); // returns 10
+ * Math.clamp(42, 1, 10); // returns 10
  */
 Math.clamp = function(value, min, max) {
 	if (typeof value != 'number' || typeof min != 'number' || typeof max != 'number'
 		|| value == null || min == null || max == null
-		|| isNaN(value) || isNaN(min) || isNaN(max))
-		console.warn("One or more arguments were either not specified, not numbers," +
+		|| isNaN(value) || isNaN(min) || isNaN(max)) {
+		console.error("One or more arguments were either not specified, not numbers," +
 			"or out of the valid number range.");
+		return NaN;
+	}
 	if (min > max) console.warn("Attempting to clamp a value with a higher specified minimum " + 
 		"than the specified maximum.")
 	return Math.min(Math.max(value, min), max);

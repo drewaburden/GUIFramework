@@ -13,19 +13,16 @@
 // Includes //
 //////////////
 include('helpers/MathClamp.js');
-include('helpers/DefaultVal.js');
+include('helpers/Arguments.js');
+include('helpers/Mixins.js');
+include('ui/Destroyable.js');
 include('ui/Drawable.js');
 include('ui/NinePatch.js');
 include('ui/TextAlign.js');
 include('ui/events/EventManager.js');
+include('ui/events/HoverableMixin.js');
 include('ui/components/Component.js');
 include('ui/components/Label.js');
-function include(file) {
-	var script = document.createElement('script');
-	script.src = file;
-    script.defer = true;
-	document.getElementsByTagName('head').item(0).appendChild(script);
-}
 /////////////
 // Globals //
 /////////////
@@ -47,10 +44,18 @@ function Init() {
 	canvas.addEventListener('mousedown', 	MouseEvent.bind(null, OnMouseDown), false);	
 	canvas.addEventListener('mouseup',   	MouseEvent.bind(null, OnMouseUp), false);	
 	canvas.addEventListener('mousemove',   	MouseEvent.bind(null, OnMouseMove), false);
-    btnBg = new NinePatch("assets/buttonbg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
+    btnBg = new NinePatch("assets/buttonbg.png", 5, 5, 250, 50, 14, 14, 14, 14, true);
     btnLabel = new Label("test", btnBg.x+btnBg.width/2, btnBg.y+btnBg.height/2, 150, 50,
     	"rgb(255, 255, 255)", "bold 18px Arial", TextHAlign.CENTER, TextVAlign.MIDDLE, true);
     setInterval(Update, 20); // Start Update loop
+
+    btnBg.OnMouseIn();
+    console.log(typeof btnBg);
+    console.log(Mixins.HasMixins(btnBg, Hoverable));
+}
+
+function SetGUI(gui) {
+
 }
 ////////////
 // Events //
@@ -65,11 +70,11 @@ function MouseEvent(handler, ev) {
 		x = ev.offsetX;
 		y = ev.offsetY;
 	}
-	handler(x, y);
+	handler(x, y, ev.button);
 }
-function OnMouseDown(x, y) {
+function OnMouseDown(x, y, button) {
 }
-function OnMouseUp(x, y) {
+function OnMouseUp(x, y, button) {
 }
 function OnMouseMove(x, y) {
 }

@@ -25,18 +25,20 @@
  * @param {boolean} [fillCenter=true]
  * @param {boolean} [visible=true]
  * @example
- *  var ninePatchImage = new NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
+ * var ninePatchImage = new NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
  */
 function NinePatch(imgsrc, x, y, width, height, leftMargin, topMargin, rightMargin, bottomMargin, fillCenter, visible) {
 	Drawable.call(this, x, y, width, height, visible); // super constructor
 
-	this.leftMargin = defaultVal(leftMargin, 0);
-	this.topMargin = defaultVal(topMargin, 0);
-	this.rightMargin = defaultVal(rightMargin, 0);
-	this.bottomMargin = defaultVal(bottomMargin, 0);
-	this.fillCenter = defaultVal(fillCenter, true);	
+	Mixins.Mix(NinePatch, Hoverable);
+
+	this.leftMargin = optionalArg(leftMargin, 0);
+	this.topMargin = optionalArg(topMargin, 0);
+	this.rightMargin = optionalArg(rightMargin, 0);
+	this.bottomMargin = optionalArg(bottomMargin, 0);
+	this.fillCenter = optionalArg(fillCenter, true);	
 	this.image = new Image();
-	this.image.src = imgsrc;
+	this.image.src = mandatoryArg(imgsrc);
 	this.image.onload = function() {
 		// Clamp the margins to make sure they make sense
 		// Executed after the image has successfully loaded, because we need to use the width and height
@@ -47,10 +49,18 @@ function NinePatch(imgsrc, x, y, width, height, leftMargin, topMargin, rightMarg
 	}.bind(this);
 
 	/**
+	 * "Frees" loaded image.
+	 */
+	NinePatch.prototype.Destroy = function() {
+		if (this.image) delete this.image;
+	}
+
+	/**
 	 * Handles all the drawing to the canvas for this object.
 	 */
 	NinePatch.prototype.Draw = function() {
-		if (!this.image.complete
+		if (!this.visible) return; // If this NinePatch isn't visible, don't do anything
+		if (!this.image || !this.image.complete
 			|| typeof this.image.naturalWidth == 'undefined'
 			|| this.image.naturalWidth <= 0) {
 			return; // We are still be loading the image, so we cannot draw it yet

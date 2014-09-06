@@ -12,6 +12,7 @@
  * 
  * @abstract
  * @class
+ * @extends {Destroyable}
  * @param {number} [x=0]
  * @param {number} [y=0]
  * @param {number} [width=0]
@@ -19,11 +20,13 @@
  * @param {boolean} [visible=true]
  */
 function Drawable(x, y, width, height, visible) {
-	this.x = defaultVal(x, 0);
-	this.y = defaultVal(y, 0);
-	this.width = defaultVal(width, 0);
-	this.height = defaultVal(height, 0);
-	this.visible = defaultVal(visible, true);
+	Destroyable.call(this); // super constructor
+
+	this.x = optionalArg(x, 0);
+	this.y = optionalArg(y, 0);
+	this.width = optionalArg(width, 0);
+	this.height = optionalArg(height, 0);
+	this.visible = optionalArg(visible, true);
 
 	/**
 	 * Handles all the drawing to the canvas for this Drawable. Override in subclasses.
@@ -35,3 +38,4 @@ function Drawable(x, y, width, height, visible) {
 			"Did you forget to override the draw() function in your subclass?");
 	}
 }
+Drawable.prototype = new Destroyable(); // Inherits from Destroyable
