@@ -29,11 +29,11 @@
  * console.log(someClass.optionalArg2); // outputs 37
  */
 function optionalArg(argument, defaultValue) {
-	if (typeof defaultValue == 'undefined') console.warn("optionalArg: defaultValue is undefined.")
-
-	if (typeof argument == 'undefined'
-		|| argument == null
-		|| (typeof argument == 'number' && isNaN(argument)))
+	if (defaultValue === undefined || defaultValue.constructor === undefined)
+		throw new TypeError("optionalArg(): No valid `defaultValue` was given, and it is needed. " +
+			"If you want a mandatory argument, use mandatoryArg() instead.");
+	if (argument === undefined || argument.constructor === undefined ||
+		(argument.constructor === Number && isNaN(argument)))
 		return defaultValue;
 	else return argument;
 }
@@ -53,9 +53,7 @@ function optionalArg(argument, defaultValue) {
  * var someClass = new SomeClass(); // Outputs error to console
  */
 function mandatoryArg(argument) {
-	if (typeof argument == 'undefined') {
-		console.error("A mandatory argument was undefined.");
-		return null;
-	}
+	if (argument === undefined || argument.constructor === undefined)
+		throw new TypeError("mandatoryArg(): A mandatory argument was undefined.");
 	else return argument;
 }

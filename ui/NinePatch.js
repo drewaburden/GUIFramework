@@ -10,7 +10,7 @@
 // ================================================================================================
 
 /**
- * 
+ * NinePatch
  * @class
  * @extends {Drawable}
  * @param {string} imgsrc
@@ -27,18 +27,20 @@
  * @example
  * var ninePatchImage = new NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
  */
+NinePatch.inherits(Drawable);
 function NinePatch(imgsrc, x, y, width, height, leftMargin, topMargin, rightMargin, bottomMargin, fillCenter, visible) {
-	Drawable.call(this, x, y, width, height, visible); // super constructor
+	var _super = NinePatch.prototype._super;
+	_super.constructor.call(this, x, y, width, height, visible); // Super constructor
 
-	Mixins.Mix(NinePatch, Hoverable);
+	//Mixins.Mix(NinePatch, Hoverable);
 
-	this.leftMargin = optionalArg(leftMargin, 0);
-	this.topMargin = optionalArg(topMargin, 0);
-	this.rightMargin = optionalArg(rightMargin, 0);
-	this.bottomMargin = optionalArg(bottomMargin, 0);
-	this.fillCenter = optionalArg(fillCenter, true);	
-	this.image = new Image();
-	this.image.src = mandatoryArg(imgsrc);
+	this.leftMargin = optionalArg(leftMargin, 0).validate(Number);
+	this.topMargin = optionalArg(topMargin, 0).validate(Number);
+	this.rightMargin = optionalArg(rightMargin, 0).validate(Number);
+	this.bottomMargin = optionalArg(bottomMargin, 0).validate(Number);
+	this.fillCenter = optionalArg(fillCenter, true).validate(Boolean);	
+	this.image = new Image().validate(Image);
+	this.image.src = mandatoryArg(imgsrc).validate(String);
 	this.image.onload = function() {
 		// Clamp the margins to make sure they make sense
 		// Executed after the image has successfully loaded, because we need to use the width and height
@@ -52,18 +54,23 @@ function NinePatch(imgsrc, x, y, width, height, leftMargin, topMargin, rightMarg
 	 * "Frees" loaded image.
 	 */
 	NinePatch.prototype.Destroy = function() {
+		_super.Destroy.apply(this, arguments); // super function call
+
 		if (this.image) delete this.image;
 	}
 
 	/**
 	 * Handles all the drawing to the canvas for this object.
+	 * @override
+	 * @param {CanvasRenderingContext2D} context
 	 */
-	NinePatch.prototype.Draw = function() {
-		if (!this.visible) return; // If this NinePatch isn't visible, don't do anything
+	NinePatch.prototype.Draw = function(context) {
+		_super.Draw.apply(this, arguments); // super function call
+
 		if (!this.image || !this.image.complete
 			|| typeof this.image.naturalWidth == 'undefined'
 			|| this.image.naturalWidth <= 0) {
-			return; // We are still be loading the image, so we cannot draw it yet
+			return; // We are still loading the image, so we cannot draw it yet
 		}
 
 		// Re-scope the variables so we don't have to use the "this" keyword so much throughout this function
@@ -123,6 +130,5 @@ function NinePatch(imgsrc, x, y, width, height, leftMargin, topMargin, rightMarg
 		context.drawImage(image,
 			0, image.height-bottomMargin, leftMargin, bottomMargin,
 			x, y+height-bottomMargin, leftMargin, bottomMargin);
-	}	
+	}
 }
-NinePatch.prototype = new Drawable(); // Inherits from Drawable

@@ -29,14 +29,13 @@
  * Math.clamp(42, 1, 10); // returns 10
  */
 Math.clamp = function(value, min, max) {
-	if (typeof value != 'number' || typeof min != 'number' || typeof max != 'number'
-		|| value == null || min == null || max == null
+	if (value === undefined || min === undefined || max === undefined || 
+		value.constructor !== Number || min.constructor !== Number || max.constructor !== Number
 		|| isNaN(value) || isNaN(min) || isNaN(max)) {
-		console.error("One or more arguments were either not specified, not numbers," +
+		throw new TypeError("Math.clamp(): One or more arguments were either not specified, not numbers, " +
 			"or out of the valid number range.");
-		return NaN;
 	}
-	if (min > max) console.warn("Attempting to clamp a value with a higher specified minimum " + 
-		"than the specified maximum.")
+	if (min > max) throw new TypeError("Math.clamp(): The specified `min` was higher than the specified `max`.");
+
 	return Math.min(Math.max(value, min), max);
 }

@@ -21,8 +21,11 @@
  *
  * @todo  events
  */
+Component.inherits(Drawable);
 function Component(x, y, width, height, visible) {
-	Drawable.call(this, x, y, width, height, visible); // super constructor
+	var _super = Component.prototype._super; // Super shortcut
+	_super.constructor.call(this, x, y, width, height, visible); // Super constructor
+
 	/** @type {Boolean} */
 	this.enabled = true;
 
@@ -33,5 +36,13 @@ function Component(x, y, width, height, visible) {
 		// Unregister events
 		
 	}
+
+	/**
+	 * Handles all the drawing to the canvas for this Component. Override in subclasses.
+	 * @abstract
+	 * @param {CanvasRenderingContext2D} context
+	 */
+	Component.prototype.Draw = function(context) {
+		_super.Draw.apply(this, arguments); // super function call
+	}
 }
-Component.prototype = new Drawable(); // Inherits from Drawable

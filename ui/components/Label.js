@@ -34,21 +34,25 @@
  * @example
  * var label = new Label("text", 5, 5, 150, 50, 'black', 'bold 18px Arial', TextHAlign.CENTER, TextVAlign.MIDDLE, true);
  */
+Label.inherits(Component);
 function Label(text, x, y, width, height, style, font, textHAlignment, textVAlignment, visible) {
-	Component.call(this, x, y, width, height, visible); // super constructor
+	var _super = Label.prototype._super; // Super shortcut
+	_super.constructor.call(this, x, y, width, height, visible); // Super constructor
 	
-	this.text = optionalArg(text, "");
-	this.style = optionalArg(style, "rgb(0, 0, 0)");
-	this.font = optionalArg(font, "normal 12px Arial");
-	this.textHAlignment = optionalArg(textHAlignment, TextHAlign.START);
-	this.textVAlignment = optionalArg(textVAlignment, TextVAlign.ALPHABETIC);
+	this.text = optionalArg(text, "").validate(String);
+	this.style = optionalArg(style, "rgb(0, 0, 0)").validate(String);
+	this.font = optionalArg(font, "normal 12px Arial").validate(String);
+	// Validate these as strings, because that's actually what they are behind the scenes
+	this.textHAlignment = optionalArg(textHAlignment, TextHAlign.START).validate(String);
+	this.textVAlignment = optionalArg(textVAlignment, TextVAlign.ALPHABETIC).validate(String);
 
 	/**
 	 * Handles all the drawing to the canvas for this object.
 	 * @override
+	 * @param {CanvasRenderingContext2D} context
 	 */
-	Label.prototype.Draw = function() {
-		if (!this.visible) return;
+	Label.prototype.Draw = function(context) {
+		_super.Draw.apply(this, arguments); // super function call
 		
 	    context.font = this.font;
 	    context.fillStyle = this.style;
@@ -58,4 +62,3 @@ function Label(text, x, y, width, height, style, font, textHAlignment, textVAlig
 	    context.fillText(this.text, this.x, this.y, this.width);
 	}
 }
-Label.prototype = new Component(); // Inherits from Component

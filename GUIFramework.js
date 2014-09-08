@@ -12,6 +12,7 @@
 //////////////
 // Includes //
 //////////////
+include('helpers/Class.js');
 include('helpers/MathClamp.js');
 include('helpers/Arguments.js');
 include('helpers/Mixins.js');
@@ -23,6 +24,7 @@ include('ui/events/EventManager.js');
 include('ui/events/HoverableMixin.js');
 include('ui/components/Component.js');
 include('ui/components/Label.js');
+include('ui/GUI.js');
 /////////////
 // Globals //
 /////////////
@@ -32,30 +34,42 @@ include('ui/components/Label.js');
  * @type {CanvasRenderingContext2D}
  */
 var context = null;
-// Test vars
-var btnBg = null;
-var btnLabel = null;
+var gui = null;
 //////////
 // Init //
 //////////
 function Init() {
+    // Version check
+    var testedOnVersion = '37.0.2062.76';
+    var currentVersion = window.navigator.appVersion.match(/Chrome\/(.*?) /)[1];
+    if (currentVersion != testedOnVersion) {
+        var body = document.getElementsByTagName('body').item(0);
+        var p = document.createElement('p');
+        p.style.font = "italic 10px Arial";
+        p.textContent = "Warning: This framework has only been tested on Google Chrome version " + testedOnVersion +
+            ", and you do not have a matching version. I cannot guarantee good results on your browser.";
+        body.insertBefore(p, body.firstChild);
+    }
+
+    // Set up context references
     var canvas = document.getElementById("maincanvas");
     context = canvas.getContext("2d");
+    // Set up raw canvas events
 	canvas.addEventListener('mousedown', 	MouseEvent.bind(null, OnMouseDown), false);	
 	canvas.addEventListener('mouseup',   	MouseEvent.bind(null, OnMouseUp), false);	
 	canvas.addEventListener('mousemove',   	MouseEvent.bind(null, OnMouseMove), false);
-    btnBg = new NinePatch("assets/buttonbg.png", 5, 5, 250, 50, 14, 14, 14, 14, true);
-    btnLabel = new Label("test", btnBg.x+btnBg.width/2, btnBg.y+btnBg.height/2, 150, 50,
-    	"rgb(255, 255, 255)", "bold 18px Arial", TextHAlign.CENTER, TextVAlign.MIDDLE, true);
-    setInterval(Update, 20); // Start Update loop
-
-    btnBg.OnMouseIn();
-    console.log(typeof btnBg);
-    console.log(Mixins.HasMixins(btnBg, Hoverable));
 }
 
-function SetGUI(gui) {
+function SetGUI(newGUI) {
+    if (!(newGUI instanceof GUI)) {
+        console.error("SetGUI: An invalid GUI object was passed.")
+        return;
+    }
+    gui = newGUI;
+}
 
+function StartRendering() {
+    setInterval(Update, 20); // Start Update loop
 }
 ////////////
 // Events //
@@ -82,12 +96,10 @@ function OnMouseMove(x, y) {
 // Drawing //
 /////////////
 function Update() {
-    DrawRect(0, 0, 400, 400, true, "rgb(255, 255, 255)"); // Clear the screen
-    DrawGUI();
-}
-function DrawGUI() {
-    btnBg.Draw();
-    btnLabel.Draw();
+    if (gui) {
+        DrawRect(0, 0, gui.width, gui.height, true, gui.bgStyle); // Clear the screen
+        gui.Draw(context);
+    }
 }
 function DrawRect(x, y, width, height, filled, color) {
     if (filled) {
