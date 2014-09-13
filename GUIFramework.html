@@ -1,10 +1,19 @@
 <html>
     <head>
+    	<meta charset="UTF-8">
         <title>GUIFramework</title>
-        <script src='helpers/Include.js'></script>
-        <script src='MyGUI.js'></script>
+        <style>
+            @font-face {
+                font-family: 'Share Tech Mono';
+                src: url('assets/fonts/ShareTechMono-Regular.ttf');
+            }
+        </style>
+        <script src='src/helpers/Include.js' type='application/javascript;version=1.7'></script>
+        <script src='src/GUIFramework.js' type='application/javascript;version=1.7'></script>
+        <script src='src/MyGUI.js' type='application/javascript;version=1.7'></script>
     </head>
-    <body onload='main();'>
+    <body onload='main();' style="margin: 0px;">
+    	<p id='error' style='font: italic 10px Arial;'></p>
         <canvas id='maincanvas' width='400' height='400'></canvas>
     </body>
 </html>
