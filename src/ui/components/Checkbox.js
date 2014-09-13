@@ -23,7 +23,6 @@
  * var checkbox = new Checkbox("text", 5, 5, 150, 50, true, true);
  */
 Checkbox.inherits(Component);
-
 function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
 	Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 
@@ -48,10 +47,21 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
 	this.labelStyle_hover = '#D5F3B7';
 	this.labelStyle_down = '#B1E77D';
 	this.labelStyle_down_hover = '#D5F3B7';
-	var textPadding_left = 28;
+	var textPadding_left = 30;
     this.label = new Label(this.text, this.x+textPadding_left, this.y+this.height/2,
     	this.width-textPadding_left, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono",
     	TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+
+    /////////////////////
+	// Event delegates //
+	/////////////////////
+	/** Event functions called when all loading and initialization has been completed for this NinePatch.
+	 * @type {function[]}
+	 * @example
+	 * var img = new NinePatch("image.jpg");
+	 * img.onload.push(function() {console.log("image loaded!");});
+	 */
+    this.onCheckedChange = [];
 
     /////////////////////
     // Internal events //
@@ -125,6 +135,16 @@ Checkbox.prototype.Draw = function(context) {
  */
 Checkbox.prototype.SetChecked = function(checked) {
 	checked.validate(Boolean);
+
+	// Fire event if necessary
+	if (this.checked != checked) {
+		// Notify all listeners
+		for (let listener of this.onCheckedChange) {
+			listener.validate(Function);
+			listener(checked);
+		}
+	}
+
 	this.checked = checked;
 	if (this.checked) {
 		if (this.isOver) this.image = this.checked_hover;

@@ -107,6 +107,7 @@ GUI.prototype.TryGiveFocusTo = function(component) {
 	component.validate(Component);
 	if (this.components.indexOf(component) < 0) throw new TypeError("TryGiveFocusTo(): The specified " + 
 		"`component` is not a part of the GUI's component list.");
+	if (this.focusedComponent == component) return true;
 	if (component.IsFocusable()) {
 		// Defocus currently focused Component, if there is one
 		if (this.focusedComponent) this.focusedComponent.SetFocused(false);
@@ -116,6 +117,14 @@ GUI.prototype.TryGiveFocusTo = function(component) {
 		return true;
 	}
 	return false;
+}
+/**
+ * Removes the focus from the currently focused component.
+ */
+GUI.prototype.ClearFocus = function() {
+	// Defocus currently focused Component, if there is one
+	if (this.focusedComponent) this.focusedComponent.SetFocused(false);
+	this.focusedComponent = null;
 }
 /**
  * [KeyDown description]
@@ -142,11 +151,6 @@ GUI.prototype.OnKeyUp = function(key) {
  * @param {[type]} button [description]
  */
 GUI.prototype.OnMouseDown = function(x, y, button) {
-	// Check if the mouse is still within the hovered component
-	/*if (this.focusedComponent && !this.focusedComponent.MouseIntersects(x, y)) {
-		this.focusedComponent.OnMouseOut();
-		this.focusedComponent = null;
-	}*/
 	// Loop backwards so topmost components get priority
 	for (let index = this.components.length-1; index >= 0; --index) {
 		let component = this.components[index];
@@ -158,11 +162,13 @@ GUI.prototype.OnMouseDown = function(x, y, button) {
  			if (this.TryGiveFocusTo(component)) {
 	    		component.OnMouseDown(x, y, button);
 				// The rest of the loop would be looking at components underneath what the user is
-				// hovering over, so break
-				break;
+				// hovering over, so return
+				return;
 			}
         }
     }
+    // If the user clicked on nothing focusable, remove any current focus
+    this.ClearFocus();
 }
 /**
  * [MouseUp description]

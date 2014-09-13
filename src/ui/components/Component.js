@@ -73,6 +73,8 @@ Component.prototype.SetFocused = function(focused) {
 	focused.validate(Boolean);
 	if (!this.enabled) return;
 	if (!this.visible) return;
+
+	this.focused = focused;
 }
 /**
  * 	 

@@ -26,6 +26,7 @@ include('src/ui/components/Image.js');
 include('src/ui/components/Label.js');
 include('src/ui/components/Button.js');
 include('src/ui/components/Checkbox.js');
+include('src/ui/components/Textbox.js');
 include('src/ui/GUI.js');
 
 /////////////
