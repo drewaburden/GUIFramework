@@ -8,12 +8,13 @@
                 src: url('assets/fonts/ShareTechMono-Regular.ttf');
             }
         </style>
+        <script src='src/VersionCheck.js' type='application/javascript' async='true' defer='false'></script>
         <script src='src/helpers/Include.js' type='application/javascript;version=1.7'></script>
         <script src='src/GUIFramework.js' type='application/javascript;version=1.7'></script>
         <script src='src/MyGUI.js' type='application/javascript;version=1.7'></script>
     </head>
     <body onload='main();' style="margin: 0px;">
-    	<p id='error' style='font: italic 10px Arial;'></p>
+    	<p id='error' style='font: italic 10px Arial; padding: 10px; display: none;'></p>
         <canvas id='maincanvas' width='400' height='400'></canvas>
     </body>
 </html>

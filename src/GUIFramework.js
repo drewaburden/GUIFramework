@@ -40,32 +40,11 @@ var context = null;
 var canvas = null;
 var gui = null;
 var fps = 30;
-var testedOnVersions = ['Firefox/34.0'];
 var unitTesting = false;
 //////////
 // Init //
 //////////
 function Init() {
-    let matchingVersion = false;
-    // Version check
-    let userAgent = window.navigator.userAgent;
-    for (version of testedOnVersions) {
-        if (userAgent.search(version) >= 0) {
-            matchingVersion = true;
-            break;
-        }
-    }
-    if (!matchingVersion) {
-        let error = document.getElementById('error');
-        if (error) {
-            error.textContent = "Warning: This framework has not been tested on your browser and/or the version of your " +
-                "browser. I cannot guarantee good results on your browser. This framework requires some very " + 
-                "experimental EMCAScript 6 features, and was tested on the Aurora build of Firefox (version 34.0, " + 
-                "at the time of writing).";
-            console.log("Your browser: " + userAgent);
-        }
-    }
-
     // Set up context references
     canvas = document.getElementById("maincanvas");
     context = canvas.getContext("2d");

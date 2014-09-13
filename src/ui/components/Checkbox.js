@@ -59,35 +59,44 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
     // OnMouseIn
     this.onMouseIn.push(function(x, y) {
     	document.body.style.cursor = "pointer";
-    	if (this.checked) {
-    		if (this.isDown) this.image = this.checked_down_hover;
-    		else this.image = this.checked_hover;
+    	if (this.isDown) {
+    		this.label.style = this.labelStyle_down_hover;
+    		if (this.checked) this.image = this.checked_down_hover;
+    		else this.image = this.unchecked_down_hover;
     	}
     	else {
-    		if (this.isDown) this.image = this.unchecked_down_hover;
+    		this.label.style = this.labelStyle_hover;
+    		if (this.checked) this.image = this.checked_hover;
     		else this.image = this.unchecked_hover;
     	}
 	}.bind(this));
 	// OnMouseOut
 	this.onMouseOut.push(function() {
-		if (this.checked) {
-    		if (this.isDown) this.image = this.checked_down_normal;
-    		else this.image = this.checked_normal;
+		if (this.isDown) {
+    		this.label.style = this.labelStyle_down;
+    		if (this.checked) this.image = this.checked_down_normal;
+    		else this.image = this.unchecked_down_normal;
     	}
     	else {
-    		if (this.isDown) this.image = this.unchecked_down_normal;
+    		this.label.style = this.labelStyle_normal;
+    		if (this.checked) this.image = this.checked_normal;
     		else this.image = this.unchecked_normal;
     	}
 	}.bind(this));
 	// OnMouseDown
 	this.onMouseDown.push(function(x, y, button) {
+		this.label.style = this.labelStyle_down_hover;
 		if (this.checked) this.image = this.checked_down_hover;
     	else this.image = this.unchecked_down_hover;
 	}.bind(this));
 	// OnMouseUp
 	this.onMouseUp.push(function(x, y, button) {
-		if (this.isOver) this.Toggle();
+		if (this.isOver) {
+			this.label.style = this.labelStyle_hover;
+			this.Toggle();
+		}
 		else {
+			this.label.style = this.labelStyle_normal;
 			if (this.checked) this.image = this.checked_normal;
     		else this.image = this.unchecked_normal;
 		}
