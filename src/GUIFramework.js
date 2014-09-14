@@ -26,6 +26,7 @@ include('src/ui/components/Image.js');
 include('src/ui/components/Label.js');
 include('src/ui/components/Button.js');
 include('src/ui/components/Checkbox.js');
+include('src/ui/components/Caret.js');
 include('src/ui/components/Textbox.js');
 include('src/ui/GUI.js');
 
@@ -38,7 +39,9 @@ include('src/ui/GUI.js');
  * @type {CanvasRenderingContext2D}
  */
 var context = null;
+var scratchContext = null;
 var canvas = null;
+var scratchCanvas = null;
 var gui = null;
 var fps = 30;
 var unitTesting = false;
@@ -49,6 +52,12 @@ function Init() {
     // Set up context references
     canvas = document.getElementById("maincanvas");
     context = canvas.getContext("2d");
+    
+    scratchCanvas = document.createElement('canvas');
+    scratchCanvas.width = canvas.width;
+    scratchCanvas.height = canvas.width;
+    scratchContext = scratchCanvas.getContext('2d');
+
     // Set up raw canvas events
 	canvas.addEventListener('mousedown', 	MouseEvent.bind(null, OnMouseDown), false);	
 	canvas.addEventListener('mouseup',   	MouseEvent.bind(null, OnMouseUp), false);	
@@ -61,6 +70,8 @@ function SetGUI(newGUI) {
     gui = newGUI.validate(GUI);
     canvas.width = gui.width;
     canvas.height = gui.height;
+    scratchCanvas.width = gui.width;
+    scratchCanvas.height = gui.height;
 }
 
 ////////////
@@ -86,18 +97,19 @@ function OnMouseMove(x, y) { if (gui) gui.OnMouseMove(x, y); }
 /////////////
 function Update() {
     if (gui && context) {
-        DrawRect(0, 0, gui.width, gui.height, true, gui.bgStyle); // Clear the screen
+        DrawRect(0, 0, gui.width, gui.height, true, gui.bgStyle); // Clear the canvas
+        scratchContext.clearRect(0, 0, gui.width, gui.height); // Clear the scratch canvas
         
         gui.Draw(context);
     }
 }
-function DrawRect(x, y, width, height, filled, style) {
+function DrawRect(x, y, width, height, filled, style, drawingContext=context) {
     if (filled) {
-        context.fillStyle = style;
-        context.fillRect(x, y, width, height);
+        drawingContext.fillStyle = style;
+        drawingContext.fillRect(x, y, width, height);
     }
     else {
-        context.strokeStyle = style;
-        context.strokeRect(x, y, width, height);
+        drawingContext.strokeStyle = style;
+        drawingContext.strokeRect(x, y, width, height);
     }
 }

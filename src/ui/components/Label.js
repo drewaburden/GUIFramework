@@ -72,5 +72,6 @@ Label.prototype.Draw = function(context) {
 	// Set canvas text alignment accordingly
 	context.textAlign = this.textHAlignment;
 	context.textBaseline = this.textVAlignment;
-    context.fillText(this.text, this.x, this.y, this.width);
+	if (this.width > 0) context.fillText(this.text, this.x, this.y, this.width);
+	else context.fillText(this.text, this.x, this.y);
 }

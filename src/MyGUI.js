@@ -100,7 +100,7 @@ function CreateGUI() {
     /////////////
     // textbox //
     /////////////
-    let textbox = new Textbox("test textbox", 25, 160, 125, 30, true);
+    let textbox = new Textbox("test textbox test textbox test textbox", 25, 160, 125, 30, true);
 
     // Add components to GUI
     gui.components.push(btn);

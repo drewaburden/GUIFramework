@@ -32,6 +32,8 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	///////////////
 	/** @type {string} */
 	this.text = text.validate(String);
+	var caretHeightPadding = 14;
+	this.caret = new Caret(this.x, this.y+caretHeightPadding-7, this.height-caretHeightPadding, false);
 	this.background_normal = new NinePatch("assets/textbox/textbox_normal.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
 	this.background_hover = new NinePatch("assets/textbox/textbox_hover.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
 	this.background_focused = new NinePatch("assets/textbox/textbox_focused.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
@@ -41,7 +43,7 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.labelStyle_focused = '#ffffff';
 	var textPadding_left = 8;
     this.label = new Label(this.text, this.x+textPadding_left, this.y+this.height/2,
-    	this.width, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    	0, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
 
     /////////////////////
     // Internal events //
@@ -82,20 +84,37 @@ Textbox.prototype.Draw = function(context) {
 	if (!this.visible) return;
 
 	this.background.Draw(context);
-	this.label.Draw(context);
+
+	// Draw text only within the textbox bounds; i.e., clip off the overflowing text.
+	// Render a rectangle with the dimensions of the text bounds to an offscreen buffer. Render
+	// text to the offscreen buffer, using the aforementioned rectangle as a mask. Finally,
+	// composite the offscreen buffer with our real canvas.
+	scratchContext.save();
+	let textBoundsPadding = 5;
+	scratchContext.rect(this.x+textBoundsPadding, this.y+textBoundsPadding,
+		this.width-textBoundsPadding*2, this.height-textBoundsPadding*2); // Define the mask area
+	scratchContext.clip(); // Make the mask active
+	//this.label.x -= 1; // Debug the edges
+	this.label.Draw(scratchContext); // Draw the label within the mask
+	scratchContext.restore();
+	context.drawImage(scratchCanvas, 0, 0); // Composite the scratch canvas with the actual canvas
+
+	this.caret.Draw(context);
 }
 /**
  * @param {boolean} focused
  */
 Textbox.prototype.SetFocused = function(focused) {
 	Textbox.parent.SetFocused.apply(this, arguments);
-	
+
 	if (this.focused) {
+		this.caret.StartBlinking();
 		this.label.style = this.labelStyle_focused;
 		if (this.isOver) this.background = this.background_focused_hover;
 		else this.background = this.background_focused;
 	}
 	else {
+		this.caret.StopBlinking();
 		this.label.style = this.labelStyle_normal;
 		if (this.isOver) this.background = this.background_hover;
 		else this.background = this.background_normal;
