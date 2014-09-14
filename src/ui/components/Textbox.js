@@ -32,7 +32,7 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	///////////////
 	/** @type {string} */
 	this.text = text.validate(String);
-	var caretHeightPadding = 14;
+	let caretHeightPadding = 14;
 	this.caret = new Caret(this.x, this.y+caretHeightPadding-7, this.height-caretHeightPadding, false);
 	this.background_normal = new NinePatch("assets/textbox/textbox_normal.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
 	this.background_hover = new NinePatch("assets/textbox/textbox_hover.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
@@ -41,8 +41,9 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.background = this.background_normal;
 	this.labelStyle_normal = '#e6e6e6';
 	this.labelStyle_focused = '#ffffff';
-	var textPadding_left = 8;
-    this.label = new Label(this.text, this.x+textPadding_left, this.y+this.height/2,
+	this.textPadding_left = 8;
+	this.textBoundsPadding = 5;
+    this.label = new Label(this.text, this.x+this.textPadding_left, this.y+this.height/2,
     	0, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
 
     /////////////////////
@@ -86,18 +87,15 @@ Textbox.prototype.Draw = function(context) {
 	this.background.Draw(context);
 
 	// Draw text only within the textbox bounds; i.e., clip off the overflowing text.
-	// Render a rectangle with the dimensions of the text bounds to an offscreen buffer. Render
-	// text to the offscreen buffer, using the aforementioned rectangle as a mask. Finally,
-	// composite the offscreen buffer with our real canvas.
-	scratchContext.save();
-	let textBoundsPadding = 5;
-	scratchContext.rect(this.x+textBoundsPadding, this.y+textBoundsPadding,
-		this.width-textBoundsPadding*2, this.height-textBoundsPadding*2); // Define the mask area
-	scratchContext.clip(); // Make the mask active
+	// Define a rectangle with the dimensions of the text bounds; apply rectangle as
+	// a mask; render text within the rectangle.
 	//this.label.x -= 1; // Debug the edges
-	this.label.Draw(scratchContext); // Draw the label within the mask
-	scratchContext.restore();
-	context.drawImage(scratchCanvas, 0, 0); // Composite the scratch canvas with the actual canvas
+	context.save();
+	context.rect(this.x+this.textBoundsPadding, this.y+this.textBoundsPadding,
+		this.width-this.textBoundsPadding*2, this.height-this.textBoundsPadding*2); // Define the mask area
+	context.clip(); // Apply the mask
+	this.label.Draw(context); // Draw the label within the mask
+	context.restore();
 
 	this.caret.Draw(context);
 }

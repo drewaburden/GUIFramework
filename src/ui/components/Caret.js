@@ -46,6 +46,7 @@ Caret.prototype.Draw = function(context) {
 	context.strokeStyle = 'white';
 	context.lineWidth = this.width;
 	// Add 0.5 to everything, because otherwise, the line will be 2px wide
+	context.beginPath();
 	context.moveTo(this.x+0.5, this.y+0.5);
 	context.lineTo(this.x+0.5, this.y+this.height+0.5);
 	context.stroke();

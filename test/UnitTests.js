@@ -17,12 +17,11 @@ QUnit.test("Init", function() {
 	include('src/helpers/Class.js');
 	include('src/helpers/MathClamp.js');
 	include('src/ui/mixins/Mixins.js');
-	include('src/ui/mixins/Hoverable.js');
+	//include('src/ui/mixins/Hoverable.js');
 	include('src/ui/Destroyable.js');
 	include('src/ui/Drawable.js');
 	include('src/ui/NinePatch.js');
 	include('src/ui/TextAlign.js');
-	include('src/ui/events/EventManager.js');
 	include('src/ui/components/Component.js');
 	include('src/ui/components/Label.js');
 	include('src/ui/GUI.js');
@@ -40,7 +39,6 @@ QUnit.test("Unit test modules", function() {
 	include('test/ui/Drawable.js');
 	include('test/ui/NinePatch.js');
 	include('test/ui/TextAlign.js');
-	// include('test/ui/events/EventManager.js');
 	include('test/ui/components/Component.js');
 	include('test/ui/components/Label.js');
 	include('test/ui/GUI.js');

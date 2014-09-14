@@ -39,9 +39,7 @@ include('src/ui/GUI.js');
  * @type {CanvasRenderingContext2D}
  */
 var context = null;
-var scratchContext = null;
 var canvas = null;
-var scratchCanvas = null;
 var gui = null;
 var fps = 30;
 var unitTesting = false;
@@ -52,11 +50,6 @@ function Init() {
     // Set up context references
     canvas = document.getElementById("maincanvas");
     context = canvas.getContext("2d");
-    
-    scratchCanvas = document.createElement('canvas');
-    scratchCanvas.width = canvas.width;
-    scratchCanvas.height = canvas.width;
-    scratchContext = scratchCanvas.getContext('2d');
 
     // Set up raw canvas events
 	canvas.addEventListener('mousedown', 	MouseEvent.bind(null, OnMouseDown), false);	
@@ -70,8 +63,6 @@ function SetGUI(newGUI) {
     gui = newGUI.validate(GUI);
     canvas.width = gui.width;
     canvas.height = gui.height;
-    scratchCanvas.width = gui.width;
-    scratchCanvas.height = gui.height;
 }
 
 ////////////
@@ -98,18 +89,17 @@ function OnMouseMove(x, y) { if (gui) gui.OnMouseMove(x, y); }
 function Update() {
     if (gui && context) {
         DrawRect(0, 0, gui.width, gui.height, true, gui.bgStyle); // Clear the canvas
-        scratchContext.clearRect(0, 0, gui.width, gui.height); // Clear the scratch canvas
         
         gui.Draw(context);
     }
 }
-function DrawRect(x, y, width, height, filled, style, drawingContext=context) {
+function DrawRect(x, y, width, height, filled, style) {
     if (filled) {
-        drawingContext.fillStyle = style;
-        drawingContext.fillRect(x, y, width, height);
+        context.fillStyle = style;
+        context.fillRect(x, y, width, height);
     }
     else {
-        drawingContext.strokeStyle = style;
-        drawingContext.strokeRect(x, y, width, height);
+        context.strokeStyle = style;
+        context.strokeRect(x, y, width, height);
     }
 }
