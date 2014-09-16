@@ -50,7 +50,7 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
     // OnMouseIn
     this.onMouseIn.push(function(x, y) {
     	document.body.style.cursor = "pointer";
-    	if (this.isDown) {
+    	if (this.isMouseDown) {
     		this.background = this.background_down_hover;
 			this.label.style = this.labelStyle_down_hover;
     	}
@@ -61,7 +61,7 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
 	}.bind(this));
 	// OnMouseOut
 	this.onMouseOut.push(function() {
-		if (this.isDown) {
+		if (this.isMouseDown) {
 			this.background = this.background_down;
 			this.label.style = this.labelStyle_down;
 		}
@@ -78,7 +78,7 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
 	}.bind(this));
 	// OnMouseUp
 	this.onMouseUp.push(function(x, y, button) {
-		if (this.isOver) this.OnMouseIn(x, y);
+		if (this.isMouseOver) this.OnMouseIn(x, y);
 		else this.OnMouseOut();
 	}.bind(this));
 }

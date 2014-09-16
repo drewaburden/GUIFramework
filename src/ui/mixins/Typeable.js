@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  ui\mixins\Clickable.js
+//  ui\mixins\Typeable.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -12,61 +12,65 @@
  *
  * @mixin
  */
-Mixins.Clickable = {
+Mixins.Typeable = {
 	///////////////
 	// Variables //
 	///////////////
 	/** @type {boolean} */
-	isMouseDown: false,
+	isKeyDown: false,
+	/** @type {boolean} */
+	catchTab: false,
+	/** @type {boolean} */
+	catchEnter: false,
 
 	/////////////////////
 	// Event delegates //
 	/////////////////////
-	/** Event functions called when the mixed class receives the OnMouseDown event from the GUIFramework.
+	/** Event functions called when the mixed class receives the onKeyDown event from the GUIFramework.
 	 * @type {function[]}
 	 */
-	onMouseDown: [],
-	/** Event functions called when the mixed class receives the OnMouseUp event from the GUIFramework.
+	onKeyDown: [],
+	/** Event functions called when the mixed class receives the onKeyUp event from the GUIFramework.
 	 * @type {function[]}
 	 */
-	onMouseUp: [],
+	onKeyUp: [],
 
 	///////////////
 	// Functions //
 	///////////////
 	/**
-	 * Receiver of the OnMouseDown event from the GUIFramework.
+	 * Receiver of the onKeyDown event from the GUIFramework.
 	 * This is called when GUIFramework determines that the mouse is clicked within the bounds of the
 	 * component (prioritized by render order).
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} button - The mouse button that was pressed.
 	 */
-	OnMouseDown: function(x, y, button) {
+	onKeyDown: function(key, shift, alt, ctrl) {
 		// If the left mouse button was clicked
 		if (button == 0) {
-			this.isMouseDown = true;
+			this.isKeyDown = true;
 			// Notify all listeners
-			for (let listener of this.onMouseDown) {
+			for (let listener of this.onKeyDown) {
 				listener.validate(Function);
-				listener(x, y, button);
+				listener(key, shift, alt, ctrl);
 			}
 		}
 	},
 	/**
-	 * Receiver of the OnMouseUp event from the GUIFramework.
+	 * Receiver of the onKeyUp event from the GUIFramework.
 	 * This is called when GUIFramework determines that a mouse button has been released.
 	 * @param {number} x
 	 * @param {number} y
 	 */
-	OnMouseUp: function(x, y, button) {
+	onKeyUp: function(key, shift, alt, ctrl) {
 		// If the left mouse button was released and the click actually started on this component
-		if (button == 0 && this.isMouseDown) {
-			this.isMouseDown = false;
+		if (button == 0 && this.isKeyDown) {
+			this.isKeyDown = false;
 			// Notify all listeners
-			for (let listener of this.onMouseUp) {
+			for (let listener of this.onKeyUp) {
 				listener.validate(Function);
-				listener(x, y, button);
+				listener(key, shift, alt, ctrl);
 			}
 		}
 	}

@@ -127,7 +127,7 @@ GUI.prototype.ClearFocus = function() {
 	this.focusedComponent = null;
 }
 /**
- * [KeyDown description]
+ * [OnKeyDown description]
  * @param {[type]} key [description]
  */
 GUI.prototype.OnKeyDown = function(key) {
@@ -136,7 +136,7 @@ GUI.prototype.OnKeyDown = function(key) {
 	else return false;
 }
 /**
- * [KeyUp description]
+ * [OnKeyUp description]
  * @param {[type]} key [description]
  */
 GUI.prototype.OnKeyUp = function(key) {
@@ -145,7 +145,16 @@ GUI.prototype.OnKeyUp = function(key) {
 	else return false;
 }
 /**
- * [MouseDown description]
+ * [OnKeyPress description]
+ * @param {[type]} key [description]
+ */
+GUI.prototype.OnKeyPress = function(key) {
+	//key.validate(Number);
+	if (this.focusedComponent) return this.focusedComponent.KeyUp(key);
+	else return false;
+}
+/**
+ * [OnMouseDown description]
  * @param {[type]} x      [description]
  * @param {[type]} y      [description]
  * @param {[type]} button [description]
@@ -171,7 +180,7 @@ GUI.prototype.OnMouseDown = function(x, y, button) {
     this.ClearFocus();
 }
 /**
- * [MouseUp description]
+ * [OnMouseUp description]
  * @param {[type]} button [description]
  */
 GUI.prototype.OnMouseUp = function(x, y, button) {

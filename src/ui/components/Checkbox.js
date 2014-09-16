@@ -69,7 +69,7 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
     // OnMouseIn
     this.onMouseIn.push(function(x, y) {
     	document.body.style.cursor = "pointer";
-    	if (this.isDown) {
+    	if (this.isMouseDown) {
     		this.label.style = this.labelStyle_down_hover;
     		if (this.checked) this.image = this.checked_down_hover;
     		else this.image = this.unchecked_down_hover;
@@ -82,7 +82,7 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
 	}.bind(this));
 	// OnMouseOut
 	this.onMouseOut.push(function() {
-		if (this.isDown) {
+		if (this.isMouseDown) {
     		this.label.style = this.labelStyle_down;
     		if (this.checked) this.image = this.checked_down_normal;
     		else this.image = this.unchecked_down_normal;
@@ -101,7 +101,7 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
 	}.bind(this));
 	// OnMouseUp
 	this.onMouseUp.push(function(x, y, button) {
-		if (this.isOver) {
+		if (this.isMouseOver) {
 			this.label.style = this.labelStyle_hover;
 			this.Toggle();
 		}
@@ -147,11 +147,11 @@ Checkbox.prototype.SetChecked = function(checked) {
 
 	this.checked = checked;
 	if (this.checked) {
-		if (this.isOver) this.image = this.checked_hover;
+		if (this.isMouseOver) this.image = this.checked_hover;
 		else this.image = this.checked_normal;
 	}
 	else {
-		if (this.isOver) this.image = this.unchecked_hover;
+		if (this.isMouseOver) this.image = this.unchecked_hover;
 		else this.image = this.unchecked_normal;
 	}
 }

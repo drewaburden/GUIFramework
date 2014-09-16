@@ -17,6 +17,7 @@ include('src/helpers/MathClamp.js');
 include('src/ui/mixins/Mixins.js');
 include('src/ui/mixins/Hoverable.js');
 include('src/ui/mixins/Clickable.js');
+include('src/ui/Keys.js');
 include('src/ui/Destroyable.js');
 include('src/ui/Drawable.js');
 include('src/ui/NinePatch.js');
@@ -55,6 +56,10 @@ function Init() {
 	canvas.addEventListener('mousedown', 	MouseEvent.bind(null, OnMouseDown), false);	
 	canvas.addEventListener('mouseup',   	MouseEvent.bind(null, OnMouseUp), false);	
 	canvas.addEventListener('mousemove',   	MouseEvent.bind(null, OnMouseMove), false);
+    canvas.addEventListener('keydown',      KeyEvent.bind(null, OnKeyDown), false); 
+    canvas.addEventListener('keyup',        KeyEvent.bind(null, OnKeyUp), false);   
+    canvas.addEventListener('keypress',     KeyEvent.bind(null, OnKeyPress), false);
+    canvas.focus(); // Focus the canvas for key input
 
     setInterval(Update, 1000/fps.validate(Number)); // Start Update loop
 }
@@ -68,7 +73,7 @@ function SetGUI(newGUI) {
 ////////////
 // Events //
 ////////////
-function MouseEvent(handler, ev) {
+function MouseEvent(handler, ev) { 
 	let x, y;
 	// Get the mouse position relative to the canvas element.
 	if (ev.layerX || ev.layerX == 0) { // Firefox
@@ -83,6 +88,24 @@ function MouseEvent(handler, ev) {
 function OnMouseDown(x, y, button) { if (gui) gui.OnMouseDown(x, y, button); }
 function OnMouseUp(x, y, button) { if (gui) gui.OnMouseUp(x, y, button); }
 function OnMouseMove(x, y) { if (gui) gui.OnMouseMove(x, y); }
+function KeyEvent(handler, ev) {
+    if (CapturedKeyCodes.indexOf(ev.keyCode) >= 0) ev.preventDefault();
+    handler(ev.keyCode, ev);
+}
+function OnKeyDown(key, ev) {
+    var codeIndex = ASCIIKeyCodes.indexOf(key);
+    if (codeIndex >= 0) {
+        if (ev.shiftKey)
+            console.log(ASCIIShiftCharacters[codeIndex]);
+        else 
+            console.log(ASCIICharacters[codeIndex]);
+    }
+    if (gui) gui.OnKeyDown(key);
+}
+function OnKeyUp(key) { if (gui) gui.OnKeyUp(key); }
+function OnKeyPress(key, ev) {
+    if (gui) gui.OnKeyPress(key);
+}
 /////////////
 // Drawing //
 /////////////

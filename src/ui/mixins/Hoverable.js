@@ -17,7 +17,7 @@ Mixins.Hoverable = {
 	// Variables //
 	///////////////
 	/** @type {boolean} */
-	isOver: false,
+	isMouseOver: false,
 
 	/////////////////////
 	// Event delegates //
@@ -42,7 +42,7 @@ Mixins.Hoverable = {
 	 * @param {number} y
 	 */
 	OnMouseIn: function(x, y) {
-		this.isOver = true;
+		this.isMouseOver = true;
 		// Notify all listeners
 		for (let listener of this.onMouseIn) {
 			listener.validate(Function);
@@ -57,7 +57,7 @@ Mixins.Hoverable = {
 	 * @param {number} y
 	 */
 	OnMouseOut: function(x, y) {
-		this.isOver = false;
+		this.isMouseOver = false;
 		// Notify all listeners
 		for (let listener of this.onMouseOut) {
 			listener.validate(Function);

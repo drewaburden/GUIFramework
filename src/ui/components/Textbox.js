@@ -32,8 +32,6 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	///////////////
 	/** @type {string} */
 	this.text = text.validate(String);
-	let caretHeightPadding = 14;
-	this.caret = new Caret(this.x, this.y+caretHeightPadding-7, this.height-caretHeightPadding, false);
 	this.background_normal = new NinePatch("assets/textbox/textbox_normal.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
 	this.background_hover = new NinePatch("assets/textbox/textbox_hover.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
 	this.background_focused = new NinePatch("assets/textbox/textbox_focused.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
@@ -41,10 +39,12 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.background = this.background_normal;
 	this.labelStyle_normal = '#e6e6e6';
 	this.labelStyle_focused = '#ffffff';
-	this.textPadding_left = 8;
+	let textPadding_left = 8;
 	this.textBoundsPadding = 5;
-    this.label = new Label(this.text, this.x+this.textPadding_left, this.y+this.height/2,
+    this.label = new Label(this.text, this.x+textPadding_left, this.y+this.height/2,
     	0, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    let caretHeightPadding = 15;
+	this.caret = new Caret(this.x+textPadding_left, this.y+caretHeightPadding/2, this.height-caretHeightPadding, false);
 
     /////////////////////
     // Internal events //
@@ -89,13 +89,12 @@ Textbox.prototype.Draw = function(context) {
 	// Draw text only within the textbox bounds; i.e., clip off the overflowing text.
 	// Define a rectangle with the dimensions of the text bounds; apply rectangle as
 	// a mask; render text within the rectangle.
-	//this.label.x -= 1; // Debug the edges
 	context.save();
 	context.rect(this.x+this.textBoundsPadding, this.y+this.textBoundsPadding,
 		this.width-this.textBoundsPadding*2, this.height-this.textBoundsPadding*2); // Define the mask area
 	context.clip(); // Apply the mask
 	this.label.Draw(context); // Draw the label within the mask
-	context.restore();
+	context.restore(); // Disable the mask for future drawing
 
 	this.caret.Draw(context);
 }
@@ -108,13 +107,13 @@ Textbox.prototype.SetFocused = function(focused) {
 	if (this.focused) {
 		this.caret.StartBlinking();
 		this.label.style = this.labelStyle_focused;
-		if (this.isOver) this.background = this.background_focused_hover;
+		if (this.isMouseOver) this.background = this.background_focused_hover;
 		else this.background = this.background_focused;
 	}
 	else {
 		this.caret.StopBlinking();
 		this.label.style = this.labelStyle_normal;
-		if (this.isOver) this.background = this.background_hover;
+		if (this.isMouseOver) this.background = this.background_hover;
 		else this.background = this.background_normal;
 	}
 }
