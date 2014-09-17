@@ -17,6 +17,7 @@ include('src/helpers/MathClamp.js');
 include('src/ui/mixins/Mixins.js');
 include('src/ui/mixins/Hoverable.js');
 include('src/ui/mixins/Clickable.js');
+include('src/ui/mixins/Typeable.js');
 include('src/ui/Keys.js');
 include('src/ui/Destroyable.js');
 include('src/ui/Drawable.js');

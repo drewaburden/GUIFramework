@@ -68,7 +68,7 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
     /////////////////////
     // OnMouseIn
     this.onMouseIn.push(function(x, y) {
-    	document.body.style.cursor = "pointer";
+    	document.body.style.cursor = 'pointer';
     	if (this.isMouseDown) {
     		this.label.style = this.labelStyle_down_hover;
     		if (this.checked) this.image = this.checked_down_hover;
@@ -88,6 +88,7 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
     		else this.image = this.unchecked_down_normal;
     	}
     	else {
+    		document.body.style.cursor = 'auto';
     		this.label.style = this.labelStyle_normal;
     		if (this.checked) this.image = this.checked_normal;
     		else this.image = this.unchecked_normal;

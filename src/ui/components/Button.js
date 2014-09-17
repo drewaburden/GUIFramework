@@ -49,7 +49,7 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
     /////////////////////
     // OnMouseIn
     this.onMouseIn.push(function(x, y) {
-    	document.body.style.cursor = "pointer";
+    	document.body.style.cursor = 'pointer';
     	if (this.isMouseDown) {
     		this.background = this.background_down_hover;
 			this.label.style = this.labelStyle_down_hover;
@@ -66,7 +66,7 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
 			this.label.style = this.labelStyle_down;
 		}
 		else {
-			document.body.style.cursor = "auto";
+			document.body.style.cursor = 'auto';
 			this.background = this.background_normal;
 			this.label.style = this.labelStyle_normal;
 		}

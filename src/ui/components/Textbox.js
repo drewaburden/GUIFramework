@@ -25,7 +25,7 @@ Textbox.inherits(Component);
 function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	Textbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 
-	Mixins.Mix(this, Mixins.Hoverable, Mixins.Clickable);
+	Mixins.Mix(this, Mixins.Hoverable, Mixins.Clickable, Mixins.Typeable);
 
 	///////////////
 	// Variables //
@@ -51,7 +51,7 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
     /////////////////////
     // OnMouseIn
     this.onMouseIn.push(function(x, y) {
-    	document.body.style.cursor = "text";
+    	document.body.style.cursor = 'text';
     	if (this.focused) this.background = this.background_focused_hover;
     	else this.background = this.background_hover;
 	}.bind(this));
@@ -59,7 +59,7 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.onMouseOut.push(function() {
 		if (this.focused) this.background = this.background_focused;
     	else this.background = this.background_normal;
-		document.body.style.cursor = "auto";
+		document.body.style.cursor = 'auto';
 	}.bind(this));
 	// OnMouseDown
 	this.onMouseDown.push(function(x, y, button) {

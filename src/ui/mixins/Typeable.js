@@ -34,6 +34,10 @@ Mixins.Typeable = {
 	 * @type {function[]}
 	 */
 	onKeyUp: [],
+	/** Event functions called when the mixed class receives the onKeyUp event from the GUIFramework.
+	 * @type {function[]}
+	 */
+	onKeyPress: [],
 
 	///////////////
 	// Functions //
@@ -46,12 +50,26 @@ Mixins.Typeable = {
 	 * @param {number} y
 	 * @param {number} button - The mouse button that was pressed.
 	 */
-	onKeyDown: function(key, shift, alt, ctrl) {
-		// If the left mouse button was clicked
-		if (button == 0) {
-			this.isKeyDown = true;
+	OnKeyDown: function(key, shift, alt, ctrl) {
+		this.isKeyDown = true;
+		// Notify all listeners
+		for (let listener of this.onKeyDown) {
+			listener.validate(Function);
+			listener(key, shift, alt, ctrl);
+		}
+	},
+	/**
+	 * Receiver of the onKeyUp event from the GUIFramework.
+	 * This is called when GUIFramework determines that a mouse button has been released.
+	 * @param {number} x
+	 * @param {number} y
+	 */
+	OnKeyUp: function(key, shift, alt, ctrl) {
+		// If the left mouse button was released and the click actually started on this component
+		if (this.isKeyDown) {
+			this.isKeyDown = false;
 			// Notify all listeners
-			for (let listener of this.onKeyDown) {
+			for (let listener of this.onKeyUp) {
 				listener.validate(Function);
 				listener(key, shift, alt, ctrl);
 			}
@@ -63,14 +81,14 @@ Mixins.Typeable = {
 	 * @param {number} x
 	 * @param {number} y
 	 */
-	onKeyUp: function(key, shift, alt, ctrl) {
+	OnKeyPress: function(key) {
 		// If the left mouse button was released and the click actually started on this component
-		if (button == 0 && this.isKeyDown) {
+		if (this.isKeyDown) {
 			this.isKeyDown = false;
 			// Notify all listeners
-			for (let listener of this.onKeyUp) {
+			for (let listener of this.onKeyPress) {
 				listener.validate(Function);
-				listener(key, shift, alt, ctrl);
+				listener(key);
 			}
 		}
 	}

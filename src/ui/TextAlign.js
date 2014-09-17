@@ -20,7 +20,7 @@ const TextHAlign = {
 	RIGHT: 'right',
 	CENTER: 'center'
 };
-if (Object.freeze) Object.freeze(TextHAlign); // Make the enum immutable
+Object.freeze(TextHAlign); // Make the enum immutable
 
 /**
  * Enum defining the possible vertical text alignment options
@@ -35,4 +35,4 @@ const TextVAlign = {
 	HANGING: 'hanging',
 	IDEOGRAPHIC: 'ideographic'
 };
-if (Object.freeze) Object.freeze(TextVAlign); // Make the enum immutable
+Object.freeze(TextVAlign); // Make the enum immutable
