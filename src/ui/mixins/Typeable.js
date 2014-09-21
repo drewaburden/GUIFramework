@@ -9,6 +9,20 @@
 // ================================================================================================
 
 /**
+ * 
+ * @enum {string}
+ */
+var InputType = {
+	ANY: 						'',
+	NUMERIC: 					'0123456789',
+	ALPHABETIC: 				'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+	ALPHANUMERIC: 				this.ALPHABETIC + this.NUMERIC,
+	ALPHANUMERIC_PUNCTUATION: 	this.ALPHANUMERIC + ',.?!-\'"',
+	EMAIL: 						this.ALPHANUMERIC + '@.!#$%&\'*+-/=?_^`{|}~'
+};
+Object.freeze(InputType); // Make the enum immutable
+
+/**
  *
  * @mixin
  */
@@ -16,6 +30,8 @@ Mixins.Typeable = {
 	///////////////
 	// Variables //
 	///////////////
+	/** @type {InputType} */
+	inputType: InputType.ANY,
 	/** @type {boolean} */
 	isKeyDown: false,
 	/** @type {boolean} */

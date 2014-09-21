@@ -36,12 +36,12 @@ function CreateGUI() {
     ////////////////
     // OnMouseIn
     btn.onMouseIn.push(function(x, y) {
-        if (btn.isDown) btnInfoState.text = "down hover";
+        if (btn.isMouseDown) btnInfoState.text = "down hover";
         else btnInfoState.text = "hover";
     }.bind(this));
     // OnMouseOut
     btn.onMouseOut.push(function() {
-        if (btn.isDown) btnInfoState.text = "down";
+        if (btn.isMouseDown) btnInfoState.text = "down";
         else btnInfoState.text = "normal";
     }.bind(this));
     // OnMouseDown
@@ -50,7 +50,7 @@ function CreateGUI() {
     }.bind(this));
     // OnMouseUp
     btn.onMouseUp.push(function(x, y, button) {
-        if (btn.isOver) {
+        if (btn.isMouseOver) {
             btnInfoState.text = "hover";
             btnTimesClicked++;
             btnInfoTimesClicked.text = "clicked " + btnTimesClicked + " times";
@@ -73,12 +73,12 @@ function CreateGUI() {
     ////////////////
     // OnMouseIn
     checkbox.onMouseIn.push(function(x, y) {
-        if (checkbox.isDown) checkboxInfoState.text = "down hover";
+        if (checkbox.isMouseDown) checkboxInfoState.text = "down hover";
         else checkboxInfoState.text = "hover";
     }.bind(this));
     // OnMouseOut
     checkbox.onMouseOut.push(function() {
-        if (checkbox.isDown) checkboxInfoState.text = "down";
+        if (checkbox.isMouseDown) checkboxInfoState.text = "down";
         else checkboxInfoState.text = "normal";
     }.bind(this));
     // OnMouseDown
@@ -87,7 +87,7 @@ function CreateGUI() {
     }.bind(this));
     // OnMouseUp
     checkbox.onMouseUp.push(function(x, y, button) {
-        if (checkbox.isOver) {
+        if (checkbox.isMouseOver) {
             checkboxInfoState.text = "hover";
         }
         else checkboxInfoState.text = "normal";

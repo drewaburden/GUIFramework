@@ -45,6 +45,7 @@ var canvas = null;
 var gui = null;
 var fps = 30;
 var unitTesting = false;
+var preventNextDefaultKeyPressAction = false;
 //////////
 // Init //
 //////////
@@ -58,8 +59,8 @@ function Init() {
 	canvas.addEventListener('mouseup',   	MouseEvent.bind(null, OnMouseUp), false);	
 	canvas.addEventListener('mousemove',   	MouseEvent.bind(null, OnMouseMove), false);
     canvas.addEventListener('keydown',      KeyEvent.bind(null, OnKeyDown), false); 
-    canvas.addEventListener('keyup',        KeyEvent.bind(null, OnKeyUp), false);   
-    canvas.addEventListener('keypress',     KeyEvent.bind(null, OnKeyPress), false);
+    canvas.addEventListener('keyup',        KeyEvent.bind(null, OnKeyUp), false);
+    canvas.addEventListener('keypress',     KeyEvent.bind(null, OnKeyPress), false); 
     canvas.focus(); // Focus the canvas for key input
 
     setInterval(Update, 1000/fps.validate(Number)); // Start Update loop
@@ -89,24 +90,26 @@ function MouseEvent(handler, ev) {
 function OnMouseDown(x, y, button) { if (gui) gui.OnMouseDown(x, y, button); }
 function OnMouseUp(x, y, button) { if (gui) gui.OnMouseUp(x, y, button); }
 function OnMouseMove(x, y) { if (gui) gui.OnMouseMove(x, y); }
-function KeyEvent(handler, ev) {
-    if (CapturedKeyCodes.indexOf(ev.keyCode) >= 0) ev.preventDefault();
-    handler(ev.keyCode, ev);
+function KeyEvent(handler, ev) { handler(ev); }
+function OnKeyDown(ev) {
+    if (CapturedKeys.indexOf(ev.keyCode) >= 0) preventNextDefaultKeyPressAction = true;
+    //if (gui) gui.OnKeyDown(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
 }
-function OnKeyDown(key, ev) {
-    var codeIndex = ASCIIKeyCodes.indexOf(key);
-    if (codeIndex >= 0) {
-        if (ev.shiftKey)
-            console.log(ASCIIShiftCharacters[codeIndex]);
-        else 
-            console.log(ASCIICharacters[codeIndex]);
+function OnKeyUp(ev) {
+    //if (CapturedKeys.indexOf(ev.keyCode) >= 0) ev.preventDefault();
+    //if (gui) gui.OnKeyUp(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
+}
+function OnKeyPress(ev) {
+    if (preventNextDefaultKeyPressAction) {
+        ev.preventDefault();
+        preventNextDefaultKeyPressAction = false;
     }
-    if (gui) gui.OnKeyDown(key);
+    if (ev.which && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
+        console.log(ev.which + " " + String.fromCharCode(ev.which));
+        //if (gui) gui.OnKeyPress(ev.which, ev.shiftKey, ev.altKey, ev.ctrlKey);
+    }
 }
-function OnKeyUp(key) { if (gui) gui.OnKeyUp(key); }
-function OnKeyPress(key, ev) {
-    if (gui) gui.OnKeyPress(key);
-}
+
 /////////////
 // Drawing //
 /////////////

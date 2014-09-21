@@ -9,198 +9,111 @@
 // ================================================================================================
 
 /**
- * @class
- * @param {number} keyCode
- * @param {string} char=''
- */
-function Key(keyCode, char='') {
-	this.keyCode = keyCode.validate(Number);
-	this.char = char.validate(String);
-}
-
-/**
- * Array defining the possible keys Textboxes will accept input from
+ * Array defining the keys and their key codes that can have their input processed.
  * @readonly
  * @enum {Key}
  */
-const ASCII = {
-	SPACE: new Key(32, ' '),
-
-	GRAVE: new Key(96, '`'),
-	ACCENT: this.GRAVE,
-	TILDE: new Key(126, '~'),
-
-	ONE: new Key(49, '1'),
-	EXCLAMATIONMARK: new Key(33, '!'),
-
-	TWO: new Key(50, '2'),
-	AT: new Key(64, '@'),
-
-	THREE: new Key(51, '3'),
-	POUND: new Key(35, '#'),
-	HASH: this.POUND,
-
-	FOUR: new Key(52, '4'),
-	DOLLAR: new Key(36, '$'),
-
-	FIVE: new Key(53, '5'),
-	PERCENT: new Key(37, '%'),
-	
-	SIX: new Key(54, '6'),
-	CARET: new Key(94, '^'),
-
-	SEVEN: new Key(55, '7'),
-	AMPERSAND: new Key(38, '&'),
-	
-	EIGHT: new Key(56, '8'),
-	ASTERISK: new Key(42, '*'),
-	
-	NINE: new Key(57, '9'),
-	PAREN_OPEN: new Key(40, '('),
-
-	ZERO: new Key(48, '0'),
-	PAREN_CLOSE: new Key(41, ')'),
-
-	DASH: new Key(45, '-'),
-	HYPHEN: this.DASH,
-	UNDERSCORE: new Key(95, '_'),
-	
-	EQUALS: new Key(61, '='),
-	PLUS: new Key(43, '+'),
-	
-	A_UPPER: new Key(65, 'A'),
-	B_UPPER: new Key(66, 'B'),
-	C_UPPER: new Key(67, 'C'),
-	D_UPPER: new Key(68, 'D'),
-	E_UPPER: new Key(69, 'E'),
-	F_UPPER: new Key(70, 'F'),
-	G_UPPER: new Key(71, 'G'),
-	H_UPPER: new Key(72, 'H'),
-	I_UPPER: new Key(73, 'I'),
-	J_UPPER: new Key(74, 'J'),
-	K_UPPER: new Key(75, 'K'),
-	L_UPPER: new Key(76, 'L'),
-	M_UPPER: new Key(77, 'M'),
-	N_UPPER: new Key(78, 'N'),
-	O_UPPER: new Key(79, 'O'),
-	P_UPPER: new Key(80, 'P'),
-	Q_UPPER: new Key(81, 'Q'),
-	R_UPPER: new Key(82, 'R'),
-	S_UPPER: new Key(83, 'S'),
-	T_UPPER: new Key(84, 'T'),
-	U_UPPER: new Key(85, 'U'),
-	V_UPPER: new Key(86, 'V'),
-	W_UPPER: new Key(87, 'W'),
-	X_UPPER: new Key(88, 'X'),
-	Y_UPPER: new Key(89, 'Y'),
-	Z_UPPER: new Key(90, 'Z'),
-
-	A_LOWER: new Key(97, 'a'),
-	B_LOWER: new Key(98, 'b'),
-	C_LOWER: new Key(99, 'c'),
-	D_LOWER: new Key(100, 'd'),
-	E_LOWER: new Key(101, 'e'),
-	F_LOWER: new Key(102, 'f'),
-	G_LOWER: new Key(103, 'g'),
-	H_LOWER: new Key(104, 'h'),
-	I_LOWER: new Key(105, 'i'),
-	J_LOWER: new Key(106, 'j'),
-	K_LOWER: new Key(107, 'k'),
-	L_LOWER: new Key(108, 'l'),
-	M_LOWER: new Key(109, 'm'),
-	N_LOWER: new Key(110, 'n'),
-	O_LOWER: new Key(111, 'o'),
-	P_LOWER: new Key(112, 'p'),
-	Q_LOWER: new Key(113, 'q'),
-	R_LOWER: new Key(114, 'r'),
-	S_LOWER: new Key(115, 's'),
-	T_LOWER: new Key(116, 't'),
-	U_LOWER: new Key(117, 'u'),
-	V_LOWER: new Key(118, 'v'),
-	W_LOWER: new Key(119, 'w'),
-	X_LOWER: new Key(120, 'x'),
-	Y_LOWER: new Key(121, 'y'),
-	Z_LOWER: new Key(122, 'z'),
-
-	BRACKET_OPEN: new Key(91, '['),
-	CURLY_OPEN: new Key(123, '{'),
-
-	BRACKET_CLOSE: new Key(93, ']'),
-	CURLY_CLOSE: new Key(125, '}'),
-
-	VERTICALBAR: new Key(124, '|'),
-	ABSVALUE: this.VERTICALBAR,
-	BACKSLASH: new Key(92, '\\'),
-
-	SEMICOLON: new Key(59, ';'),
-	COLON: new Key(58, ':'),
-	
-	COMMA: new Key(44, ','),
-	LESSTHAN: new Key(60, '<'),
-	
-	PERIOD: new Key(46, '.'),
-	GREATERTHAN: new Key(62, '>'),
-
-	SINGLEQUOTE: new Key(39, '\''),
-	APOSTROPHE: this.SINGLEQUOTE,
-	DOUBLEQUOTE: new Key(34, '"'),
-	QUOTE: this.DOUBLEQUOTE,
-
-	FORWARDSLASH: new Key(47, '/'),
-	QUESTIONMARK: new Key(63, '?'),
-
-	getKey: function(which) {
-		which.validate(Number);
-		for (let key in Keys) {
-			if (Keys[key] instanceof Key && Keys[key].keyCode == which)
-				return Keys[key];
-		}
-		return null;
-	}
+const Key = {
+	VK_SPACE: 			32,
+	VK_0: 				48, 
+	VK_1: 				49, 
+	VK_2: 				50, 
+	VK_3: 				51, 
+	VK_4: 				52, 
+	VK_5: 				53, 
+	VK_6: 				54, 
+	VK_7: 				55, 
+	VK_8: 				56, 
+	VK_9: 				57, 
+	VK_SEMICOLON: 		59, 
+	VK_EQUALS: 			61, 
+	VK_A: 				65, 
+	VK_B: 				66, 
+	VK_C: 				67, 
+	VK_D: 				68, 
+	VK_E: 				69, 
+	VK_F: 				70, 
+	VK_G: 				71, 
+	VK_H: 				72, 
+	VK_I: 				73, 
+	VK_J: 				74, 
+	VK_K: 				75, 
+	VK_L: 				76, 
+	VK_M: 				77, 
+	VK_N: 				78, 
+	VK_O: 				79, 
+	VK_P: 				80, 
+	VK_Q: 				81, 
+	VK_R: 				82, 
+	VK_S: 				83, 
+	VK_T: 				84, 
+	VK_U: 				85, 
+	VK_V: 				86, 
+	VK_W: 				87, 
+	VK_X: 				88, 
+	VK_Y: 				89, 
+	VK_Z: 				90, 
+	VK_NUM0: 			96, 
+	VK_NUM1: 			97, 
+	VK_NUM2: 			98, 
+	VK_NUM3: 			99, 
+	VK_NUM4: 			100, 
+	VK_NUM5: 			101, 
+	VK_NUM6: 			102, 
+	VK_NUM7: 			103, 
+	VK_NUM8: 			104, 
+	VK_NUM9: 			105, 
+	VK_MULTIPLY: 		106, 
+	VK_ADD: 			107, 
+	VK_SUBTRACT: 		109, 
+	VK_DECIMAL: 		110, 
+	VK_DIVIDE: 			111, 
+	VK_HYPHEN: 			173, 
+	VK_COMMA: 			188, 
+	VK_PERIOD: 			190, 
+	VK_SLASH_FORWARD: 	191, 
+	VK_GRAVE: 			192, 
+	VK_BRACKET_OPEN: 	219, 
+	VK_SLASH_BACK: 		220, 
+	VK_BRACKET_CLOSE: 	221, 
+	VK_APOSTROPHE: 		222, 
+	VK_BACKSPACE: 		8,
+	VK_TAB: 			9,
+	VK_ENTER: 			13,
+	VK_PAGE_UP: 		33,
+	VK_PAGE_DOWN: 		34,
+	VK_END: 			35,
+	VK_HOME: 			36,
+	VK_ARROW_UP: 		37,
+	VK_ARROW_RIGHT: 	38,
+	VK_ARROW_DOWN: 		39,
+	VK_ARROW_LEFT: 		40,
+	VK_INSERT: 			45,
+	VK_DELETE: 			46
 };
-Object.freeze(ASCII); // Make the enum immutable
-
-/**
- * Array defining the possible keys to handle presses from, other than ASCII input
- * @readonly
- * @enum {Key}
- */
-const Keys = {
-	BACKSPACE: new Key(8),
-	TAB: new Key(9),
-	ENTER: new Key(13),
-	RETURN: this.ENTER,
-	INSERT: new Key(45),
-	DELETE: new Key(46),
-	HOME: new Key(36),
-	END: new Key(35),
-	PAGEUP: new Key(33),
-	PAGEDOWN: new Key(34),
-	ARROW_LEFT: new Key(37),
-	ARROW_UP: new Key(38),
-	ARROW_RIGHT: new Key(39),
-	ARROW_DOWN: new Key(40)
-};
-Object.freeze(Keys); // Make the enum immutable
+Object.freeze(Key); // Make the enum immutable
 
 /**
  * Array defining the keys for which to prevent the default key action when they are pressed.
  * @readonly
  * @type {Key[]}
  */
-const CapturedKeyCodes = [
-	Keys.BACKSPACE,
-	Keys.TAB,
-	Keys.ENTER,
-	Keys.PAGE_UP,
-	Keys.PAGE_DOWN,
-	Keys.END,
-	Keys.HOME,
-	Keys.ARROW_UP,
-	Keys.ARROW_RIGHT,
-	Keys.ARROW_DOWN,
-	Keys.ARROW_LEFT,
-	Keys.INSERT,
-	Keys.DELETE
+const CapturedKeys = [
+	Key.VK_BACKSPACE,
+	Key.VK_TAB,
+	Key.VK_ENTER,
+	Key.VK_PAGE_UP,
+	Key.VK_PAGE_DOWN,
+	Key.VK_END,
+	Key.VK_HOME,
+	Key.VK_ARROW_UP,
+	Key.VK_ARROW_RIGHT,
+	Key.VK_ARROW_DOWN,
+	Key.VK_ARROW_LEFT,
+	Key.VK_INSERT,
+	Key.VK_DELETE,
+	Key.VK_SLASH_FORWARD,
+	Key.VK_APOSTROPHE,
+	Key.VK_SPACE
 ];
-Object.freeze(CapturedKeyCodes); // Make the array immutable
+Object.freeze(CapturedKeys); // Make the array immutable

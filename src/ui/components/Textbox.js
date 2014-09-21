@@ -62,12 +62,20 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 		document.body.style.cursor = 'auto';
 	}.bind(this));
 	// OnMouseDown
-	this.onMouseDown.push(function(x, y, button) {
+	this.onMouseDown.push(function(x, y, button) {}.bind(this));
+	// OnMouseUp
+	this.onMouseUp.push(function(x, y, button) {}.bind(this));
+	// OnKeyDown
+	this.onKeyDown.push(function(key, shift, alt, ctrl) {
+		
+	}.bind(this));
+	// OnKeyUp
+	this.onKeyUp.push(function(key, shift, alt, ctrl) {
 
 	}.bind(this));
-	// OnMouseUp
-	this.onMouseUp.push(function(x, y, button) {
-
+	// OnKeyPress
+	this.onKeyPress.push(function(key) {
+		
 	}.bind(this));
 }
 
@@ -93,6 +101,7 @@ Textbox.prototype.Draw = function(context) {
 	context.rect(this.x+this.textBoundsPadding, this.y+this.textBoundsPadding,
 		this.width-this.textBoundsPadding*2, this.height-this.textBoundsPadding*2); // Define the mask area
 	context.clip(); // Apply the mask
+	this.label.text = this.text;
 	this.label.Draw(context); // Draw the label within the mask
 	context.restore(); // Disable the mask for future drawing
 

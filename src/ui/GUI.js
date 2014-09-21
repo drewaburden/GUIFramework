@@ -130,27 +130,33 @@ GUI.prototype.ClearFocus = function() {
  * [OnKeyDown description]
  * @param {[type]} key [description]
  */
-GUI.prototype.OnKeyDown = function(key) {
-	//key.validate(Number);
-	if (this.focusedComponent) return this.focusedComponent.KeyDown(key);
+GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
+	if (this.focusedComponent
+		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable))
+		return this.focusedComponent.OnKeyDown(key, shift, alt, ctrl);
 	else return false;
 }
 /**
  * [OnKeyUp description]
  * @param {[type]} key [description]
  */
-GUI.prototype.OnKeyUp = function(key) {
-	//key.validate(Number);
-	if (this.focusedComponent) return this.focusedComponent.KeyUp(key);
+GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
+	if (this.focusedComponent
+		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable))
+		return this.focusedComponent.OnKeyUp(key, shift, alt, ctrl);
 	else return false;
 }
 /**
  * [OnKeyPress description]
  * @param {[type]} key [description]
  */
-GUI.prototype.OnKeyPress = function(key) {
-	//key.validate(Number);
-	if (this.focusedComponent) return this.focusedComponent.KeyUp(key);
+GUI.prototype.OnKeyPress = function(key, shift, alt, ctrl) {
+	if (this.focusedComponent
+		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable)) {
+		let realKey = ASCII.getKey(key);
+		if (realKey)
+			return this.focusedComponent.OnKeyPress(char);
+	}
 	else return false;
 }
 /**
