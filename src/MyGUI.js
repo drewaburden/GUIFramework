@@ -5,92 +5,108 @@
 //  Created by: 	Drew Burden (drewaburden@gmail.com)
 //
 //      This serves as the entry point for the app that demonstrates the GUIFramework.
-//      It creates a GUI for the framework to render.
+//      It creates a GUI for the framework to render and handle.
 //
 // ================================================================================================
 
 function main() {
-    Init();
+    GUIFramework.Init();
 
     let gui = CreateGUI();
-    SetGUI(gui);
+    GUIFramework.SetGUI(gui);
 }
 
 function CreateGUI() {
 	// Create GUI
 	let gui = new GUI(400, 400, 'rgb(19, 19, 19)', true);
 
-    /////////
-    // btn //
-    /////////
-    let btn = new Button("test button", 25, 25, 125, 40, true);
-    let btnTimesClicked = 0;
-    let btnInfoState = new Label("normal", 
-        125+btn.x+btn.width/2, btn.y+btn.height/2, 100, btn.height,
+    ////////////
+    // button //
+    ////////////
+    let button = new Button("test button", 25, 25, 120, 35, true);
+    let buttonTimesClicked = 0;
+    let buttonFocusedState = new Label("unfocused", 
+        150+button.x+button.width/2, button.y+button.height/2, 100, button.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let btnInfoTimesClicked = new Label("clicked " + btnTimesClicked + " times",
-        85+btnInfoState.x, btnInfoState.y, 150, btnInfoState.height,
+    let buttonMouseState = new Label("normal", 
+        115+buttonFocusedState.x, button.y+button.height/2, 100, button.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    ////////////////
-    // btn events //
-    ////////////////
+    let buttonInfoTimesClicked = new Label("clicked " + buttonTimesClicked + " times",
+        85+buttonMouseState.x, buttonMouseState.y, 150, buttonMouseState.height,
+        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    ///////////////////
+    // button events //
+    ///////////////////
+    // OnFocusChange
+    button.AddListener(Component.OnFocusChange, function(focused) {
+        if (focused) buttonFocusedState.text = "focused";
+        else buttonFocusedState.text = "unfocused";
+    }.bind(this));
     // OnMouseIn
-    btn.onMouseIn.push(function(x, y) {
-        if (btn.isMouseDown) btnInfoState.text = "down hover";
-        else btnInfoState.text = "hover";
+    button.onMouseIn.push(function(x, y) {
+        if (button.isMouseDown) buttonMouseState.text = "down hover";
+        else buttonMouseState.text = "hover";
     }.bind(this));
     // OnMouseOut
-    btn.onMouseOut.push(function() {
-        if (btn.isMouseDown) btnInfoState.text = "down";
-        else btnInfoState.text = "normal";
+    button.onMouseOut.push(function(x, y) {
+        if (button.isMouseDown) buttonMouseState.text = "down";
+        else buttonMouseState.text = "normal";
     }.bind(this));
     // OnMouseDown
-    btn.onMouseDown.push(function(x, y, button) {
-        btnInfoState.text = "down hover";
+    button.onMouseDown.push(function(x, y, mouseButton) {
+        buttonMouseState.text = "down hover";
     }.bind(this));
     // OnMouseUp
-    btn.onMouseUp.push(function(x, y, button) {
-        if (btn.isMouseOver) {
-            btnInfoState.text = "hover";
-            btnTimesClicked++;
-            btnInfoTimesClicked.text = "clicked " + btnTimesClicked + " times";
+    button.onMouseUp.push(function(x, y, mouseButton) {
+        if (button.isMouseOver) {
+            buttonMouseState.text = "hover";
+            buttonTimesClicked++;
+            buttonInfoTimesClicked.text = "clicked " + buttonTimesClicked + " times";
         }
-        else btnInfoState.text = "normal";
+        else buttonMouseState.text = "normal";
     }.bind(this));
 
     //////////////
     // checkbox //
     //////////////
-    let checkbox = new Checkbox("test checkbox", 25, 100, 125, 24);
-    let checkboxInfoState = new Label("normal", 
-        125+checkbox.x+checkbox.width/2, checkbox.y+checkbox.height/2, 100, checkbox.height,
+    let checkbox = new Checkbox("test checkbox", 25, 100, 120, 24);
+    let checkboxFocusedState = new Label("unfocused", 
+        150+checkbox.x+checkbox.width/2, checkbox.y+checkbox.height/2, 100, checkbox.height,
+        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    let checkboxMouseState = new Label("normal", 
+        115+checkboxFocusedState.x, checkbox.y+checkbox.height/2, 100, checkbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
     let checkboxInfoChecked = new Label("checked: " + checkbox.checked,
-        85+checkboxInfoState.x, checkboxInfoState.y, 150, checkboxInfoState.height,
+        85+checkboxMouseState.x, checkboxMouseState.y, 150, checkboxMouseState.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    ////////////////
-    // btn events //
-    ////////////////
+    /////////////////////
+    // checkbox events //
+    /////////////////////
+    // OnFocusChange
+    checkbox.AddListener(Component.OnFocusChange, function(focused) {
+        if (focused) checkboxFocusedState.text = "focused";
+        else checkboxFocusedState.text = "unfocused";
+    }.bind(this));
     // OnMouseIn
     checkbox.onMouseIn.push(function(x, y) {
-        if (checkbox.isMouseDown) checkboxInfoState.text = "down hover";
-        else checkboxInfoState.text = "hover";
+        if (checkbox.isMouseDown) checkboxMouseState.text = "down hover";
+        else checkboxMouseState.text = "hover";
     }.bind(this));
     // OnMouseOut
-    checkbox.onMouseOut.push(function() {
-        if (checkbox.isMouseDown) checkboxInfoState.text = "down";
-        else checkboxInfoState.text = "normal";
+    checkbox.onMouseOut.push(function(x, y) {
+        if (checkbox.isMouseDown) checkboxMouseState.text = "down";
+        else checkboxMouseState.text = "normal";
     }.bind(this));
     // OnMouseDown
-    checkbox.onMouseDown.push(function(x, y, button) {
-        checkboxInfoState.text = "down hover";
+    checkbox.onMouseDown.push(function(x, y, mouseButton) {
+        checkboxMouseState.text = "down hover";
     }.bind(this));
     // OnMouseUp
-    checkbox.onMouseUp.push(function(x, y, button) {
+    checkbox.onMouseUp.push(function(x, y, mouseButton) {
         if (checkbox.isMouseOver) {
-            checkboxInfoState.text = "hover";
+            checkboxMouseState.text = "hover";
         }
-        else checkboxInfoState.text = "normal";
+        else checkboxMouseState.text = "normal";
     }.bind(this));
     // CheckedChange
     checkbox.onCheckedChange.push(function(checked) {
@@ -100,16 +116,68 @@ function CreateGUI() {
     /////////////
     // textbox //
     /////////////
-    let textbox = new Textbox("test textbox test textbox test textbox", 25, 160, 125, 30, true);
+    let textbox = new Textbox("test textbox test textbox test textbox", 25, 160, 120, 30, true);
+    let textboxFocusedState = new Label("unfocused", 
+        150+textbox.x+textbox.width/2, textbox.y+textbox.height/2, 100, textbox.height,
+        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    let textboxMouseState = new Label("normal", 
+        115+textboxFocusedState.x, textbox.y+textbox.height/2, 100, textbox.height,
+        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    let textboxKeyState = new Label("normal",
+        85+textboxMouseState.x, textboxMouseState.y, 150, textboxMouseState.height,
+        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    ////////////////////
+    // textbox events //
+    ////////////////////
+    // OnFocusChange
+    textbox.AddListener(Component.OnFocusChange, function(focused) {
+        if (focused) textboxFocusedState.text = "focused";
+        else textboxFocusedState.text = "unfocused";
+    }.bind(this));
+    // OnMouseIn
+    textbox.onMouseIn.push(function(x, y) {
+        if (textbox.isMouseDown) textboxMouseState.text = "down hover";
+        else textboxMouseState.text = "hover";
+    }.bind(this));
+    // OnMouseOut
+    textbox.onMouseOut.push(function(x, y) {
+        if (textbox.isMouseDown) textboxMouseState.text = "down";
+        else textboxMouseState.text = "normal";
+    }.bind(this));
+    // OnMouseDown
+    textbox.onMouseDown.push(function(x, y, mouseButton) {
+        textboxMouseState.text = "down hover";
+    }.bind(this));
+    // OnMouseUp
+    textbox.onMouseUp.push(function(x, y, mouseButton) {
+        if (textbox.isMouseOver) {
+            textboxMouseState.text = "hover";
+        }
+        else textboxMouseState.text = "normal";
+    }.bind(this));
+    // OnKeyDown
+    textbox.onKeyDown.push(function(key, shift, alt, ctrl) {
+        textboxKeyState.text = "key down";
+    }.bind(this));
+    // OnKeyUp
+    textbox.onKeyUp.push(function(key, shift, alt, ctrl) {
+        if (!shift && !alt && !ctrl) textboxKeyState.text = "normal";
+    }.bind(this));
+    
 
     // Add components to GUI
-    gui.components.push(btn);
+    gui.components.push(button);
     gui.components.push(checkbox);
-    gui.components.push(btnInfoState);
-    gui.components.push(btnInfoTimesClicked);
-    gui.components.push(checkboxInfoState);
+    gui.components.push(buttonFocusedState);
+    gui.components.push(buttonMouseState);
+    gui.components.push(buttonInfoTimesClicked);
+    gui.components.push(checkboxFocusedState);
+    gui.components.push(checkboxMouseState);
     gui.components.push(checkboxInfoChecked);
     gui.components.push(textbox);
+    gui.components.push(textboxFocusedState);
+    gui.components.push(textboxMouseState);
+    gui.components.push(textboxKeyState);
 
 	return gui;
 }

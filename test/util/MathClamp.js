@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  test\helpers\MathClamp.js
+//  test\util\MathClamp.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -8,7 +8,7 @@
 //
 // ================================================================================================
 
-QUnit.module("Helpers.MathClamp");
+QUnit.module("Util.MathClamp");
 
 // Math.clamp
 QUnit.test("Math.clamp(value, min, max)", function(assert) {

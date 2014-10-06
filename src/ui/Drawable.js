@@ -4,12 +4,11 @@
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
-//      Abstract definition of an object that can be drawn on the canvas.
-//
 // ================================================================================================
 
+Drawable.inherits(Destroyable);
 /**
- * 
+ * Abstract definition of an object that can be drawn on the canvas.
  * @abstract
  * @class
  * @extends {Destroyable}
@@ -19,23 +18,36 @@
  * @param {number} [height=0]
  * @param {boolean} [visible=true]
  */
-Drawable.inherits(Destroyable);
 function Drawable(x=0, y=0, width=0, height=0, visible=false) {
 	Drawable.parent.constructor.call(this); // Super constructor
 
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {number} */
-	this.x = Math.abs(x.validate(Number));
-	/** @type {number} */
-	this.y = Math.abs(y.validate(Number));
-	/** @type {number} */
-	this.width = Math.abs(width.validate(Number));
-	/** @type {number} */
-	this.height = Math.abs(height.validate(Number));
-	/** @type {boolean} */ 
-	this.visible = visible.validate(Boolean);
+	/** @protected 
+	 *  @var {number} */
+	this.x;
+	/** @protected 
+	 *  @var {number} */
+	this.y;
+	/** @protected 
+	 *  @var {number} */
+	this.width;
+	/** @protected 
+	 *  @var {number} */
+	this.height;
+	/** @protected 
+	 *  @var {boolean} */
+	this.visible;
+
+	////////////////////
+	// Initialization //
+	////////////////////
+	this.SetX(x);
+	this.SetY(y);
+	this.SetWidth(width);
+	this.SetHeight(height);
+	this.SetVisible(visible);
 }
 
 ///////////////
@@ -51,3 +63,47 @@ Drawable.prototype.Draw = function(context) {
 	context.validate(CanvasRenderingContext2D);
 	if (!this.visible) return;
 }
+
+//////////////////////////
+// Mutators & Accessors //
+//////////////////////////
+/**
+ * @param {number} x - New x-position for the Drawable.
+ */
+Drawable.prototype.SetX = function(x) { this.x = x.validate(Number); }
+/**
+ * @returns {number} This Drawable's current x-position.
+ */
+Drawable.prototype.GetX = function() { return this.x; }
+/**
+ * @param {number} y - New y-position for the Drawable.
+ */
+Drawable.prototype.SetY = function(y) { this.y = y.validate(Number); }
+/**
+ * @returns {number} This Drawable's current y-position.
+ */
+Drawable.prototype.GetY = function() { return this.y; }
+/**
+ * @param {number} width - New width for the Drawable. Must be non-negative.
+ */
+Drawable.prototype.SetWidth = function(width) { this.width = Math.abs(width.validate(Number)); }
+/**
+ * @returns {number} This Drawable's current width.
+ */
+Drawable.prototype.GetWidth = function() { return this.width; }
+/**
+ * @param {number} height - New height for the Drawable. Must be non-negative.
+ */
+Drawable.prototype.SetHeight = function(height) { this.height = Math.abs(height.validate(Number)); }
+/**
+ * @returns {number} This Drawable's current height.
+ */
+Drawable.prototype.GetHeight = function() { return this.height; }
+/**
+ * @param {boolean} visible - Set visibility state for the Drawable.
+ */
+Drawable.prototype.SetVisible = function(visible) { this.visible = visible.validate(Boolean); }
+/**
+ * @returns {boolean} This Drawable's current visibility state.
+ */
+Drawable.prototype.IsVisible = function() { return this.visible; }

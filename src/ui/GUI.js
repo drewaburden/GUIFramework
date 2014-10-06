@@ -4,19 +4,19 @@
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
-//      Abstract definition of a UI component.
+//      Definition of a UI.
 //
 // ================================================================================================
 
+GUI.inherits(Drawable);
 /**
  * @class
  * @extends {Drawable}
  * @param {number} [width=0]
  * @param {number} [height=0]
  * @param {string|CanvasGradient|CanvasPattern} [bgStyle='rgb(255, 255, 255)'] - GUI background style.
- * @param {boolean} [fullscreen=false] - Whether or not the canvas should take up the whole page.
+ * @param {boolean} [fullscreen=true] - Whether or not the canvas should take up the whole page.
  */
-GUI.inherits(Drawable);
 function GUI(width=0, height=0, bgStyle='white', fullscreen=true) {
 	GUI.parent.constructor.call(this, 0, 0, width, height, true); // Super constructor
 
@@ -41,7 +41,7 @@ function GUI(width=0, height=0, bgStyle='white', fullscreen=true) {
 	////////////////////
 	// Initialization //
 	////////////////////
-	this.OnResize(width.validate(Number), height.validate(Number), fullscreen.validate(Boolean));
+	this.Resize(width.validate(Number), height.validate(Number), fullscreen.validate(Boolean));
 }
 
 ///////////////
@@ -85,12 +85,12 @@ GUI.prototype.Draw = function(context) {
 /**
  * @param {number} width
  * @param {number} height
- * @param {boolean} fullscreen
+ * @param {boolean} [fullscreen=this.fullscreen]
  */
-GUI.prototype.OnResize = function(width, height, fullscreen) {
+GUI.prototype.Resize = function(width=undefined, height=undefined, fullscreen=this.fullscreen) {
 	width.validate(Number); height.validate(Number); fullscreen.validate(Boolean);
 	this.fullscreen = fullscreen;
-	if (this.fullscreen) {
+	if (this.fullscreen === true) {
 		this.width = document.body.clientWidth;
 		this.height = document.body.clientHeight;
 	}
@@ -127,8 +127,10 @@ GUI.prototype.ClearFocus = function() {
 	this.focusedComponent = null;
 }
 /**
- * [OnKeyDown description]
- * @param {[type]} key [description]
+ * @param {number} key
+ * @param {boolean} shift
+ * @param {boolean} alt
+ * @param {boolean} ctrl
  */
 GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
 	if (this.focusedComponent
@@ -137,8 +139,10 @@ GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
 	else return false;
 }
 /**
- * [OnKeyUp description]
- * @param {[type]} key [description]
+ * @param {number} key
+ * @param {boolean} shift
+ * @param {boolean} alt
+ * @param {boolean} ctrl
  */
 GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
 	if (this.focusedComponent
@@ -147,23 +151,19 @@ GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
 	else return false;
 }
 /**
- * [OnKeyPress description]
- * @param {[type]} key [description]
+ * @param {number} key
  */
-GUI.prototype.OnKeyPress = function(key, shift, alt, ctrl) {
+GUI.prototype.OnKeyPress = function(key) {
 	if (this.focusedComponent
 		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable)) {
-		let realKey = ASCII.getKey(key);
-		if (realKey)
-			return this.focusedComponent.OnKeyPress(char);
+		return this.focusedComponent.OnKeyPress(key);
 	}
 	else return false;
 }
 /**
- * [OnMouseDown description]
- * @param {[type]} x      [description]
- * @param {[type]} y      [description]
- * @param {[type]} button [description]
+ * @param {number} x
+ * @param {number} y
+ * @param {number} button
  */
 GUI.prototype.OnMouseDown = function(x, y, button) {
 	// Loop backwards so topmost components get priority
@@ -186,15 +186,15 @@ GUI.prototype.OnMouseDown = function(x, y, button) {
     this.ClearFocus();
 }
 /**
- * [OnMouseUp description]
- * @param {[type]} button [description]
+ * @param {number} x
+ * @param {number} y
+ * @param {number} button
  */
 GUI.prototype.OnMouseUp = function(x, y, button) {
 	button.validate(Number);
 	if (this.focusedComponent) this.focusedComponent.OnMouseUp(x, y, button);
 }
 /**
- * [OnMouseMove description]
  * @param {number} x
  * @param {number} y
  */

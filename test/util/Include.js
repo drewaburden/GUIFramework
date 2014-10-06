@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  test\helpers\Include.js
+//  test\util\Include.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -8,7 +8,7 @@
 //
 // ================================================================================================
 
-QUnit.module("Helpers.Include");
+QUnit.module("Util.Include");
 
 // include
 QUnit.test("include(file)", function(assert) {

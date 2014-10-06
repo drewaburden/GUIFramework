@@ -8,6 +8,7 @@
 //
 // ================================================================================================
 
+Img.inherits(Component);
 /**
  * Img
  * @class
@@ -21,8 +22,7 @@
  * @example
  * var image = new Img("assets/bg.png", 5, 5, 150, 50, true);
  */
-Img.inherits(Component);
-function Img(imgsrc, x=0, y=0, width, height, visible=true) {
+function Img(imgsrc=undefined, x=0, y=0, width=0, height=0, visible=true) {
 	Img.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 
 	this.focusable = false;

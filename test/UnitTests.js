@@ -14,8 +14,8 @@ QUnit.test("Init", function() {
 	unitTesting = true;
 	// We have to load everything else here, because otherwise QUnit will load and execute 
 	// the other testing modules before running GUIFramework.js, causing the tests to fail.
-	include('src/helpers/Class.js');
-	include('src/helpers/MathClamp.js');
+	include('src/util/Class.js');
+	include('src/util/MathClamp.js');
 	include('src/ui/mixins/Mixins.js');
 	//include('src/ui/mixins/Hoverable.js');
 	include('src/ui/Destroyable.js');
@@ -29,9 +29,9 @@ QUnit.test("Init", function() {
 });
 
 QUnit.test("Unit test modules", function() {
-	include('test/helpers/Include.js');
-	include('test/helpers/Class.js');
-	include('test/helpers/MathClamp.js');
+	include('test/util/Include.js');
+	include('test/util/Class.js');
+	include('test/util/MathClamp.js');
 	include('test/GUIFramework.js');
 	include('test/ui/mixins/Mixins.js');
 	//include('test/ui/mixins/Hoverable.js');

@@ -61,7 +61,7 @@ Mixins.Hoverable = {
 		// Notify all listeners
 		for (let listener of this.onMouseOut) {
 			listener.validate(Function);
-			listener();
+			listener(x, y);
 		}
 	}
 };

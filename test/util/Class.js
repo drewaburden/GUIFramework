@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  test\helpers\Class.js
+//  test\util\Class.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -8,7 +8,7 @@
 //
 // ================================================================================================
 
-QUnit.module("Helpers.Class");
+QUnit.module("Util.Class");
 
 // Object.validate
 QUnit.test("Object.validate(type)", function(assert) {

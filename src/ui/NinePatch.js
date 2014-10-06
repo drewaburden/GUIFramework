@@ -9,6 +9,7 @@
 //
 // ================================================================================================
 
+NinePatch.inherits(Drawable);
 /**
  * NinePatch
  * @class
@@ -27,8 +28,7 @@
  * @example
  * var ninePatchImage = new NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
  */
-NinePatch.inherits(Drawable);
-function NinePatch(imgsrc, x=0, y=0, width=0, height=0, leftMargin=0, topMargin=0, rightMargin=0,
+function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, topMargin=0, rightMargin=0,
 	bottomMargin=0, fillCenter=true, visible=true) {
 	NinePatch.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 

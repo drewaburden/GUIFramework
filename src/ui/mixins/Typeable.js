@@ -16,11 +16,19 @@ var InputType = {
 	ANY: 						'',
 	NUMERIC: 					'0123456789',
 	ALPHABETIC: 				'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
-	ALPHANUMERIC: 				this.ALPHABETIC + this.NUMERIC,
-	ALPHANUMERIC_PUNCTUATION: 	this.ALPHANUMERIC + ',.?!-\'"',
-	EMAIL: 						this.ALPHANUMERIC + '@.!#$%&\'*+-/=?_^`{|}~'
+	ALPHANUMERIC: 				'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+	ALPHANUMERIC_PUNCTUATION: 	'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.?!-\'"',
+	EMAIL: 						'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@.!#$%&\'*+-/=?_^`{|}~'
 };
 Object.freeze(InputType); // Make the enum immutable
+/**
+ * 
+ * @enum {string}
+ */
+var IgnoredKeyPressChars = {
+	DEFAULT: 	'\b\n\r\t'
+};
+Object.freeze(IgnoredKeyPressChars); // Make the enum immutable
 
 /**
  *
@@ -32,6 +40,8 @@ Mixins.Typeable = {
 	///////////////
 	/** @type {InputType} */
 	inputType: InputType.ANY,
+	/** @type {InputType} */
+	ignoredKeyPressChars: IgnoredKeyPressChars.DEFAULT,
 	/** @type {boolean} */
 	isKeyDown: false,
 	/** @type {boolean} */
@@ -50,7 +60,7 @@ Mixins.Typeable = {
 	 * @type {function[]}
 	 */
 	onKeyUp: [],
-	/** Event functions called when the mixed class receives the onKeyUp event from the GUIFramework.
+	/** Event functions called when the mixed class receives the onKeyPress event from the GUIFramework.
 	 * @type {function[]}
 	 */
 	onKeyPress: [],
@@ -60,11 +70,12 @@ Mixins.Typeable = {
 	///////////////
 	/**
 	 * Receiver of the onKeyDown event from the GUIFramework.
-	 * This is called when GUIFramework determines that the mouse is clicked within the bounds of the
-	 * component (prioritized by render order).
-	 * @param {number} x
-	 * @param {number} y
-	 * @param {number} button - The mouse button that was pressed.
+	 * This is called when GUIFramework determines that a key is down on a focused component with
+	 * this Mixin.
+	 * @param {number} key
+	 * @param {boolean} shift
+	 * @param {boolean} alt
+	 * @param {boolean} ctrl
 	 */
 	OnKeyDown: function(key, shift, alt, ctrl) {
 		this.isKeyDown = true;
@@ -76,12 +87,15 @@ Mixins.Typeable = {
 	},
 	/**
 	 * Receiver of the onKeyUp event from the GUIFramework.
-	 * This is called when GUIFramework determines that a mouse button has been released.
-	 * @param {number} x
-	 * @param {number} y
+	 * This is called when GUIFramework determines that a key has been released.
+	 * @param {number} key
+	 * @param {boolean} shift
+	 * @param {boolean} alt
+	 * @param {boolean} ctrl
+	 * 
 	 */
 	OnKeyUp: function(key, shift, alt, ctrl) {
-		// If the left mouse button was released and the click actually started on this component
+		// If the key was released and the KeyDown actually started on this component
 		if (this.isKeyDown) {
 			this.isKeyDown = false;
 			// Notify all listeners
@@ -92,15 +106,15 @@ Mixins.Typeable = {
 		}
 	},
 	/**
-	 * Receiver of the onKeyUp event from the GUIFramework.
-	 * This is called when GUIFramework determines that a mouse button has been released.
-	 * @param {number} x
-	 * @param {number} y
+	 * Receiver of the onKeyPress event from the GUIFramework.
+	 * This is called when GUIFramework determines that a key has been pressed. Mostly used
+	 * for simple text input detection.
+	 * @param {number} key
 	 */
 	OnKeyPress: function(key) {
-		// If the left mouse button was released and the click actually started on this component
-		if (this.isKeyDown) {
-			this.isKeyDown = false;
+		if (this.ignoredKeyPressChars.toString().indexOf(String.fromCharCode(key)) == -1
+				&& (this.inputType === InputType.ANY
+					|| this.inputType.toString().indexOf(String.fromCharCode(key)) != -1)) {
 			// Notify all listeners
 			for (let listener of this.onKeyPress) {
 				listener.validate(Function);

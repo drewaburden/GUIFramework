@@ -8,6 +8,7 @@
 //
 // ================================================================================================
 
+Component.inherits(Drawable);
 /**
  * 
  * @abstract
@@ -19,9 +20,9 @@
  * @param {number} [height=0]
  * @param {boolean} [visible=true]
  */
-Component.inherits(Drawable);
 function Component(x=0, y=0, width=0, height=0, visible=true) {
 	Component.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
+	Mixins.Mix(Component, Mixins.Observable);
 
 	///////////////
 	// Variables //
@@ -32,7 +33,10 @@ function Component(x=0, y=0, width=0, height=0, visible=true) {
 	this.focusable = true;
 	/** @type {boolean} */
 	this.focused = false;
+
+	this.listeners = {};
 }
+
 ///////////////
 // Functions //
 ///////////////
@@ -66,8 +70,25 @@ Component.prototype.MouseIntersects = function(mouseX, mouseY) {
 		return true;
 	else return false;
 }
+
+//////////////////////////
+// Mutators & Accessors //
+//////////////////////////
+/**
+ * @param {boolean} focusable - 
+ */
+Component.prototype.SetFocusable = function(focusable) { this.focusable = focusable.validate(Boolean); }
+/**
+ * @returns {boolean}
+ */
+Component.prototype.IsFocusable = function() {
+	if (!this.focusable || !this.enabled || !this.visible) return false;
+	else return true;
+}
+
 /**
  * @param {boolean} focused
+ * @fires Component#OnFocusChange
  */
 Component.prototype.SetFocused = function(focused) {
 	focused.validate(Boolean);
@@ -75,11 +96,56 @@ Component.prototype.SetFocused = function(focused) {
 	if (!this.visible) return;
 
 	this.focused = focused;
+
+	this.Fire(Component.OnFocusChange, this.focused);
 }
 /**
- * 	 
+ * @returns {boolean}
  */
-Component.prototype.IsFocusable = function() {
-	if (!this.focusable || !this.enabled || !this.visible) return false;
-	else return true;
+Component.prototype.IsFocused = function() { return this.focused; }
+
+////////////
+// Events //
+////////////
+// Delegates
+/**
+ * Event triggered when the component's focus state changes.
+ * @event Component#OnFocusChange
+ */
+Component.OnFocusChange = 'OnFocusChange';
+
+// Functions
+/**
+ * 
+ * @param {string} event
+ * @param {...*} params
+ */
+Component.prototype.Fire = function(event, ...params) {
+	if (this.listeners[event]) {
+		for (let callback of this.listeners[event]) {
+			callback.apply(this, params);
+		}
+	}
+}
+/**
+ *
+ * @param {string} event
+ * @param {function} callback
+ */
+Component.prototype.AddListener = function(event, callback) {
+	event.validate(String); callback.validate(Function);
+	if (!this.listeners[event]) this.listeners[event] = [];
+	this.listeners[event].push(callback);
+}
+/**
+ * 
+ * @param {string} event
+ * @param {function} callback 
+ */
+Component.prototype.RemoveListener = function(event, callback) {
+	event.validate(String); callback.validate(Function);
+	let index = this.listeners[event].indexOf(callback);
+	if (index > 0) {
+		this.listeners[event].splice(index, 1);
+	}
 }

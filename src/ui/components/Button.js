@@ -8,6 +8,7 @@
 //
 // ================================================================================================
 
+Button.inherits(Component);
 /**
  * 
  * @class
@@ -21,7 +22,6 @@
  * @example
  * var btn = new Button("text", 5, 5, 150, 50, true);
  */
-Button.inherits(Component);
 function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
 	Button.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 
@@ -42,7 +42,7 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.labelStyle_down = '#B1E77D';
 	this.labelStyle_down_hover = '#D5F3B7';
     this.label = new Label(this.text, this.x+this.width/2, this.y+this.height/2,
-    	this.width, this.height, this.labelStyle_normal, "normal 14px Share Tech Mono", TextHAlign.CENTER, TextVAlign.MIDDLE, true);
+    	this.width, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.CENTER, TextVAlign.MIDDLE, true);
 
     /////////////////////
     // Internal events //

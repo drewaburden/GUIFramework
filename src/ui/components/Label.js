@@ -4,10 +4,11 @@
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
-//      Defines a text label Component that allows positioning and styling of text.
+//      Defines a text label Component that allows positioning, styling, and rendering of text.
 //
 // ================================================================================================
 
+Label.inherits(Component);
 /**
  * 
  * @class
@@ -33,7 +34,6 @@
  * @example
  * var label = new Label("text", 5, 5, 150, 50, 'black', 'bold 18px Arial', TextHAlign.CENTER, TextVAlign.MIDDLE, true);
  */
-Label.inherits(Component);
 function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal 12px Arial',
 	textHAlignment=TextHAlign.START, textVAlignment=TextVAlign.ALPHABETIC, visible=true) {
 	Label.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
@@ -41,17 +41,30 @@ function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {string} */
-	this.text = text.validate(String);
-	/** @type {string|CanvasGradient|CanvasPattern} */
-	this.style = style.validate(String, CanvasGradient, CanvasPattern);
-	/** @type {number} */
-	this.font = font.validate(String);
-	// Validate these as strings, because that's actually what they are behind the scenes
-	/** @type {TextHAlign|string} */
-	this.textHAlignment = textHAlignment.validate(String);
-	/** @type {TextVAlign|string} */
-	this.textVAlignment = textVAlignment.validate(String);
+	/** @protected 
+	 *  @var {string} */
+	this.text;
+	/** @protected 
+	 *  @var {string|CanvasGradient|CanvasPattern} */
+	this.style;
+	/** @protected 
+	 *  @var {string} */
+	this.font;
+	/** @protected 
+	 *  @var {TextHAlign|string} */
+	this.textHAlignment;
+	/** @protected 
+	 *  @var {TextVAlign|string} */
+	this.textVAlignment;
+
+	////////////////////
+	// Initialization //
+	////////////////////
+	this.SetText(text);
+	this.SetStyle(style);
+	this.SetFont(font);
+	this.SetHAlignment(textHAlignment);
+	this.SetVAlignment(textVAlignment);
 }
 
 ///////////////
@@ -64,14 +77,70 @@ function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal
  */
 Label.prototype.Draw = function(context) {
 	Label.parent.Draw.apply(this, arguments); // super function call
-	
 	if (!this.visible) return;
 	
+	// Set text font and style
     context.font = this.font;
     context.fillStyle = this.style;
-	// Set canvas text alignment accordingly
+	// Set text alignments
 	context.textAlign = this.textHAlignment;
 	context.textBaseline = this.textVAlignment;
+	// If a width was specified, constrain the text to render within that width.
+	// Otherwise, allow the text to take as much space as necessary.
 	if (this.width > 0) context.fillText(this.text, this.x, this.y, this.width);
 	else context.fillText(this.text, this.x, this.y);
 }
+
+//////////////////////////
+// Mutators & Accessors //
+//////////////////////////
+/**
+ * @param {string} text - New text for the Label to display.
+ */
+Label.prototype.SetText = function(text) { this.text = text.validate(String); }
+/**
+ * @returns {string} This Label's display text.
+ */
+Label.prototype.GetText = function() { return this.text; }
+
+/**
+ * @param {string|CanvasGradient|CanvasPattern} style - New style to apply to the Label's display text.
+ */
+Label.prototype.SetStyle = function(style) { this.style = style.validate(String, CanvasGradient, CanvasPattern); }
+/**
+ * @returns {string|CanvasGradient|CanvasPattern} This Label's current display style.
+ */
+Label.prototype.GetStyle = function() { return this.style; }
+
+/**
+ * @param {string} text - New font to apply to the Label's display text.
+ */
+Label.prototype.SetFont = function(font) { this.font = font.validate(String); }
+/**
+ * @returns {string} The font of this Label's display text.
+ */
+Label.prototype.GetFont = function() { return this.font; }
+
+/**
+ * @param {TextHAlign|string} textHAlignment - New horizontal alignment to apply to the Label's display text.
+ */
+Label.prototype.SetHAlignment = function(textHAlignment) {
+	// Validate as string, because that's actually what it is behind the scenes
+	this.textHAlignment = textHAlignment.validate(String);
+}
+/**
+ * @returns {TextHAlign|string} The horizontal alignment of this Label's display text.
+ */
+Label.prototype.GetHAlignment = function() { return this.textHAlignment; }
+
+/**
+ * @param {TextVAlign|string} textVAlignment - New vertical alignment to apply to the Label's display text.
+ */
+Label.prototype.SetVAlignment = function(textVAlignment) {
+	// Validate as string, because that's actually what it is behind the scenes
+	this.textVAlignment = textVAlignment.validate(String);
+}
+/**
+ * @returns {TextVAlign|string} The vertical alignment of this Label's display text.
+ */
+Label.prototype.GetVAlignment = function() { return this.textVAlignment; }

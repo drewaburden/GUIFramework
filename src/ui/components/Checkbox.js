@@ -8,6 +8,7 @@
 //
 // ================================================================================================
 
+Checkbox.inherits(Component);
 /**
  * 
  * @class
@@ -22,7 +23,6 @@
  * @example
  * var checkbox = new Checkbox("text", 5, 5, 150, 50, true, true);
  */
-Checkbox.inherits(Component);
 function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
 	Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 

@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  helpers\MathClamp.js
+//  util\MathClamp.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //

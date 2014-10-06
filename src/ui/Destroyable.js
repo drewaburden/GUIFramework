@@ -4,12 +4,10 @@
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
-//      Abstract definition of an object that can be destroyed (uninitialized).
-//
 // ================================================================================================
 
 /**
- * 
+ * Abstract definition of an object that can be destroyed (uninitialized).
  * @abstract
  * @class
  */
