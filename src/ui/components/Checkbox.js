@@ -123,12 +123,13 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
  * @param {CanvasRenderingContext2D} context
  */
 Checkbox.prototype.Draw = function(context) {
-	Checkbox.parent.Draw.apply(this, arguments); // super function call
-
-	if (!this.visible) return;
+	let keepDrawing = Checkbox.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
 
 	this.image.Draw(context);
 	this.label.Draw(context);
+
+	return true;
 }
 /**
  * Sets the checked state of the Checkbox to the specified boolean value.

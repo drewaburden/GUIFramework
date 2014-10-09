@@ -19,13 +19,14 @@ Util.include('src/ui/mixins/Observable.js');
 Util.include('src/ui/mixins/Hoverable.js');
 Util.include('src/ui/mixins/Clickable.js');
 Util.include('src/ui/mixins/Typeable.js');
-Util.include('src/ui/Keys.js');
+Util.include('src/ui/input/Input.js');
+Util.include('src/ui/input/Keys.js');
 Util.include('src/ui/Destroyable.js');
 Util.include('src/ui/Drawable.js');
 Util.include('src/ui/NinePatch.js');
 Util.include('src/ui/TextAlign.js');
 Util.include('src/ui/components/Component.js');
-Util.include('src/ui/components/Image.js');
+Util.include('src/ui/components/Img.js');
 Util.include('src/ui/components/Label.js');
 Util.include('src/ui/components/Button.js');
 Util.include('src/ui/components/Checkbox.js');
@@ -36,7 +37,7 @@ Util.include('src/ui/GUI.js');
 /**
  * @namespace
  */
-var GUIFramework = GUIFramework || {};
+var UI = UI || {};
 
 ///////////////
 // Variables //
@@ -45,12 +46,12 @@ var GUIFramework = GUIFramework || {};
  * How many times per second GUIFramework should update what is displayed on the screen.
  * @type {number}
  */
-GUIFramework.fps = 30;
-GUIFramework.context = null;
-GUIFramework.canvas = null;
-GUIFramework.gui = null;
-GUIFramework.unitTesting = false;
-GUIFramework.preventNextDefaultKeyPressAction = false;
+UI.fps = 30;
+UI.context = null;
+UI.canvas = null;
+UI.gui = null;
+UI.unitTesting = false;
+UI.preventNextDefaultKeyPressAction = false;
 
 ///////////////
 // Functions //
@@ -59,36 +60,36 @@ GUIFramework.preventNextDefaultKeyPressAction = false;
  * Initialize the GUIFramework. This must be done before any other parts of GUIFramework will
  * work properly.
  */
-GUIFramework.Init = function() {
+UI.Init = function() {
     // Set up context references
-    GUIFramework.canvas = document.getElementById("maincanvas");
-    GUIFramework.context = GUIFramework.canvas.getContext("2d");
+    UI.canvas = document.getElementById("maincanvas");
+    UI.context = UI.canvas.getContext("2d");
 
     // Set up raw canvas events
-	GUIFramework.canvas.addEventListener('mousedown', GUIFramework.MouseEvent.bind(null, GUIFramework.OnMouseDown), false);	
-	GUIFramework.canvas.addEventListener('mouseup',   GUIFramework.MouseEvent.bind(null, GUIFramework.OnMouseUp), false);	
-	GUIFramework.canvas.addEventListener('mousemove', GUIFramework.MouseEvent.bind(null, GUIFramework.OnMouseMove), false);
-    GUIFramework.canvas.addEventListener('keydown',   GUIFramework.KeyEvent.bind(null, GUIFramework.OnKeyDown), false); 
-    GUIFramework.canvas.addEventListener('keyup',     GUIFramework.KeyEvent.bind(null, GUIFramework.OnKeyUp), false);
-    GUIFramework.canvas.addEventListener('keypress',  GUIFramework.KeyEvent.bind(null, GUIFramework.OnKeyPress), false); 
-    window.addEventListener('resize',       GUIFramework.OnResize, false);
-    GUIFramework.canvas.focus(); // Focus the canvas for key input
+	UI.canvas.addEventListener('mousedown', UI.MouseEvent.bind(null, UI.OnMouseDown), false);	
+	UI.canvas.addEventListener('mouseup',   UI.MouseEvent.bind(null, UI.OnMouseUp), false);	
+	UI.canvas.addEventListener('mousemove', UI.MouseEvent.bind(null, UI.OnMouseMove), false);
+    UI.canvas.addEventListener('keydown',   UI.KeyEvent.bind(null, UI.OnKeyDown), false); 
+    UI.canvas.addEventListener('keyup',     UI.KeyEvent.bind(null, UI.OnKeyUp), false);
+    UI.canvas.addEventListener('keypress',  UI.KeyEvent.bind(null, UI.OnKeyPress), false); 
+    window.addEventListener('resize',       UI.OnResize, false);
+    UI.canvas.focus(); // Focus the canvas for key input
 
-    setInterval(GUIFramework.Update, 1000/GUIFramework.fps.validate(Number)); // Start Update loop
+    setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
 }
 /**
  * Provides GUIFramework with a GUI to render.
  * @param {GUI} gui
  */
-GUIFramework.SetGUI = function(gui) {
-    GUIFramework.gui = gui.validate(GUI);
-    GUIFramework.OnResize();
+UI.SetGUI = function(gui) {
+    UI.gui = gui.validate(GUI);
+    UI.OnResize();
 }
 
 ////////////
 // Events //
 ////////////
-GUIFramework.MouseEvent = function(handler, ev) { 
+UI.MouseEvent = function(handler, ev) { 
 	let x, y;
 	// Get the mouse position relative to the canvas element.
 	if (ev.layerX || ev.layerX == 0) { // Firefox
@@ -100,49 +101,49 @@ GUIFramework.MouseEvent = function(handler, ev) {
 	}
 	handler(x, y, ev.button);
 }
-GUIFramework.OnMouseDown = function(x, y, button) { if (GUIFramework.gui) GUIFramework.gui.OnMouseDown(x, y, button); }
-GUIFramework.OnMouseUp = function(x, y, button) { if (GUIFramework.gui) GUIFramework.gui.OnMouseUp(x, y, button); }
-GUIFramework.OnMouseMove = function(x, y) { if (GUIFramework.gui) GUIFramework.gui.OnMouseMove(x, y); }
-GUIFramework.KeyEvent = function(handler, ev) { handler(ev); }
-GUIFramework.OnKeyDown = function(ev) {
-    if (CapturedKeys.indexOf(ev.keyCode) >= 0) GUIFramework.preventNextDefaultKeyPressAction = true;
-    if (GUIFramework.gui) GUIFramework.gui.OnKeyDown(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
+UI.OnMouseDown = function(x, y, button) { if (UI.gui) UI.gui.OnMouseDown(x, y, button); }
+UI.OnMouseUp = function(x, y, button) { if (UI.gui) UI.gui.OnMouseUp(x, y, button); }
+UI.OnMouseMove = function(x, y) { if (UI.gui) UI.gui.OnMouseMove(x, y); }
+UI.KeyEvent = function(handler, ev) { handler(ev); }
+UI.OnKeyDown = function(ev) {
+    if (Input.CapturedKeys.indexOf(ev.keyCode) >= 0) UI.preventNextDefaultKeyPressAction = true;
+    if (UI.gui) UI.gui.OnKeyDown(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
 }
-GUIFramework.OnKeyUp = function(ev) {
-    if (GUIFramework.gui) GUIFramework.gui.OnKeyUp(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
+UI.OnKeyUp = function(ev) {
+    if (UI.gui) UI.gui.OnKeyUp(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
 }
-GUIFramework.OnKeyPress = function(ev) {
-    if (GUIFramework.preventNextDefaultKeyPressAction) {
+UI.OnKeyPress = function(ev) {
+    if (UI.preventNextDefaultKeyPressAction) {
         ev.preventDefault();
-        preventNextDefaultKeyPressAction = false;
+        UI.preventNextDefaultKeyPressAction = false;
     }
     if (ev.which && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
-        if (GUIFramework.gui) GUIFramework.gui.OnKeyPress(ev.which, ev.shiftKey, ev.altKey, ev.ctrlKey);
+        if (UI.gui) UI.gui.OnKeyPress(ev.which, ev.shiftKey, ev.altKey, ev.ctrlKey);
     }
 }
-GUIFramework.OnResize = function(ev) {
-    GUIFramework.canvas.width = document.body.clientWidth;
-    GUIFramework.canvas.height = document.body.clientHeight;
-    if (GUIFramework.gui) GUIFramework.gui.Resize(document.body.clientWidth, document.body.clientHeight, true);
+UI.OnResize = function(ev) {
+    UI.canvas.width = document.body.clientWidth;
+    UI.canvas.height = document.body.clientHeight;
+    if (UI.gui) UI.gui.Resize(document.body.clientWidth, document.body.clientHeight, true);
 }
 
 /////////////
 // Drawing //
 /////////////
-GUIFramework.Update = function() {
-    if (GUIFramework.gui && GUIFramework.context) {
-        GUIFramework.DrawRect(0, 0, GUIFramework.gui.width, GUIFramework.gui.height, true, GUIFramework.gui.bgStyle); // Clear the canvas
+UI.Update = function() {
+    if (UI.gui && UI.context) {
+        UI.DrawRect(0, 0, UI.gui.width, UI.gui.height, true, UI.gui.bgStyle); // Clear the canvas
         
-        GUIFramework.gui.Draw(GUIFramework.context);
+        UI.gui.Draw(UI.context);
     }
 }
-GUIFramework.DrawRect = function(x, y, width, height, filled, style) {
+UI.DrawRect = function(x, y, width, height, filled, style) {
     if (filled) {
-        GUIFramework.context.fillStyle = style;
-        GUIFramework.context.fillRect(x, y, width, height);
+        UI.context.fillStyle = style;
+        UI.context.fillRect(x, y, width, height);
     }
     else {
-        GUIFramework.context.strokeStyle = style;
-        GUIFramework.context.strokeRect(x, y, width, height);
+        UI.context.strokeStyle = style;
+        UI.context.strokeRect(x, y, width, height);
     }
 }

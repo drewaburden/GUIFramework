@@ -68,9 +68,8 @@ GUI.prototype.Destroy = function() {
  * @param {CanvasRenderingContext2D} context
  */
 GUI.prototype.Draw = function(context) {
-	GUI.parent.Draw.apply(this, arguments); // super function call
-
-	if (!this.visible) return;
+	let keepDrawing = GUI.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing) return false;
 
 	for (let index = 0; index < this.components.length; ++index) {
 		let component = this.components[index];
@@ -81,6 +80,8 @@ GUI.prototype.Draw = function(context) {
 			this.components.splice(this.components.indexOf(component), 1);
 		}
 	}
+
+	return true;
 }
 /**
  * @param {number} width

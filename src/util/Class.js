@@ -67,7 +67,7 @@ Object.prototype.validate = function(...types) {
 	}
 
 	if (passed) {
-		// Returning "this" allows us to call this function during variable declarations
+		// Returning "this" allows us to call this function within variable assignments.
 		// If "this" is a boolean, make sure we actualy return a boolean and not an object. Otherwise, things
 		// like:
 		// if (someBool) {}  or

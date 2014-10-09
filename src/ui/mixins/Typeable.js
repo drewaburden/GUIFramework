@@ -72,7 +72,7 @@ Mixins.Typeable = {
 	 * Receiver of the onKeyDown event from the GUIFramework.
 	 * This is called when GUIFramework determines that a key is down on a focused component with
 	 * this Mixin.
-	 * @param {number} key
+	 * @param {Input.Key} key
 	 * @param {boolean} shift
 	 * @param {boolean} alt
 	 * @param {boolean} ctrl
@@ -88,7 +88,7 @@ Mixins.Typeable = {
 	/**
 	 * Receiver of the onKeyUp event from the GUIFramework.
 	 * This is called when GUIFramework determines that a key has been released.
-	 * @param {number} key
+	 * @param {Input.Key} key
 	 * @param {boolean} shift
 	 * @param {boolean} alt
 	 * @param {boolean} ctrl
@@ -109,7 +109,7 @@ Mixins.Typeable = {
 	 * Receiver of the onKeyPress event from the GUIFramework.
 	 * This is called when GUIFramework determines that a key has been pressed. Mostly used
 	 * for simple text input detection.
-	 * @param {number} key
+	 * @param {Input.Key} key
 	 */
 	OnKeyPress: function(key) {
 		if (this.ignoredKeyPressChars.toString().indexOf(String.fromCharCode(key)) == -1

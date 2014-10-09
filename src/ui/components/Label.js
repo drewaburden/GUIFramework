@@ -76,8 +76,8 @@ function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal
  * @param {CanvasRenderingContext2D} context
  */
 Label.prototype.Draw = function(context) {
-	Label.parent.Draw.apply(this, arguments); // super function call
-	if (!this.visible) return;
+	let keepDrawing = Label.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || this.height <= 0) return false;
 	
 	// Set text font and style
     context.font = this.font;
@@ -89,6 +89,8 @@ Label.prototype.Draw = function(context) {
 	// Otherwise, allow the text to take as much space as necessary.
 	if (this.width > 0) context.fillText(this.text, this.x, this.y, this.width);
 	else context.fillText(this.text, this.x, this.y);
+
+	return true;
 }
 
 //////////////////////////

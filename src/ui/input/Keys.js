@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  ui\Keys.js
+//  ui\input\Keys.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -11,9 +11,9 @@
 /**
  * Array defining the keys and their key codes that can have their input processed.
  * @readonly
- * @enum {Key}
+ * @enum {Input.Key}
  */
-const Key = {
+Input.Key = {
 	VK_SPACE: 			32,
 	VK_0: 				48, 
 	VK_1: 				49, 
@@ -91,29 +91,29 @@ const Key = {
 	VK_INSERT: 			45,
 	VK_DELETE: 			46
 };
-Object.freeze(Key); // Make the enum immutable
+Object.freeze(Input.Key); // Make the enum immutable
 
 /**
  * Array defining the keys for which to prevent the default key action when they are pressed.
  * @readonly
- * @type {Key[]}
+ * @type {Input.Key[]}
  */
-const CapturedKeys = [
-	Key.VK_BACKSPACE,
-	Key.VK_TAB,
-	Key.VK_ENTER,
-	Key.VK_PAGE_UP,
-	Key.VK_PAGE_DOWN,
-	Key.VK_END,
-	Key.VK_HOME,
-	Key.VK_ARROW_UP,
-	Key.VK_ARROW_RIGHT,
-	Key.VK_ARROW_DOWN,
-	Key.VK_ARROW_LEFT,
-	Key.VK_INSERT,
-	Key.VK_DELETE,
-	Key.VK_SLASH_FORWARD,
-	Key.VK_APOSTROPHE,
-	Key.VK_SPACE
+Input.CapturedKeys = [
+	Input.Key.VK_BACKSPACE,
+	Input.Key.VK_TAB,
+	Input.Key.VK_ENTER,
+	Input.Key.VK_PAGE_UP,
+	Input.Key.VK_PAGE_DOWN,
+	Input.Key.VK_END,
+	Input.Key.VK_HOME,
+	Input.Key.VK_ARROW_UP,
+	Input.Key.VK_ARROW_RIGHT,
+	Input.Key.VK_ARROW_DOWN,
+	Input.Key.VK_ARROW_LEFT,
+	Input.Key.VK_INSERT,
+	Input.Key.VK_DELETE,
+	Input.Key.VK_SLASH_FORWARD,
+	Input.Key.VK_APOSTROPHE,
+	Input.Key.VK_SPACE
 ];
-Object.freeze(CapturedKeys); // Make the array immutable
+Object.freeze(Input.CapturedKeys); // Make the array immutable

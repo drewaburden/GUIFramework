@@ -106,9 +106,8 @@ NinePatch.prototype.Destroy = function() {
  * @param {CanvasRenderingContext2D} context
  */
 NinePatch.prototype.Draw = function(context) {
-	NinePatch.parent.Draw.apply(this, arguments); // super function call
-
-	if (!this.loaded || !this.visible) return;
+	let keepDrawing = NinePatch.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || !this.loaded || this.width <= 0 || this.height <= 0) return false;
 
 	// Re-scope the variables so we don't have to use the "this" keyword so much throughout this function
 	let image = this.image,
@@ -167,4 +166,6 @@ NinePatch.prototype.Draw = function(context) {
 	context.drawImage(image,
 		0, image.height-bottomMargin, leftMargin, bottomMargin,
 		x, y+height-bottomMargin, leftMargin, bottomMargin);
+
+	return true;
 }

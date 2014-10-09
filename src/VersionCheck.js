@@ -4,7 +4,9 @@
 //
 //  Created by: 	Drew Burden (drewaburden@gmail.com)
 //  
-//  
+//      Check the user's browser and version to make sure it's compatible. If it's not one of the
+//      browser/version combos that is known to work, display a warning message, and try to keep
+//      going with the app anyways.
 //
 // ================================================================================================
 

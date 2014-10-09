@@ -53,7 +53,7 @@ Component.prototype.Destroy = function() {
  * @param {CanvasRenderingContext2D} context
  */
 Component.prototype.Draw = function(context) {
-	Component.parent.Draw.apply(this, arguments); // super function call
+	return Component.parent.Draw.apply(this, arguments); // super function call
 }
 /**
  * @abstract

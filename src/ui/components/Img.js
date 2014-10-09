@@ -22,7 +22,7 @@ Img.inherits(Component);
  * @example
  * var image = new Img("assets/bg.png", 5, 5, 150, 50, true);
  */
-function Img(imgsrc=undefined, x=0, y=0, width=0, height=0, visible=true) {
+function Img(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visible=true) {
 	Img.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 
 	this.focusable = false;
@@ -89,9 +89,10 @@ Img.prototype.Destroy = function() {
  * @param {CanvasRenderingContext2D} context
  */
 Img.prototype.Draw = function(context) {
-	Img.parent.Draw.apply(this, arguments); // super function call
-
-	if (!this.loaded || !this.visible) return;
+	let keepDrawing = Img.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || !this.loaded || this.width <= 0 || this.height <= 0) return false;
 
 	context.drawImage(this.image, this.x, this.y, this.width, this.height);
+
+	return true;
 }

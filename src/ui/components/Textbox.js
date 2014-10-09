@@ -68,19 +68,19 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
 	// OnKeyDown
 	this.onKeyDown.push(function(key, shift, alt, ctrl) {
 		switch (key) {
-			case Key.VK_ARROW_RIGHT:
+			case Input.Key.VK_ARROW_RIGHT:
 				this.caret.Advance(); break;
-			case Key.VK_ARROW_LEFT:
+			case Input.Key.VK_ARROW_LEFT:
 				this.caret.Retreat(); break;
-			case Key.VK_HOME:
-			case Key.VK_ARROW_UP:
+			case Input.Key.VK_HOME:
+			case Input.Key.VK_ARROW_UP:
 				this.caret.Home(); break;
-			case Key.VK_END:
-			case Key.VK_ARROW_DOWN:
+			case Input.Key.VK_END:
+			case Input.Key.VK_ARROW_DOWN:
 				this.caret.End(); break;
-			case Key.VK_BACKSPACE:
+			case Input.Key.VK_BACKSPACE:
 				this.Backspace(); break;
-			case Key.VK_DELETE:
+			case Input.Key.VK_DELETE:
 				this.Delete(); break;
 		}
 	}.bind(this));
@@ -111,9 +111,8 @@ function Textbox(text="", x=0, y=0, width=0, height=0, visible=true) {
  * @param {CanvasRenderingContext2D} context
  */
 Textbox.prototype.Draw = function(context) {
-	Textbox.parent.Draw.apply(this, arguments); // super function call
-
-	if (!this.visible) return;
+	let keepDrawing = Textbox.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
 
 	this.background.Draw(context);
 
@@ -135,6 +134,8 @@ Textbox.prototype.Draw = function(context) {
 	// text measurments before the context is restored.
 	this.caret.Draw(context);
 	context.restore(); // Disable the mask for future drawing
+
+	return true;
 }
 /**
  * @override

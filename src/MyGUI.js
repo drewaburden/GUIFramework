@@ -9,13 +9,15 @@
 //
 // ================================================================================================
 
+// Web app entry-point
 function main() {
-    GUIFramework.Init();
+    UI.Init();
 
     let gui = CreateGUI();
-    GUIFramework.SetGUI(gui);
+    UI.SetGUI(gui);
 }
 
+// Create the GUI and its Components
 function CreateGUI() {
 	// Create GUI
 	let gui = new GUI(400, 400, 'rgb(19, 19, 19)', true);

@@ -54,8 +54,8 @@ function Caret(label=undefined, style='white', offsetX=undefined, offsetY=undefi
  * @param {CanvasRenderingContext2D} context
  */
 Caret.prototype.Draw = function(context) {
-	Caret.parent.Draw.apply(this, arguments); // super function call
-	if (!this.blinking || !this.visible) return;
+	let keepDrawing = Caret.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || !this.blinking || this.height <= 0) return false;
 
 	// Determine the position of the caret within the bounds of the corresponding Label
 	if (this.position == 0) this.x = 0;
@@ -71,6 +71,8 @@ Caret.prototype.Draw = function(context) {
 	context.moveTo(Math.round(this.label.x+this.x)+this.offsetX, Math.round(this.label.y+this.y)+this.offsetY);
 	context.lineTo(Math.round(this.label.x+this.x)+this.offsetX, Math.round(this.label.y+this.y+this.height)+this.offsetY);
 	context.stroke();
+
+	return true;
 }
 
 /**

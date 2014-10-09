@@ -58,10 +58,13 @@ function Drawable(x=0, y=0, width=0, height=0, visible=false) {
  * @abstract
  * @override
  * @param {CanvasRenderingContext2D} context
+ * @returns {boolean} Whether or not to continue drawing this component.
  */
 Drawable.prototype.Draw = function(context) {
 	context.validate(CanvasRenderingContext2D);
-	if (!this.visible) return;
+	if (!this.visible) return false;
+
+	return true;
 }
 
 //////////////////////////

@@ -92,10 +92,11 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
  * @param {CanvasRenderingContext2D} context
  */
 Button.prototype.Draw = function(context) {
-	Button.parent.Draw.apply(this, arguments); // super function call
-
-	if (!this.visible) return;
+	let keepDrawing = Button.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
 
 	this.background.Draw(context);
 	this.label.Draw(context);
+
+	return true;
 }
