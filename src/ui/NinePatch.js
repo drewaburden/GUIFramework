@@ -35,19 +35,12 @@ function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, 
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {number} */
 	this.leftMargin = Math.abs(leftMargin.validate(Number));
-	/** @type {number} */
 	this.topMargin = Math.abs(topMargin.validate(Number));
-	/** @type {number} */
 	this.rightMargin = Math.abs(rightMargin.validate(Number));
-	/** @type {number} */
 	this.bottomMargin = Math.abs(bottomMargin.validate(Number));
-	/** @type {boolean} */
 	this.fillCenter = fillCenter.validate(Boolean);	
-	/** @type {Image} */
 	this.image = new Image();
-	/** @type {boolean} */
 	this.loaded = false;
 
 	/////////////////////

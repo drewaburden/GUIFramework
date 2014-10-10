@@ -9,12 +9,17 @@
 // ================================================================================================
 
 /**
+ * The built-in Javascript Function class.
+ * @external Function
+ * @see {@link http://www.w3schools.com/js/js_functions.asp Function}
+ */
+
+/**
  * Allows class inheritance. The calling class will inherit the specified parent class's
- * properties. This also adds a new property to the child class called parent. This lets
+ * properties. This also adds a new property to the child class called `parent`. This lets
  * the child class access the parent's original properties; i.e., like the super keyword
  * in Java.
- * @public
- * @static
+ * @function external:Function#inherits
  * @param  {function} parent - The class that the calling class will inherit from.
  * @example
  * function ParentClass() {
@@ -35,9 +40,13 @@ Function.prototype.inherits = function(parent) {
 }
 
 /**
- * 
- * @public
- * @static
+ * The built-in Javascript Object class.
+ * @external Object
+ * @see {@link http://www.w3schools.com/js/js_object_definition.asp Object}
+ */
+
+/**
+ * @function external:Object#validate
  * @param  {...*} types - The types the object is allowed to be
  * @return {this}
  * @example

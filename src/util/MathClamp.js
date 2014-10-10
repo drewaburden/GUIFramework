@@ -20,7 +20,7 @@
  * clamp a number to a particular range.
  * @public
  * @static
- * @function external:Math#clamp
+ * @function external:Math.clamp
  * @param  {number} value
  * @param  {number} min
  * @param  {number} max

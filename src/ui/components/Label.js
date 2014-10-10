@@ -41,20 +41,10 @@ function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal
 	///////////////
 	// Variables //
 	///////////////
-	/** @protected 
-	 *  @var {string} */
 	this.text;
-	/** @protected 
-	 *  @var {string|CanvasGradient|CanvasPattern} */
 	this.style;
-	/** @protected 
-	 *  @var {string} */
 	this.font;
-	/** @protected 
-	 *  @var {TextHAlign|string} */
 	this.textHAlignment;
-	/** @protected 
-	 *  @var {TextVAlign|string} */
 	this.textVAlignment;
 
 	////////////////////

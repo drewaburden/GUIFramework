@@ -11,7 +11,7 @@
 /**
  * Array defining the keys and their key codes that can have their input processed.
  * @readonly
- * @enum {Input.Key}
+ * @enum {number}
  */
 Input.Key = {
 	VK_SPACE: 			32,

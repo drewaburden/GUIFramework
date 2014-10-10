@@ -30,9 +30,7 @@ function Img(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visi
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {Image} */
 	this.image = new Image();
-	/** @type {boolean} */
 	this.loaded = false;
 
 	/////////////////////

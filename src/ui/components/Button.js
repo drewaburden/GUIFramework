@@ -30,7 +30,6 @@ function Button(text="", x=0, y=0, width=0, height=0, visible=true) {
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {string} */
 	this.text = text.validate(String);
 	this.background_normal = new NinePatch("assets/button/button_normal.png", this.x, this.y, this.width, this.height, 14, 14, 14, 14, true);
 	this.background_hover = new NinePatch("assets/button/button_hover.png", this.x, this.y, this.width, this.height, 14, 14, 14, 14, true);

@@ -8,7 +8,6 @@
 //
 // ================================================================================================
 
-Checkbox.inherits(Component);
 /**
  * 
  * @class
@@ -23,15 +22,14 @@ Checkbox.inherits(Component);
  * @example
  * var checkbox = new Checkbox("text", 5, 5, 150, 50, true, true);
  */
-function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
-	Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
+UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
+	UI.Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 
 	Mixins.Mix(this, Mixins.Hoverable, Mixins.Clickable);
 
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {string} */
 	this.text = text.validate(String);
 	this.checked = checked.validate(Boolean);
 	this.unchecked_normal = new Img("assets/checkbox/unchecked_normal.png", this.x, this.y);
@@ -113,6 +111,7 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
 		}
 	}.bind(this));
 }
+UI.Checkbox.inherits(Component);
 
 ///////////////
 // Functions //
@@ -122,8 +121,8 @@ function Checkbox(text="", x=0, y=0, width=0, height=0, checked=true, visible=tr
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-Checkbox.prototype.Draw = function(context) {
-	let keepDrawing = Checkbox.parent.Draw.apply(this, arguments); // super function call
+UI.Checkbox.prototype.Draw = function(context) {
+	let keepDrawing = UI.Checkbox.parent.Draw.apply(this, arguments); // super function call
 	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
 
 	this.image.Draw(context);
@@ -135,7 +134,7 @@ Checkbox.prototype.Draw = function(context) {
  * Sets the checked state of the Checkbox to the specified boolean value.
  * @param {boolean} checked
  */
-Checkbox.prototype.SetChecked = function(checked) {
+UI.Checkbox.prototype.SetChecked = function(checked) {
 	checked.validate(Boolean);
 
 	// Fire event if necessary
@@ -160,6 +159,6 @@ Checkbox.prototype.SetChecked = function(checked) {
 /**
  * Toggles the checked state of the Checkbox
  */
-Checkbox.prototype.Toggle = function() {
+UI.Checkbox.prototype.Toggle = function() {
 	this.SetChecked(!this.checked);
 }

@@ -71,7 +71,7 @@ function CreateGUI() {
     //////////////
     // checkbox //
     //////////////
-    let checkbox = new Checkbox("test checkbox", 25, 100, 120, 24);
+    let checkbox = new UI.Checkbox("test checkbox", 25, 100, 120, 24);
     let checkboxFocusedState = new Label("unfocused", 
         150+checkbox.x+checkbox.width/2, checkbox.y+checkbox.height/2, 100, checkbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);

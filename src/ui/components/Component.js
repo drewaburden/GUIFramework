@@ -27,11 +27,8 @@ function Component(x=0, y=0, width=0, height=0, visible=true) {
 	///////////////
 	// Variables //
 	///////////////
-	/** @type {boolean} */
 	this.enabled = true;
-	/** @type {boolean} */
 	this.focusable = true;
-	/** @type {boolean} */
 	this.focused = false;
 
 	this.listeners = {};
@@ -56,7 +53,6 @@ Component.prototype.Draw = function(context) {
 	return Component.parent.Draw.apply(this, arguments); // super function call
 }
 /**
- * @abstract
  * @param {number} mouseX
  * @param {number} mouseY
  */

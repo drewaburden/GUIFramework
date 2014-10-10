@@ -24,20 +24,10 @@ function Drawable(x=0, y=0, width=0, height=0, visible=false) {
 	///////////////
 	// Variables //
 	///////////////
-	/** @protected 
-	 *  @var {number} */
 	this.x;
-	/** @protected 
-	 *  @var {number} */
 	this.y;
-	/** @protected 
-	 *  @var {number} */
 	this.width;
-	/** @protected 
-	 *  @var {number} */
 	this.height;
-	/** @protected 
-	 *  @var {boolean} */
 	this.visible;
 
 	////////////////////
