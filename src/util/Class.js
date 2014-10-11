@@ -37,6 +37,7 @@ Function.prototype.inherits = function(parent) {
 	child.prototype = Object.create(parent.prototype);
 	child.prototype.constructor = child;
 	child.parent = parent.prototype;
+	return this;
 }
 
 /**

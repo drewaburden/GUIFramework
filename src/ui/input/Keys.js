@@ -4,7 +4,8 @@
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
-//      
+//      Defines an enum holding keycodes and an array that states which keys should have
+//      their default actions prevented.
 //
 // ================================================================================================
 
@@ -113,6 +114,7 @@ Input.CapturedKeys = [
 	Input.Key.VK_INSERT,
 	Input.Key.VK_DELETE,
 	Input.Key.VK_SLASH_FORWARD,
+	Input.Key.VK_DIVIDE,
 	Input.Key.VK_APOSTROPHE,
 	Input.Key.VK_SPACE
 ];

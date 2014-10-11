@@ -20,27 +20,27 @@ function main() {
 // Create the GUI and its Components
 function CreateGUI() {
 	// Create GUI
-	let gui = new GUI(400, 400, 'rgb(19, 19, 19)', true);
+	let gui = new UI.GUI(400, 400, 'rgb(19, 19, 19)', true);
 
     ////////////
     // button //
     ////////////
-    let button = new Button("test button", 25, 25, 120, 35, true);
+    let button = new UI.Button("test button", 25, 25, 120, 35, true);
     let buttonTimesClicked = 0;
-    let buttonFocusedState = new Label("unfocused", 
+    let buttonFocusedState = new UI.Label("unfocused", 
         150+button.x+button.width/2, button.y+button.height/2, 100, button.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let buttonMouseState = new Label("normal", 
+    let buttonMouseState = new UI.Label("normal", 
         115+buttonFocusedState.x, button.y+button.height/2, 100, button.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let buttonInfoTimesClicked = new Label("clicked " + buttonTimesClicked + " times",
+    let buttonInfoTimesClicked = new UI.Label("clicked " + buttonTimesClicked + " times",
         85+buttonMouseState.x, buttonMouseState.y, 150, buttonMouseState.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
     ///////////////////
     // button events //
     ///////////////////
     // OnFocusChange
-    button.AddListener(Component.OnFocusChange, function(focused) {
+    button.AddListener(UI.Component.OnFocusChange, function(focused) {
         if (focused) buttonFocusedState.text = "focused";
         else buttonFocusedState.text = "unfocused";
     }.bind(this));
@@ -72,20 +72,20 @@ function CreateGUI() {
     // checkbox //
     //////////////
     let checkbox = new UI.Checkbox("test checkbox", 25, 100, 120, 24);
-    let checkboxFocusedState = new Label("unfocused", 
+    let checkboxFocusedState = new UI.Label("unfocused", 
         150+checkbox.x+checkbox.width/2, checkbox.y+checkbox.height/2, 100, checkbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let checkboxMouseState = new Label("normal", 
+    let checkboxMouseState = new UI.Label("normal", 
         115+checkboxFocusedState.x, checkbox.y+checkbox.height/2, 100, checkbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let checkboxInfoChecked = new Label("checked: " + checkbox.checked,
+    let checkboxInfoChecked = new UI.Label("checked: " + checkbox.checked,
         85+checkboxMouseState.x, checkboxMouseState.y, 150, checkboxMouseState.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
     /////////////////////
     // checkbox events //
     /////////////////////
     // OnFocusChange
-    checkbox.AddListener(Component.OnFocusChange, function(focused) {
+    checkbox.AddListener(UI.Component.OnFocusChange, function(focused) {
         if (focused) checkboxFocusedState.text = "focused";
         else checkboxFocusedState.text = "unfocused";
     }.bind(this));
@@ -118,21 +118,21 @@ function CreateGUI() {
     /////////////
     // textbox //
     /////////////
-    let textbox = new Textbox("test textbox test textbox test textbox", 25, 160, 120, 30, true);
-    let textboxFocusedState = new Label("unfocused", 
+    let textbox = new UI.Textbox("test textbox test textbox test textbox", 25, 160, 120, 30, true);
+    let textboxFocusedState = new UI.Label("unfocused", 
         150+textbox.x+textbox.width/2, textbox.y+textbox.height/2, 100, textbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let textboxMouseState = new Label("normal", 
+    let textboxMouseState = new UI.Label("normal", 
         115+textboxFocusedState.x, textbox.y+textbox.height/2, 100, textbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let textboxKeyState = new Label("normal",
+    let textboxKeyState = new UI.Label("normal",
         85+textboxMouseState.x, textboxMouseState.y, 150, textboxMouseState.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
     ////////////////////
     // textbox events //
     ////////////////////
     // OnFocusChange
-    textbox.AddListener(Component.OnFocusChange, function(focused) {
+    textbox.AddListener(UI.Component.OnFocusChange, function(focused) {
         if (focused) textboxFocusedState.text = "focused";
         else textboxFocusedState.text = "unfocused";
     }.bind(this));

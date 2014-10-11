@@ -23,10 +23,10 @@ Util.include('src/ui/input/Input.js');
 Util.include('src/ui/input/Keys.js');
 Util.include('src/ui/Destroyable.js');
 Util.include('src/ui/Drawable.js');
-Util.include('src/ui/NinePatch.js');
 Util.include('src/ui/TextAlign.js');
 Util.include('src/ui/components/Component.js');
-Util.include('src/ui/components/Img.js');
+Util.include('src/ui/components/Image.js');
+Util.include('src/ui/components/NinePatch.js');
 Util.include('src/ui/components/Label.js');
 Util.include('src/ui/components/Button.js');
 Util.include('src/ui/components/Checkbox.js');
@@ -42,10 +42,6 @@ var UI = UI || {};
 ///////////////
 // Variables //
 ///////////////
-/**
- * How many times per second GUIFramework should update what is displayed on the screen.
- * @type {number}
- */
 UI.fps = 30;
 UI.context = null;
 UI.canvas = null;
@@ -78,13 +74,21 @@ UI.Init = function() {
     setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
 }
 /**
- * Provides GUIFramework with a GUI to render.
- * @param {GUI} gui
+ * Provides GUIFramework with a {@link UI.GUI} to render.
+ * @param {UI.GUI} gui
  */
 UI.SetGUI = function(gui) {
-    UI.gui = gui.validate(GUI);
+    UI.gui = gui.validate(UI.GUI);
     UI.OnResize();
 }
+/**
+ * @param {number} fps - How many times per second GUIFramework should update what is displayed on the screen.
+ */
+UI.SetFPS = function(fps) { UI.fps = fps.validate(Number); }
+/**
+ * @returns {number} How many times per second GUIFramework should update what is displayed on the screen.
+ */
+UI.GetFPS = function(fps) { return UI.fps; }
 
 ////////////
 // Events //

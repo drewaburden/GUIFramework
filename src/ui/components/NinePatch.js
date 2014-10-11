@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  ui\NinePatch.js
+//  ui\components\NinePatch.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -9,11 +9,10 @@
 //
 // ================================================================================================
 
-NinePatch.inherits(Drawable);
 /**
  * NinePatch
  * @class
- * @extends {Drawable}
+ * @extends {UI.Component}
  * @param {string} imgsrc
  * @param {number} [x=0]
  * @param {number} [y=0]
@@ -26,11 +25,11 @@ NinePatch.inherits(Drawable);
  * @param {boolean} [fillCenter=true]
  * @param {boolean} [visible=true]
  * @example
- * var ninePatchImage = new NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
+ * var ninePatchImage = new UI.NinePatch("assets/bg.png", 5, 5, 150, 50, 14, 14, 14, 14, true);
  */
-function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, topMargin=0, rightMargin=0,
+UI.NinePatch = function(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, topMargin=0, rightMargin=0,
 	bottomMargin=0, fillCenter=true, visible=true) {
-	NinePatch.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
+	UI.NinePatch.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 
 	///////////////
 	// Variables //
@@ -46,10 +45,10 @@ function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, 
 	/////////////////////
 	// Event delegates //
 	/////////////////////
-	/** Event functions called when all loading and initialization has been completed for this NinePatch.
+	/** Event functions called when all loading and initialization has been completed for this {@link UI.NinePatch}.
 	 * @type {function[]}
 	 * @example
-	 * var img = new NinePatch("image.jpg");
+	 * var img = new UI.NinePatch("image.jpg");
 	 * img.onload.push(function() {console.log("image loaded!");});
 	 */
 	this.onload = [];
@@ -57,6 +56,7 @@ function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, 
 	////////////////////
 	// Initialization //
 	////////////////////
+	this.SetFocusable(false);
 	this.image.src = imgsrc.validate(String);
 	this.image.onload = function() {
 		if (!this.image || !this.image.complete || this.image.naturalWidth === undefined
@@ -78,7 +78,7 @@ function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, 
 			listener();
 		}
 	}.bind(this);
-}
+}.inherits(UI.Component);
 
 ///////////////
 // Functions //
@@ -87,8 +87,8 @@ function NinePatch(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, 
  * "Frees" loaded image.
  * @override
  */
-NinePatch.prototype.Destroy = function() {
-	NinePatch.parent.Destroy.apply(this, arguments); // super function call
+UI.NinePatch.prototype.Destroy = function() {
+	UI.NinePatch.parent.Destroy.apply(this, arguments); // super function call
 
 	if (this.image) delete this.image;
 }
@@ -98,8 +98,8 @@ NinePatch.prototype.Destroy = function() {
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-NinePatch.prototype.Draw = function(context) {
-	let keepDrawing = NinePatch.parent.Draw.apply(this, arguments); // super function call
+UI.NinePatch.prototype.Draw = function(context) {
+	let keepDrawing = UI.NinePatch.parent.Draw.apply(this, arguments); // super function call
 	if (!keepDrawing || !this.loaded || this.width <= 0 || this.height <= 0) return false;
 
 	// Re-scope the variables so we don't have to use the "this" keyword so much throughout this function

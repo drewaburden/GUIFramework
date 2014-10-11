@@ -70,7 +70,7 @@ Mixins.Typeable = {
 	///////////////
 	/**
 	 * Receiver of the onKeyDown event from the GUIFramework.
-	 * This is called when GUIFramework determines that a key is down on a focused component with
+	 * This is called when GUIFramework determines that a key is down on a focused {@link UI.Component} with
 	 * this Mixin.
 	 * @param {Input.Key} key
 	 * @param {boolean} shift

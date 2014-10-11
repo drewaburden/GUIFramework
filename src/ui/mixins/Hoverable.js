@@ -37,7 +37,7 @@ Mixins.Hoverable = {
 	/**
 	 * Receiver of the OnMouseIn event from the GUIFramework.
 	 * This is called when GUIFramework determines that the mouse is intersecting with the bounds of
-	 * component (prioritized by render order).
+	 * {@link UI.Component} (prioritized by render order).
 	 * @param {number} x
 	 * @param {number} y
 	 */
@@ -52,7 +52,7 @@ Mixins.Hoverable = {
 	/**
 	 * Receiver of the OnMouseOut event from the GUIFramework.
 	 * This is called when GUIFramework determines that the mouse is has left the bounds of a
-	 * component who previously had the OnMouseIn event triggered.
+	 * {@link UI.Component} who previously had the OnMouseIn event triggered.
 	 * @param {number} x
 	 * @param {number} y
 	 */

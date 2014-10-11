@@ -1,6 +1,6 @@
 // ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
 //
-//  ui\components\Img.js
+//  ui\components\Image.js
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
@@ -8,11 +8,10 @@
 //
 // ================================================================================================
 
-Img.inherits(Component);
 /**
- * Img
+ * Image
  * @class
- * @extends {Component}
+ * @extends {UI.Component}
  * @param {string} imgsrc
  * @param {number} [x=0]
  * @param {number} [y=0]
@@ -20,26 +19,24 @@ Img.inherits(Component);
  * @param {number} [height=image.height]
  * @param {boolean} [visible=true]
  * @example
- * var image = new Img("assets/bg.png", 5, 5, 150, 50, true);
+ * var image = new UI.Image("assets/bg.png", 5, 5, 150, 50, true);
  */
-function Img(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visible=true) {
-	Img.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
-
-	this.focusable = false;
+UI.Image = function(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visible=true) {
+	UI.Image.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 
 	///////////////
 	// Variables //
 	///////////////
-	this.image = new Image();
+	this.image = new Image(); // js Image, not UI.Image
 	this.loaded = false;
 
 	/////////////////////
 	// Event delegates //
 	/////////////////////
-	/** Event functions called when all loading and initialization has been completed for this Img.
+	/** Event functions called when all loading and initialization has been completed for this {@link UI.Image}.
 	 * @type {function[]}
 	 * @example
-	 * var img = new Img("image.jpg");
+	 * var img = new UI.Image("image.jpg");
 	 * img.onload.push(function() {console.log("image loaded!");});
 	 */
 	this.onload = [];
@@ -47,6 +44,7 @@ function Img(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visi
 	////////////////////
 	// Initialization //
 	////////////////////
+	this.SetFocusable(false);
 	this.image.src = imgsrc.validate(String);
 	this.image.onload = function() {
 		if (!this.image || !this.image.complete || this.image.naturalWidth === undefined
@@ -66,7 +64,7 @@ function Img(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visi
 			listener();
 		}
 	}.bind(this);
-}
+}.inherits(UI.Component);
 
 ///////////////
 // Functions //
@@ -75,8 +73,8 @@ function Img(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visi
  * "Frees" loaded image.
  * @override
  */
-Img.prototype.Destroy = function() {
-	Img.parent.Destroy.apply(this, arguments); // super function call
+UI.Image.prototype.Destroy = function() {
+	UI.Image.parent.Destroy.apply(this, arguments); // super function call
 
 	if (this.image) delete this.image;
 }
@@ -86,8 +84,8 @@ Img.prototype.Destroy = function() {
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-Img.prototype.Draw = function(context) {
-	let keepDrawing = Img.parent.Draw.apply(this, arguments); // super function call
+UI.Image.prototype.Draw = function(context) {
+	let keepDrawing = UI.Image.parent.Draw.apply(this, arguments); // super function call
 	if (!keepDrawing || !this.loaded || this.width <= 0 || this.height <= 0) return false;
 
 	context.drawImage(this.image, this.x, this.y, this.width, this.height);

@@ -8,42 +8,42 @@
 //
 // ================================================================================================
 
-Caret.inherits(Component);
 /**
  * Caret
  * @class
- * @extends {Component}
- * @param {Label}   label   - Label that handles the text the Caret corresponds to.
- * @param {string|CanvasGradient|CanvasPattern} [style='rgb(255, 255, 255)'] - Caret style.
+ * @extends {UI.Component}
+ * @param {UI.Label}   label   - {@link UI.Label} that handles the text the {@link UI.Caret} corresponds to.
+ * @param {string|CanvasGradient|CanvasPattern} [style='rgb(255, 255, 255)'] - {@link UI.Caret} style.
  * @param {number}  offsetX - Base x offset from the x position of the `label`
  * @param {number}  offsetY - Base y offset from the y position of the `label`
- * @param {number}  height  - Height of the caret.
+ * @param {number}  height  - Height of the {@link UI.Caret}.
  * @param {boolean} [startBlinking=false]
  */
-function Caret(label=undefined, style='white', offsetX=undefined, offsetY=undefined,
+UI.Caret = function(label=undefined, style='white', offsetX=undefined, offsetY=undefined,
 	height=undefined, startBlinking=false) {
-	Caret.parent.constructor.call(this, 0, 0, 1, height, startBlinking); // Super constructor
+	UI.Caret.parent.constructor.call(this, 0, 0, 1, height, startBlinking); // Super constructor
 
 	///////////////
 	// Variables //
 	///////////////
-	this.label = label.validate(Label);
-	this.style = style.validate(String, CanvasGradient, CanvasPattern);
+	this.label = label.validate(UI.Label);
+	this.style;
 	this.position = 0;
 	this.blinkFrequency = 450; // Milliseconds between blinks
 	this.blinking = false;
 	this.blinkIntervalId = null; // Holds the id that refers to the active interval that's handling the blinking.
-	// Make sure the caret's positions start at a half pixel, otherwise, the width of the line
-	// drawn will be inconsistent and/or incorrect.
-	this.offsetX = Math.round(offsetX.validate(Number)) + 0.5;
-	this.offsetY = Math.round(offsetY.validate(Number)) + 0.5;
+	this.offsetX;
+	this.offsetY;
 
 	////////////////////
 	// Initialization //
 	////////////////////
-	this.focusable = false;
+	this.SetFocusable(false);
+	this.SetStyle(style);
+	this.SetOffsetX(offsetX);
+	this.SetOffsetY(offsetY);
 	if (startBlinking) this.StartBlinking();
-}
+}.inherits(UI.Component);
 
 ///////////////
 // Functions //
@@ -53,15 +53,15 @@ function Caret(label=undefined, style='white', offsetX=undefined, offsetY=undefi
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-Caret.prototype.Draw = function(context) {
-	let keepDrawing = Caret.parent.Draw.apply(this, arguments); // super function call
+UI.Caret.prototype.Draw = function(context) {
+	let keepDrawing = UI.Caret.parent.Draw.apply(this, arguments); // super function call
 	if (!keepDrawing || !this.blinking || this.height <= 0) return false;
 
 	// Determine the position of the caret within the bounds of the corresponding Label
 	if (this.position == 0) this.x = 0;
 	else {
-		let text = this.label.text.substring(0, this.position);
-		this.x = context.measureText(text).width;
+		let text = this.label.GetText().substring(0, this.position);
+		this.SetX(context.measureText(text).width);
 	}
 	// Set the Caret style
 	context.strokeStyle = 'white';
@@ -76,10 +76,10 @@ Caret.prototype.Draw = function(context) {
 }
 
 /**
- * If the Caret is not currently blinking, start blinking.
+ * If the {@link UI.Caret} is not currently blinking, start blinking.
  * Assigns a new id to the `blinkIntervalId` class variable.
  */
-Caret.prototype.StartBlinking = function() {
+UI.Caret.prototype.StartBlinking = function() {
 	if (!this.blinking) {
 		// Set up a recurring function call that toggles the visibility of this component
 		// every `blinkFrequency` milliseconds.
@@ -91,9 +91,9 @@ Caret.prototype.StartBlinking = function() {
 	}
 }
 /**
- * If the Caret is currently blinking, stop blinking.
+ * If the {@link UI.Caret} is currently blinking, stop blinking.
  */
-Caret.prototype.StopBlinking = function() {
+UI.Caret.prototype.StopBlinking = function() {
 	if (this.blinking) {
 		clearInterval(this.blinkIntervalId);
 		this.blinking = false;
@@ -101,10 +101,10 @@ Caret.prototype.StopBlinking = function() {
 	}
 }
 /**
- * If the caret is currently blinking make sure the caret is explicitly visible for this tick, and
+ * If the {@link UI.Caret} is currently blinking make sure the caret is explicitly visible for this tick, and
  * restart the blink interval.
  */
-Caret.prototype.ResetBlinking = function() {
+UI.Caret.prototype.ResetBlinking = function() {
 	if (this.blinking) {
 		this.StopBlinking();
 		this.StartBlinking();
@@ -112,31 +112,81 @@ Caret.prototype.ResetBlinking = function() {
 }
 
 /**
- * @param {number} index - The new position of the Caret. The Caret position is in between `index`
+ * Place the {@link UI.Caret} at the very beginning of the text.
+ */
+UI.Caret.prototype.Home = function() { this.SetPosition(0); }
+/**
+ * Place the {@link UI.Caret} at the very end of the text.
+ */
+UI.Caret.prototype.End = function() { this.SetPosition(this.label.text.length); }
+/**
+ * Move the {@link UI.Caret} position one character forward, if possible.
+ */
+UI.Caret.prototype.Advance = function() { this.SetPosition(this.position+1); }
+/**
+ * Place the {@link UI.Caret} one character backward, if possible.
+ */
+UI.Caret.prototype.Retreat = function() { this.SetPosition(this.position-1); }
+
+//////////////////////////
+// Mutators & Accessors //
+//////////////////////////
+/**
+ * @param {number} index - The new position of the {@link UI.Caret}. The Caret position is in between `index`
  *                         and `index`-1; i.e., the Caret comes before the specified `index`.
  */
-Caret.prototype.SetPosition = function(index) {
+UI.Caret.prototype.SetPosition = function(index) {
 	this.position = Math.clamp(index.validate(Number), 0, this.label.text.length);
 	this.ResetBlinking();
 }
 /**
- * @returns {number} The current position of the Caret.
+ * @returns {number} The current position of the {@link UI.Caret}.
  */
-Caret.prototype.GetPosition = function() { return this.position; }
+UI.Caret.prototype.GetPosition = function() { return this.position; }
 
 /**
- * Place the Caret at the very beginning of the text.
+ * @param {string|CanvasGradient|CanvasPattern} style - New style to apply to the {@link UI.Caret}'s line.
  */
-Caret.prototype.Home = function() { this.SetPosition(0); }
+UI.Caret.prototype.SetStyle = function(style) { this.style = style.validate(String, CanvasGradient, CanvasPattern); }
 /**
- * Place the Caret at the very end of the text.
+ * @returns {string|CanvasGradient|CanvasPattern} This {@link UI.Caret}'s current display style.
  */
-Caret.prototype.End = function() { this.SetPosition(this.label.text.length); }
+UI.Caret.prototype.GetStyle = function() { return this.style; }
+
 /**
- * Move the position one character forward, if possible.
+ * @param {number} blinkFrequency - New delay (in milliseconds) between visible states of this {@link UI.Caret}.
  */
-Caret.prototype.Advance = function() { this.SetPosition(this.position+1); }
+UI.Caret.prototype.SetBlinkFrequency = function(blinkFrequency) { this.blinkFrequency = blinkFrequency.validate(Number); }
 /**
- * Place the Caret one character backward, if possible.
+ * @returns {number} This {@link UI.Caret}'s current blink frequency (in milliseconds).
  */
-Caret.prototype.Retreat = function() { this.SetPosition(this.position-1); }
+UI.Caret.prototype.GetBlinkFrequency = function() { return this.blinkFrequency; }
+
+/**
+ * @param {number} offsetX - New x-offset to apply to the {@link UI.Caret}. The x-offset denotes the x position that
+ *                           the Caret at position 0 should be drawn, relative to the {@link UI.Label}'s position.
+ */
+UI.Caret.prototype.SetOffsetX = function(offsetX) {
+	// Make sure the caret's positions start at a half pixel, otherwise, the width of the line
+	// drawn will be inconsistent and/or incorrect.
+	this.offsetX = Math.round(offsetX.validate(Number)) + 0.5;
+}
+/**
+ * @returns {number} This {@link UI.Caret}'s current x-offset. The x-offset denotes the x position that the Caret at
+ *                   position 0 should be drawn, relative to the {@link UI.Label}'s position.
+ */
+UI.Caret.prototype.GetOffsetX = function() { return this.offsetX; }
+/**
+ * @param {number} offsetY - New y-offset to apply to the {@link UI.Caret}. The y-offset denotes the y position that
+ *                           the Caret should be drawn, relative to the {@link UI.Label}'s position.
+ */
+UI.Caret.prototype.SetOffsetY = function(offsetY) {
+	// Make sure the caret's positions start at a half pixel, otherwise, the width of the line
+	// drawn will be inconsistent and/or incorrect.
+	this.offsetY = Math.round(offsetY.validate(Number)) + 0.5;
+}
+/**
+ * @returns {number} This {@link UI.Caret}'s current y-offset. The y-offset denotes the y position that the Caret
+ *                   should be drawn, relative to the {@link UI.Label}'s position.
+ */
+UI.Caret.prototype.GetOffsetY = function() { return this.offsetY; }

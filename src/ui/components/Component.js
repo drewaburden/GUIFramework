@@ -8,21 +8,19 @@
 //
 // ================================================================================================
 
-Component.inherits(Drawable);
 /**
  * 
  * @abstract
  * @class
- * @extends {Drawable}
+ * @extends {UI.Drawable}
  * @param {number} [x=0]
  * @param {number} [y=0]
  * @param {number} [width=0]
  * @param {number} [height=0]
  * @param {boolean} [visible=true]
  */
-function Component(x=0, y=0, width=0, height=0, visible=true) {
-	Component.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
-	Mixins.Mix(Component, Mixins.Observable);
+UI.Component = function(x=0, y=0, width=0, height=0, visible=true) {
+	UI.Component.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 
 	///////////////
 	// Variables //
@@ -32,7 +30,7 @@ function Component(x=0, y=0, width=0, height=0, visible=true) {
 	this.focused = false;
 
 	this.listeners = {};
-}
+}.inherits(UI.Drawable);
 
 ///////////////
 // Functions //
@@ -40,23 +38,23 @@ function Component(x=0, y=0, width=0, height=0, visible=true) {
 /**
  * @override
  */
-Component.prototype.Destroy = function() {
-	Component.parent.Destroy.apply(this, arguments);
+UI.Component.prototype.Destroy = function() {
+	UI.Component.parent.Destroy.apply(this, arguments);
 }
 /**
- * Handles all the drawing to the canvas for this Component. Override in subclasses.
+ * Handles all the drawing to the canvas for this {@link UI.Component}. Override in subclasses.
  * @abstract
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-Component.prototype.Draw = function(context) {
-	return Component.parent.Draw.apply(this, arguments); // super function call
+UI.Component.prototype.Draw = function(context) {
+	return UI.Component.parent.Draw.apply(this, arguments); // super function call
 }
 /**
  * @param {number} mouseX
  * @param {number} mouseY
  */
-Component.prototype.MouseIntersects = function(mouseX, mouseY) {
+UI.Component.prototype.MouseIntersects = function(mouseX, mouseY) {
 	mouseX.validate(Number);
 	mouseY.validate(Number);
 	if (!this.visible) return false;
@@ -73,42 +71,42 @@ Component.prototype.MouseIntersects = function(mouseX, mouseY) {
 /**
  * @param {boolean} focusable - 
  */
-Component.prototype.SetFocusable = function(focusable) { this.focusable = focusable.validate(Boolean); }
+UI.Component.prototype.SetFocusable = function(focusable) { this.focusable = focusable.validate(Boolean); }
 /**
  * @returns {boolean}
  */
-Component.prototype.IsFocusable = function() {
+UI.Component.prototype.IsFocusable = function() {
 	if (!this.focusable || !this.enabled || !this.visible) return false;
 	else return true;
 }
 
 /**
  * @param {boolean} focused
- * @fires Component#OnFocusChange
+ * @fires UI.Component.OnFocusChange
  */
-Component.prototype.SetFocused = function(focused) {
+UI.Component.prototype.SetFocused = function(focused) {
 	focused.validate(Boolean);
 	if (!this.enabled) return;
 	if (!this.visible) return;
 
 	this.focused = focused;
 
-	this.Fire(Component.OnFocusChange, this.focused);
+	this.Fire(UI.Component.OnFocusChange, this.focused);
 }
 /**
  * @returns {boolean}
  */
-Component.prototype.IsFocused = function() { return this.focused; }
+UI.Component.prototype.IsFocused = function() { return this.focused; }
 
 ////////////
 // Events //
 ////////////
 // Delegates
 /**
- * Event triggered when the component's focus state changes.
- * @event Component#OnFocusChange
+ * Event triggered when the {@link UI.Component}'s focus state changes.
+ * @event UI.Component.OnFocusChange
  */
-Component.OnFocusChange = 'OnFocusChange';
+UI.Component.OnFocusChange = 'OnFocusChange';
 
 // Functions
 /**
@@ -116,7 +114,7 @@ Component.OnFocusChange = 'OnFocusChange';
  * @param {string} event
  * @param {...*} params
  */
-Component.prototype.Fire = function(event, ...params) {
+UI.Component.prototype.Fire = function(event, ...params) {
 	if (this.listeners[event]) {
 		for (let callback of this.listeners[event]) {
 			callback.apply(this, params);
@@ -128,7 +126,7 @@ Component.prototype.Fire = function(event, ...params) {
  * @param {string} event
  * @param {function} callback
  */
-Component.prototype.AddListener = function(event, callback) {
+UI.Component.prototype.AddListener = function(event, callback) {
 	event.validate(String); callback.validate(Function);
 	if (!this.listeners[event]) this.listeners[event] = [];
 	this.listeners[event].push(callback);
@@ -138,7 +136,7 @@ Component.prototype.AddListener = function(event, callback) {
  * @param {string} event
  * @param {function} callback 
  */
-Component.prototype.RemoveListener = function(event, callback) {
+UI.Component.prototype.RemoveListener = function(event, callback) {
 	event.validate(String); callback.validate(Function);
 	let index = this.listeners[event].indexOf(callback);
 	if (index > 0) {

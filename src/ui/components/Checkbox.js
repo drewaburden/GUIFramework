@@ -11,7 +11,7 @@
 /**
  * 
  * @class
- * @extends {Component}
+ * @extends {UI.Component}
  * @param {string} [text=""]
  * @param {number} [x=0]
  * @param {number} [y=0]
@@ -20,7 +20,7 @@
  * @param {boolean} [checked=true]
  * @param {boolean} [visible=true]
  * @example
- * var checkbox = new Checkbox("text", 5, 5, 150, 50, true, true);
+ * var checkbox = new UI.Checkbox("text", 5, 5, 150, 50, true, true);
  */
 UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
 	UI.Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
@@ -32,31 +32,31 @@ UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visib
 	///////////////
 	this.text = text.validate(String);
 	this.checked = checked.validate(Boolean);
-	this.unchecked_normal = new Img("assets/checkbox/unchecked_normal.png", this.x, this.y);
-	this.unchecked_hover = new Img("assets/checkbox/unchecked_hover.png", this.x, this.y);
-	this.unchecked_down_normal = new Img("assets/checkbox/unchecked_down_normal.png", this.x, this.y);
-	this.unchecked_down_hover = new Img("assets/checkbox/unchecked_down_hover.png", this.x, this.y);
-	this.checked_normal = new Img("assets/checkbox/checked_normal.png", this.x, this.y);
-	this.checked_hover = new Img("assets/checkbox/checked_hover.png", this.x, this.y);
-	this.checked_down_normal = new Img("assets/checkbox/checked_down_normal.png", this.x, this.y);
-	this.checked_down_hover = new Img("assets/checkbox/checked_down_hover.png", this.x, this.y);
+	this.unchecked_normal = new UI.Image("assets/checkbox/unchecked_normal.png", this.x, this.y);
+	this.unchecked_hover = new UI.Image("assets/checkbox/unchecked_hover.png", this.x, this.y);
+	this.unchecked_down_normal = new UI.Image("assets/checkbox/unchecked_down_normal.png", this.x, this.y);
+	this.unchecked_down_hover = new UI.Image("assets/checkbox/unchecked_down_hover.png", this.x, this.y);
+	this.checked_normal = new UI.Image("assets/checkbox/checked_normal.png", this.x, this.y);
+	this.checked_hover = new UI.Image("assets/checkbox/checked_hover.png", this.x, this.y);
+	this.checked_down_normal = new UI.Image("assets/checkbox/checked_down_normal.png", this.x, this.y);
+	this.checked_down_hover = new UI.Image("assets/checkbox/checked_down_hover.png", this.x, this.y);
 	this.image = (this.checked) ? (this.checked_normal) : (this.unchecked_normal);
 	this.labelStyle_normal = '#B1E77D';
 	this.labelStyle_hover = '#D5F3B7';
 	this.labelStyle_down = '#B1E77D';
 	this.labelStyle_down_hover = '#D5F3B7';
 	var textPadding_left = 30;
-    this.label = new Label(this.text, this.x+textPadding_left, this.y+this.height/2,
+    this.label = new UI.Label(this.text, this.x+textPadding_left, this.y+this.height/2,
     	this.width-textPadding_left, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono",
     	TextHAlign.LEFT, TextVAlign.MIDDLE, true);
 
     /////////////////////
 	// Event delegates //
 	/////////////////////
-	/** Event functions called when all loading and initialization has been completed for this NinePatch.
+	/** Event functions called when all loading and initialization has been completed for this {@link UI.NinePatch}.
 	 * @type {function[]}
 	 * @example
-	 * var img = new NinePatch("image.jpg");
+	 * var img = new UI.NinePatch("image.jpg");
 	 * img.onload.push(function() {console.log("image loaded!");});
 	 */
     this.onCheckedChange = [];
@@ -68,12 +68,12 @@ UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visib
     this.onMouseIn.push(function(x, y) {
     	document.body.style.cursor = 'pointer';
     	if (this.isMouseDown) {
-    		this.label.style = this.labelStyle_down_hover;
+    		this.label.SetStyle(this.labelStyle_down_hover);
     		if (this.checked) this.image = this.checked_down_hover;
     		else this.image = this.unchecked_down_hover;
     	}
     	else {
-    		this.label.style = this.labelStyle_hover;
+    		this.label.SetStyle(this.labelStyle_hover);
     		if (this.checked) this.image = this.checked_hover;
     		else this.image = this.unchecked_hover;
     	}
@@ -81,37 +81,36 @@ UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visib
 	// OnMouseOut
 	this.onMouseOut.push(function() {
 		if (this.isMouseDown) {
-    		this.label.style = this.labelStyle_down;
+    		this.label.SetStyle(this.labelStyle_down);
     		if (this.checked) this.image = this.checked_down_normal;
     		else this.image = this.unchecked_down_normal;
     	}
     	else {
     		document.body.style.cursor = 'auto';
-    		this.label.style = this.labelStyle_normal;
+    		this.label.SetStyle(this.labelStyle_normal);
     		if (this.checked) this.image = this.checked_normal;
     		else this.image = this.unchecked_normal;
     	}
 	}.bind(this));
 	// OnMouseDown
 	this.onMouseDown.push(function(x, y, button) {
-		this.label.style = this.labelStyle_down_hover;
+		this.label.SetStyle(this.labelStyle_down_hover);
 		if (this.checked) this.image = this.checked_down_hover;
     	else this.image = this.unchecked_down_hover;
 	}.bind(this));
 	// OnMouseUp
 	this.onMouseUp.push(function(x, y, button) {
 		if (this.isMouseOver) {
-			this.label.style = this.labelStyle_hover;
+			this.label.SetStyle(this.labelStyle_hover);
 			this.Toggle();
 		}
 		else {
-			this.label.style = this.labelStyle_normal;
+			this.label.SetStyle(this.labelStyle_normal);
 			if (this.checked) this.image = this.checked_normal;
     		else this.image = this.unchecked_normal;
 		}
 	}.bind(this));
-}
-UI.Checkbox.inherits(Component);
+}.inherits(UI.Component);
 
 ///////////////
 // Functions //
@@ -131,7 +130,7 @@ UI.Checkbox.prototype.Draw = function(context) {
 	return true;
 }
 /**
- * Sets the checked state of the Checkbox to the specified boolean value.
+ * Sets the checked state of the {@link UI.Checkbox} to the specified boolean value.
  * @param {boolean} checked
  */
 UI.Checkbox.prototype.SetChecked = function(checked) {
@@ -157,7 +156,7 @@ UI.Checkbox.prototype.SetChecked = function(checked) {
 	}
 }
 /**
- * Toggles the checked state of the Checkbox
+ * Toggles the checked state of the {@link UI.Checkbox}.
  */
 UI.Checkbox.prototype.Toggle = function() {
 	this.SetChecked(!this.checked);

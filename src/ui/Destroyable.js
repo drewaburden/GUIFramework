@@ -11,14 +11,14 @@
  * @abstract
  * @class
  */
-function Destroyable() {}
+UI.Destroyable = function() {}
 
 ///////////////
 // Functions //
 ///////////////
 /**
- * Handles any uninitialization for this Destroyable. This function is not automatically called.
+ * Handles any uninitialization for this {@link UI.Destroyable}. This function is not automatically called.
  * Override in subclasses.
  * @abstract
  */
-Destroyable.prototype.Destroy = function() {}
+UI.Destroyable.prototype.Destroy = function() {}

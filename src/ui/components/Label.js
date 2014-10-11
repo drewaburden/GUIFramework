@@ -8,11 +8,10 @@
 //
 // ================================================================================================
 
-Label.inherits(Component);
 /**
  * 
  * @class
- * @extends {Component}
+ * @extends {UI.Component}
  * @param {string} [text=""]
  * @param {number} [x=0]
  * @param {number} [y=0]
@@ -32,11 +31,11 @@ Label.inherits(Component);
  *                                                            	 or as a literal string.
  * @param {boolean} [visible=true]
  * @example
- * var label = new Label("text", 5, 5, 150, 50, 'black', 'bold 18px Arial', TextHAlign.CENTER, TextVAlign.MIDDLE, true);
+ * var label = new UI.Label("text", 5, 5, 150, 50, 'black', 'bold 18px Arial', TextHAlign.CENTER, TextVAlign.MIDDLE, true);
  */
-function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal 12px Arial',
+UI.Label = function(text="", x=0, y=0, width=0, height=0, style='black', font='normal 12px Arial',
 	textHAlignment=TextHAlign.START, textVAlignment=TextVAlign.ALPHABETIC, visible=true) {
-	Label.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
+	UI.Label.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 
 	///////////////
 	// Variables //
@@ -55,7 +54,7 @@ function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal
 	this.SetFont(font);
 	this.SetHAlignment(textHAlignment);
 	this.SetVAlignment(textVAlignment);
-}
+}.inherits(UI.Component);
 
 ///////////////
 // Functions //
@@ -65,8 +64,8 @@ function Label(text="", x=0, y=0, width=0, height=0, style='black', font='normal
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-Label.prototype.Draw = function(context) {
-	let keepDrawing = Label.parent.Draw.apply(this, arguments); // super function call
+UI.Label.prototype.Draw = function(context) {
+	let keepDrawing = UI.Label.parent.Draw.apply(this, arguments); // super function call
 	if (!keepDrawing || this.height <= 0) return false;
 	
 	// Set text font and style
@@ -87,52 +86,52 @@ Label.prototype.Draw = function(context) {
 // Mutators & Accessors //
 //////////////////////////
 /**
- * @param {string} text - New text for the Label to display.
+ * @param {string} text - New text for the {@link UI.Label} to display.
  */
-Label.prototype.SetText = function(text) { this.text = text.validate(String); }
+UI.Label.prototype.SetText = function(text) { this.text = text.validate(String); }
 /**
- * @returns {string} This Label's display text.
+ * @returns {string} This {@link UI.Label}'s display text.
  */
-Label.prototype.GetText = function() { return this.text; }
+UI.Label.prototype.GetText = function() { return this.text; }
 
 /**
- * @param {string|CanvasGradient|CanvasPattern} style - New style to apply to the Label's display text.
+ * @param {string|CanvasGradient|CanvasPattern} style - New style to apply to the {@link UI.Label}'s display text.
  */
-Label.prototype.SetStyle = function(style) { this.style = style.validate(String, CanvasGradient, CanvasPattern); }
+UI.Label.prototype.SetStyle = function(style) { this.style = style.validate(String, CanvasGradient, CanvasPattern); }
 /**
- * @returns {string|CanvasGradient|CanvasPattern} This Label's current display style.
+ * @returns {string|CanvasGradient|CanvasPattern} This {@link UI.Label}'s current display style.
  */
-Label.prototype.GetStyle = function() { return this.style; }
+UI.Label.prototype.GetStyle = function() { return this.style; }
 
 /**
- * @param {string} text - New font to apply to the Label's display text.
+ * @param {string} text - New font to apply to the {@link UI.Label}'s display text.
  */
-Label.prototype.SetFont = function(font) { this.font = font.validate(String); }
+UI.Label.prototype.SetFont = function(font) { this.font = font.validate(String); }
 /**
- * @returns {string} The font of this Label's display text.
+ * @returns {string} The font of this {@link UI.Label}'s display text.
  */
-Label.prototype.GetFont = function() { return this.font; }
+UI.Label.prototype.GetFont = function() { return this.font; }
 
 /**
- * @param {TextHAlign|string} textHAlignment - New horizontal alignment to apply to the Label's display text.
+ * @param {TextHAlign|string} textHAlignment - New horizontal alignment to apply to the {@link UI.Label}'s display text.
  */
-Label.prototype.SetHAlignment = function(textHAlignment) {
+UI.Label.prototype.SetHAlignment = function(textHAlignment) {
 	// Validate as string, because that's actually what it is behind the scenes
 	this.textHAlignment = textHAlignment.validate(String);
 }
 /**
- * @returns {TextHAlign|string} The horizontal alignment of this Label's display text.
+ * @returns {TextHAlign|string} The horizontal alignment of this {@link UI.Label}'s display text.
  */
-Label.prototype.GetHAlignment = function() { return this.textHAlignment; }
+UI.Label.prototype.GetHAlignment = function() { return this.textHAlignment; }
 
 /**
- * @param {TextVAlign|string} textVAlignment - New vertical alignment to apply to the Label's display text.
+ * @param {TextVAlign|string} textVAlignment - New vertical alignment to apply to the {@link UI.Label}'s display text.
  */
-Label.prototype.SetVAlignment = function(textVAlignment) {
+UI.Label.prototype.SetVAlignment = function(textVAlignment) {
 	// Validate as string, because that's actually what it is behind the scenes
 	this.textVAlignment = textVAlignment.validate(String);
 }
 /**
- * @returns {TextVAlign|string} The vertical alignment of this Label's display text.
+ * @returns {TextVAlign|string} The vertical alignment of this {@link UI.Label}'s display text.
  */
-Label.prototype.GetVAlignment = function() { return this.textVAlignment; }
+UI.Label.prototype.GetVAlignment = function() { return this.textVAlignment; }

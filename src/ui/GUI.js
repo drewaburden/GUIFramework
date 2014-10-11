@@ -4,21 +4,20 @@
 //
 //  Created by:     Drew Burden (drewaburden@gmail.com)
 //
-//      Definition of a UI.
+//      Definition of a GUI.
 //
 // ================================================================================================
 
-GUI.inherits(Drawable);
 /**
  * @class
- * @extends {Drawable}
+ * @extends {UI.Drawable}
  * @param {number} [width=0]
  * @param {number} [height=0]
  * @param {string|CanvasGradient|CanvasPattern} [bgStyle='rgb(255, 255, 255)'] - GUI background style.
  * @param {boolean} [fullscreen=true] - Whether or not the canvas should take up the whole page.
  */
-function GUI(width=0, height=0, bgStyle='white', fullscreen=true) {
-	GUI.parent.constructor.call(this, 0, 0, width, height, true); // Super constructor
+UI.GUI = function(width=0, height=0, bgStyle='white', fullscreen=true) {
+	UI.GUI.parent.constructor.call(this, 0, 0, width, height, true); // Super constructor
 
 	///////////////
 	// Variables //
@@ -31,28 +30,28 @@ function GUI(width=0, height=0, bgStyle='white', fullscreen=true) {
 	this.bgStyle = bgStyle.validate(String, CanvasGradient, CanvasPattern);
 	/** @type {boolean} */
 	this.fullscreen = false; // Set in OnResize
-	/** @type {Component[]} */
+	/** @type {UI.Component[]} */
 	this.components = [];
-	/** @type {Component} */
+	/** @type {UI.Component} */
 	this.focusedComponent = null;
-	/** @type {Component} */
+	/** @type {UI.Component} */
 	this.hoveredComponent = null;
 
 	////////////////////
 	// Initialization //
 	////////////////////
 	this.Resize(width.validate(Number), height.validate(Number), fullscreen.validate(Boolean));
-}
+}.inherits(UI.Drawable);
 
 ///////////////
 // Functions //
 ///////////////
 /**
- * Destroy the GUI and all its components
+ * Destroy the {@link UI.GUI} and all its components
  * @override
  */
-GUI.prototype.Destroy = function() {
-	GUI.parent.Destroy.apply(this, arguments); // super function call
+UI.GUI.prototype.Destroy = function() {
+	UI.GUI.parent.Destroy.apply(this, arguments); // super function call
 
 	// Destroy components
 	for (let component of this.components) {
@@ -67,13 +66,13 @@ GUI.prototype.Destroy = function() {
  * @override
  * @param {CanvasRenderingContext2D} context
  */
-GUI.prototype.Draw = function(context) {
-	let keepDrawing = GUI.parent.Draw.apply(this, arguments); // super function call
+UI.GUI.prototype.Draw = function(context) {
+	let keepDrawing = UI.GUI.parent.Draw.apply(this, arguments); // super function call
 	if (!keepDrawing) return false;
 
 	for (let index = 0; index < this.components.length; ++index) {
 		let component = this.components[index];
-		if (component instanceof Drawable) component.Draw(context);
+		if (component instanceof UI.Drawable) component.Draw(context);
 		else {
 			console.warn("GUI tried to draw an object that wasn't an instance of a Drawable:\n"
 				+ component + "\nRemoving object from GUI's component list.");
@@ -88,7 +87,7 @@ GUI.prototype.Draw = function(context) {
  * @param {number} height
  * @param {boolean} [fullscreen=this.fullscreen]
  */
-GUI.prototype.Resize = function(width=undefined, height=undefined, fullscreen=this.fullscreen) {
+UI.GUI.prototype.Resize = function(width=undefined, height=undefined, fullscreen=this.fullscreen) {
 	width.validate(Number); height.validate(Number); fullscreen.validate(Boolean);
 	this.fullscreen = fullscreen;
 	if (this.fullscreen === true) {
@@ -101,11 +100,11 @@ GUI.prototype.Resize = function(width=undefined, height=undefined, fullscreen=th
 	}
 }
 /**
- * @param {Component} component
+ * @param {UI.Component} component
  * @returns {boolean} True if focus was successfully given
  */
-GUI.prototype.TryGiveFocusTo = function(component) {
-	component.validate(Component);
+UI.GUI.prototype.TryGiveFocusTo = function(component) {
+	component.validate(UI.Component);
 	if (this.components.indexOf(component) < 0) throw new TypeError("TryGiveFocusTo(): The specified " + 
 		"`component` is not a part of the GUI's component list.");
 	if (this.focusedComponent == component) return true;
@@ -120,9 +119,9 @@ GUI.prototype.TryGiveFocusTo = function(component) {
 	return false;
 }
 /**
- * Removes the focus from the currently focused component.
+ * Removes the focus from the currently focused {@link UI.Component}.
  */
-GUI.prototype.ClearFocus = function() {
+UI.GUI.prototype.ClearFocus = function() {
 	// Defocus currently focused Component, if there is one
 	if (this.focusedComponent) this.focusedComponent.SetFocused(false);
 	this.focusedComponent = null;
@@ -133,7 +132,7 @@ GUI.prototype.ClearFocus = function() {
  * @param {boolean} alt
  * @param {boolean} ctrl
  */
-GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
+UI.GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
 	if (this.focusedComponent
 		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable))
 		return this.focusedComponent.OnKeyDown(key, shift, alt, ctrl);
@@ -145,7 +144,7 @@ GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
  * @param {boolean} alt
  * @param {boolean} ctrl
  */
-GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
+UI.GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
 	if (this.focusedComponent
 		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable))
 		return this.focusedComponent.OnKeyUp(key, shift, alt, ctrl);
@@ -154,7 +153,7 @@ GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
 /**
  * @param {number} key
  */
-GUI.prototype.OnKeyPress = function(key) {
+UI.GUI.prototype.OnKeyPress = function(key) {
 	if (this.focusedComponent
 		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable)) {
 		return this.focusedComponent.OnKeyPress(key);
@@ -166,11 +165,11 @@ GUI.prototype.OnKeyPress = function(key) {
  * @param {number} y
  * @param {number} button
  */
-GUI.prototype.OnMouseDown = function(x, y, button) {
+UI.GUI.prototype.OnMouseDown = function(x, y, button) {
 	// Loop backwards so topmost components get priority
 	for (let index = this.components.length-1; index >= 0; --index) {
 		let component = this.components[index];
-        if (!(component instanceof Component)) continue;
+        if (!(component instanceof UI.Component)) continue;
         
         // If the mouse is in the bounds of a component that can receive hover events
  		if (component.MouseIntersects(x, y) && Mixins.HasMixins(component, Mixins.Clickable)) {
@@ -191,7 +190,7 @@ GUI.prototype.OnMouseDown = function(x, y, button) {
  * @param {number} y
  * @param {number} button
  */
-GUI.prototype.OnMouseUp = function(x, y, button) {
+UI.GUI.prototype.OnMouseUp = function(x, y, button) {
 	button.validate(Number);
 	if (this.focusedComponent) this.focusedComponent.OnMouseUp(x, y, button);
 }
@@ -199,7 +198,7 @@ GUI.prototype.OnMouseUp = function(x, y, button) {
  * @param {number} x
  * @param {number} y
  */
-GUI.prototype.OnMouseMove = function(x, y) {
+UI.GUI.prototype.OnMouseMove = function(x, y) {
 	// Check if the mouse is still within the hovered component
 	if (this.hoveredComponent && !this.hoveredComponent.MouseIntersects(x, y)) {
 		this.hoveredComponent.OnMouseOut(x, y);
@@ -208,7 +207,7 @@ GUI.prototype.OnMouseMove = function(x, y) {
 	// Loop backwards so topmost components get priority
 	for (let index = this.components.length-1; index >= 0; --index) {
 		let component = this.components[index];
-        if (!(component instanceof Component)) continue;
+        if (!(component instanceof UI.Component)) continue;
         
         // If the mouse is in the bounds of a component that can receive hover events
  		if (component.MouseIntersects(x, y) && Mixins.HasMixins(component, Mixins.Hoverable)) {

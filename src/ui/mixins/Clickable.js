@@ -37,7 +37,7 @@ Mixins.Clickable = {
 	/**
 	 * Receiver of the OnMouseDown event from the GUIFramework.
 	 * This is called when GUIFramework determines that the mouse is clicked within the bounds of the
-	 * component (prioritized by render order).
+	 * {@link UI.Component} (prioritized by render order).
 	 * @param {number} x
 	 * @param {number} y
 	 * @param {number} button - The mouse button that was pressed.
