@@ -39,33 +39,28 @@ function CreateGUI() {
     ///////////////////
     // button events //
     ///////////////////
-    // OnFocusChange
-    button.AddListener(UI.Component.OnFocusChange, function(focused) {
-        if (focused) buttonFocusedState.text = "focused";
-        else buttonFocusedState.text = "unfocused";
+    button.AddListener('focuschanged', function(event) {
+        if (event.detail.focused) buttonFocusedState.SetText("focused");
+        else buttonFocusedState.SetText("unfocused");
     }.bind(this));
-    // OnMouseIn
-    button.onMouseIn.push(function(x, y) {
-        if (button.isMouseDown) buttonMouseState.text = "down hover";
-        else buttonMouseState.text = "hover";
+    button.AddListener('mousein', function(event) {
+        if (button.IsMouseDown()) buttonMouseState.SetText("down hover");
+        else buttonMouseState.SetText("hover");
     }.bind(this));
-    // OnMouseOut
-    button.onMouseOut.push(function(x, y) {
-        if (button.isMouseDown) buttonMouseState.text = "down";
-        else buttonMouseState.text = "normal";
+    button.AddListener('mouseout', function(event) {
+        if (button.IsMouseDown()) buttonMouseState.SetText("down");
+        else buttonMouseState.SetText("normal");
     }.bind(this));
-    // OnMouseDown
-    button.onMouseDown.push(function(x, y, mouseButton) {
-        buttonMouseState.text = "down hover";
+    button.AddListener('mousedown', function(event) {
+        buttonMouseState.SetText("down hover");
     }.bind(this));
-    // OnMouseUp
-    button.onMouseUp.push(function(x, y, mouseButton) {
-        if (button.isMouseOver) {
-            buttonMouseState.text = "hover";
-            buttonTimesClicked++;
-            buttonInfoTimesClicked.text = "clicked " + buttonTimesClicked + " times";
-        }
-        else buttonMouseState.text = "normal";
+    button.AddListener('mouseup', function(event) {
+        if (button.IsMouseOver()) buttonMouseState.SetText("hover");
+        else buttonMouseState.SetText("normal");
+    }.bind(this));
+    button.AddListener('clicked', function(event) {
+        buttonTimesClicked++;
+        buttonInfoTimesClicked.SetText("clicked " + buttonTimesClicked + " times");
     }.bind(this));
 
     //////////////
@@ -78,41 +73,33 @@ function CreateGUI() {
     let checkboxMouseState = new UI.Label("normal", 
         115+checkboxFocusedState.x, checkbox.y+checkbox.height/2, 100, checkbox.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
-    let checkboxInfoChecked = new UI.Label("checked: " + checkbox.checked,
+    let checkboxInfoChecked = new UI.Label("checked: " + checkbox.IsChecked(),
         85+checkboxMouseState.x, checkboxMouseState.y, 150, checkboxMouseState.height,
         '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
     /////////////////////
     // checkbox events //
     /////////////////////
-    // OnFocusChange
-    checkbox.AddListener(UI.Component.OnFocusChange, function(focused) {
-        if (focused) checkboxFocusedState.text = "focused";
-        else checkboxFocusedState.text = "unfocused";
+    checkbox.AddListener('focuschanged', function(event) {
+        if (event.detail.focused) checkboxFocusedState.SetText("focused");
+        else checkboxFocusedState.SetText("unfocused");
     }.bind(this));
-    // OnMouseIn
-    checkbox.onMouseIn.push(function(x, y) {
-        if (checkbox.isMouseDown) checkboxMouseState.text = "down hover";
-        else checkboxMouseState.text = "hover";
+    checkbox.AddListener('mousein', function(event) {
+        if (checkbox.IsMouseDown()) checkboxMouseState.SetText("down hover");
+        else checkboxMouseState.SetText("hover");
     }.bind(this));
-    // OnMouseOut
-    checkbox.onMouseOut.push(function(x, y) {
-        if (checkbox.isMouseDown) checkboxMouseState.text = "down";
-        else checkboxMouseState.text = "normal";
+    checkbox.AddListener('mouseout', function(event) {
+        if (checkbox.IsMouseDown()) checkboxMouseState.SetText("down");
+        else checkboxMouseState.SetText("normal");
     }.bind(this));
-    // OnMouseDown
-    checkbox.onMouseDown.push(function(x, y, mouseButton) {
-        checkboxMouseState.text = "down hover";
+    checkbox.AddListener('mousedown', function(event) {
+        checkboxMouseState.SetText("down hover");
     }.bind(this));
-    // OnMouseUp
-    checkbox.onMouseUp.push(function(x, y, mouseButton) {
-        if (checkbox.isMouseOver) {
-            checkboxMouseState.text = "hover";
-        }
-        else checkboxMouseState.text = "normal";
+    checkbox.AddListener('mouseup', function(event) {
+        if (checkbox.IsMouseOver()) checkboxMouseState.SetText("hover");
+        else checkboxMouseState.SetText("normal");
     }.bind(this));
-    // CheckedChange
-    checkbox.onCheckedChange.push(function(checked) {
-        checkboxInfoChecked.text = "checked: " + checked;
+    checkbox.AddListener('checkedchanged', function(event) {
+        checkboxInfoChecked.SetText("checked: " + event.detail.checked);
     }.bind(this));
 
     /////////////
@@ -131,55 +118,48 @@ function CreateGUI() {
     ////////////////////
     // textbox events //
     ////////////////////
-    // OnFocusChange
-    textbox.AddListener(UI.Component.OnFocusChange, function(focused) {
-        if (focused) textboxFocusedState.text = "focused";
-        else textboxFocusedState.text = "unfocused";
+    textbox.AddListener('focuschanged', function(event) {
+        if (event.detail.focused) textboxFocusedState.SetText("focused");
+        else textboxFocusedState.SetText("unfocused");
     }.bind(this));
-    // OnMouseIn
-    textbox.onMouseIn.push(function(x, y) {
-        if (textbox.isMouseDown) textboxMouseState.text = "down hover";
-        else textboxMouseState.text = "hover";
+    textbox.AddListener('mousein', function(event) {
+        if (textbox.IsMouseDown()) textboxMouseState.SetText("down hover");
+        else textboxMouseState.SetText("hover");
     }.bind(this));
-    // OnMouseOut
-    textbox.onMouseOut.push(function(x, y) {
-        if (textbox.isMouseDown) textboxMouseState.text = "down";
-        else textboxMouseState.text = "normal";
+    textbox.AddListener('mouseout', function(event) {
+        if (textbox.IsMouseDown()) textboxMouseState.SetText("down");
+        else textboxMouseState.SetText("normal");
     }.bind(this));
-    // OnMouseDown
-    textbox.onMouseDown.push(function(x, y, mouseButton) {
-        textboxMouseState.text = "down hover";
+    textbox.AddListener('mousedown', function(event) {
+        textboxMouseState.SetText("down hover");
     }.bind(this));
-    // OnMouseUp
-    textbox.onMouseUp.push(function(x, y, mouseButton) {
-        if (textbox.isMouseOver) {
-            textboxMouseState.text = "hover";
+    textbox.AddListener('mouseup', function(event) {
+        if (textbox.IsMouseOver()) {
+            textboxMouseState.SetText("hover");
         }
-        else textboxMouseState.text = "normal";
+        else textboxMouseState.SetText("normal");
     }.bind(this));
-    // OnKeyDown
-    textbox.onKeyDown.push(function(key, shift, alt, ctrl) {
-        textboxKeyState.text = "key down";
+    textbox.AddListener('keydown', function(event) {
+        textboxKeyState.SetText("key down");
     }.bind(this));
-    // OnKeyUp
-    textbox.onKeyUp.push(function(key, shift, alt, ctrl) {
-        if (!shift && !alt && !ctrl) textboxKeyState.text = "normal";
+    textbox.AddListener('keyup', function(event) {
+        if (!event.detail.shift && !event.detail.alt && !event.detail.ctrl) textboxKeyState.SetText("normal");
     }.bind(this));
     
 
     // Add components to GUI
-    gui.components.push(button);
-    gui.components.push(checkbox);
-    gui.components.push(buttonFocusedState);
-    gui.components.push(buttonMouseState);
-    gui.components.push(buttonInfoTimesClicked);
-    gui.components.push(checkboxFocusedState);
-    gui.components.push(checkboxMouseState);
-    gui.components.push(checkboxInfoChecked);
-    gui.components.push(textbox);
-    gui.components.push(textboxFocusedState);
-    gui.components.push(textboxMouseState);
-    gui.components.push(textboxKeyState);
+    gui.AddComponent(button);
+    gui.AddComponent(checkbox);
+    gui.AddComponent(buttonFocusedState);
+    gui.AddComponent(buttonMouseState);
+    gui.AddComponent(buttonInfoTimesClicked);
+    gui.AddComponent(checkboxFocusedState);
+    gui.AddComponent(checkboxMouseState);
+    gui.AddComponent(checkboxInfoChecked);
+    gui.AddComponent(textbox);
+    gui.AddComponent(textboxFocusedState);
+    gui.AddComponent(textboxMouseState);
+    gui.AddComponent(textboxKeyState);
 
 	return gui;
 }

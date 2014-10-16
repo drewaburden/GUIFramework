@@ -23,7 +23,6 @@
  */
 UI.Button = function(text="", x=0, y=0, width=0, height=0, visible=true) {
 	UI.Button.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
-	Mixins.Mix(this, Mixins.Hoverable, Mixins.Clickable);
 
 	///////////////
 	// Variables //
@@ -39,45 +38,8 @@ UI.Button = function(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.labelStyle_down = '#B1E77D';
 	this.labelStyle_down_hover = '#D5F3B7';
     this.label = new UI.Label(this.text, this.x+this.width/2, this.y+this.height/2,
-    	this.width, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.CENTER, TextVAlign.MIDDLE, true);
-
-    /////////////////////
-    // Internal events //
-    /////////////////////
-    // OnMouseIn
-    this.onMouseIn.push(function(x, y) {
-    	document.body.style.cursor = 'pointer';
-    	if (this.isMouseDown) {
-    		this.background = this.background_down_hover;
-			this.label.SetStyle(this.labelStyle_down_hover);
-    	}
-    	else {
-			this.background = this.background_hover;
-			this.label.SetStyle(this.labelStyle_hover);
-		}
-	}.bind(this));
-	// OnMouseOut
-	this.onMouseOut.push(function() {
-		if (this.isMouseDown) {
-			this.background = this.background_down;
-			this.label.SetStyle(this.labelStyle_down);
-		}
-		else {
-			document.body.style.cursor = 'auto';
-			this.background = this.background_normal;
-			this.label.SetStyle(this.labelStyle_normal);
-		}
-	}.bind(this));
-	// OnMouseDown
-	this.onMouseDown.push(function(x, y, button) {
-		this.background = this.background_down_hover;
-		this.label.SetStyle(this.labelStyle_down_hover);
-	}.bind(this));
-	// OnMouseUp
-	this.onMouseUp.push(function(x, y, button) {
-		if (this.isMouseOver) this.OnMouseIn(x, y);
-		else this.OnMouseOut();
-	}.bind(this));
+    	this.width, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono",
+    	TextHAlign.CENTER, TextVAlign.MIDDLE, true);
 }.inherits(UI.Component);
 
 ///////////////
@@ -95,5 +57,89 @@ UI.Button.prototype.Draw = function(context) {
 	this.background.Draw(context);
 	this.label.Draw(context);
 
+	return true;
+}
+
+/////////////////////
+// Event Delegates //
+/////////////////////
+/**
+ * Event triggered when the {@link UI.Button} is clicked.
+ * @event UI.Button.Clicked
+ * @type {CustomEvent}
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
+ * @example
+ * let button = new UI.Button("test button", 25, 25, 120, 35, true);
+ * button.AddListener('clicked', function(event) {
+ *     console.log("button clicked");
+ * }.bind(this));
+ */
+UI.Button.Clicked = function() {
+	return new CustomEvent('clicked');
+};
+
+/////////////////////////////
+// Internal Event Handling //
+/////////////////////////////
+/**
+ * @override
+ * @param {UI.Component.event:MouseDown} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Button.prototype.OnMouseDown = function(event) {
+	UI.Button.parent.OnMouseDown.apply(this, arguments); // super function call
+	this.background = this.background_down_hover;
+	this.label.SetStyle(this.labelStyle_down_hover);
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseUp} event
+ * @returns {boolean} Whether or not the event was handled.
+ * @fires UI.Button.Clicked
+ */
+UI.Button.prototype.OnMouseUp = function(event) {
+	UI.Button.parent.OnMouseUp.apply(this, arguments); // super function call
+	if (this.IsMouseOver()) {
+		this.OnMouseIn(event);
+		this.DispatchEvent(new UI.Button.Clicked());
+	}
+	else this.OnMouseOut(event);
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseIn} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Button.prototype.OnMouseIn = function(event) {
+	UI.Button.parent.OnMouseIn.apply(this, arguments); // super function call
+	document.body.style.cursor = 'pointer';
+	if (this.IsMouseDown()) {
+		this.background = this.background_down_hover;
+		this.label.SetStyle(this.labelStyle_down_hover);
+	}
+	else {
+		this.background = this.background_hover;
+		this.label.SetStyle(this.labelStyle_hover);
+	}
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseOut} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Button.prototype.OnMouseOut = function(event) {
+	UI.Button.parent.OnMouseOut.apply(this, arguments); // super function call
+	if (this.IsMouseDown()) {
+		this.background = this.background_down;
+		this.label.SetStyle(this.labelStyle_down);
+	}
+	else {
+		document.body.style.cursor = 'auto';
+		this.background = this.background_normal;
+		this.label.SetStyle(this.labelStyle_normal);
+	}
 	return true;
 }

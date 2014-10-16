@@ -8,6 +8,7 @@ http://kangax.github.io/compat-table/es6/#let
 http://kangax.github.io/compat-table/es6/#const
 http://kangax.github.io/compat-table/es6/#default_function_parameters
 http://kangax.github.io/compat-table/es6/#rest_parameters
+http://kangax.github.io/compat-table/es6/#shorthand_properties
 http://kangax.github.io/compat-table/es6/#for..of_loops
 http://kangax.github.io/compat-table/es6/#function_name_property
 http://kangax.github.io/compat-table/es6/#Number.isSafeInteger

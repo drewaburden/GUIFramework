@@ -116,6 +116,7 @@ UI.GUI.prototype.TryGiveFocusTo = function(component) {
 		this.focusedComponent = component;
 		return true;
 	}
+	
 	return false;
 }
 /**
@@ -131,39 +132,42 @@ UI.GUI.prototype.ClearFocus = function() {
  * @param {boolean} shift
  * @param {boolean} alt
  * @param {boolean} ctrl
+ * @fires UI.Component.KeyDown
  */
 UI.GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
-	if (this.focusedComponent
-		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable))
-		return this.focusedComponent.OnKeyDown(key, shift, alt, ctrl);
-	else return false;
+	if (this.focusedComponent)
+		return this.focusedComponent.DispatchEvent(UI.Component.KeyDown, { key, shift, alt, ctrl });
+	else
+		return false;
 }
 /**
  * @param {number} key
  * @param {boolean} shift
  * @param {boolean} alt
  * @param {boolean} ctrl
+ * @fires UI.Component.KeyUp
  */
 UI.GUI.prototype.OnKeyUp = function(key, shift, alt, ctrl) {
-	if (this.focusedComponent
-		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable))
-		return this.focusedComponent.OnKeyUp(key, shift, alt, ctrl);
-	else return false;
+	if (this.focusedComponent)
+		return this.focusedComponent.DispatchEvent(new UI.Component.KeyUp(key, shift, alt, ctrl));
+	else
+		return false;
 }
 /**
  * @param {number} key
+ * @fires UI.Component.KeyPress
  */
 UI.GUI.prototype.OnKeyPress = function(key) {
-	if (this.focusedComponent
-		&& Mixins.HasMixins(this.focusedComponent, Mixins.Typeable)) {
-		return this.focusedComponent.OnKeyPress(key);
-	}
-	else return false;
+	if (this.focusedComponent)
+		return this.focusedComponent.DispatchEvent(new UI.Component.KeyPress(key));
+	else
+		return false;
 }
 /**
  * @param {number} x
  * @param {number} y
  * @param {number} button
+ * @fires UI.Component.MouseDown
  */
 UI.GUI.prototype.OnMouseDown = function(x, y, button) {
 	// Loop backwards so topmost components get priority
@@ -172,36 +176,45 @@ UI.GUI.prototype.OnMouseDown = function(x, y, button) {
         if (!(component instanceof UI.Component)) continue;
         
         // If the mouse is in the bounds of a component that can receive hover events
- 		if (component.MouseIntersects(x, y) && Mixins.HasMixins(component, Mixins.Clickable)) {
+ 		if (component.MouseIntersects(x, y)) {
  			// Try to give the component focus, and tell it the mouse has clicked on it
  			if (this.TryGiveFocusTo(component)) {
-	    		component.OnMouseDown(x, y, button);
+ 				component.DispatchEvent(new UI.Component.MouseDown(x, y, button));
+	    		//component.OnMouseDown(x, y, button);
 				// The rest of the loop would be looking at components underneath what the user is
 				// hovering over, so return
-				return;
+				return true;
 			}
         }
     }
     // If the user clicked on nothing focusable, remove any current focus
     this.ClearFocus();
+
+    return false;
 }
 /**
  * @param {number} x
  * @param {number} y
  * @param {number} button
+ * @fires UI.Component.MouseUp
  */
 UI.GUI.prototype.OnMouseUp = function(x, y, button) {
 	button.validate(Number);
-	if (this.focusedComponent) this.focusedComponent.OnMouseUp(x, y, button);
+	if (this.focusedComponent)
+		return this.focusedComponent.DispatchEvent(new UI.Component.MouseUp(x, y, button));
+	else
+		return false;
 }
 /**
  * @param {number} x
  * @param {number} y
+ * @fires UI.Component.MouseOut
+ * @fires UI.Component.MouseIn
  */
 UI.GUI.prototype.OnMouseMove = function(x, y) {
 	// Check if the mouse is still within the hovered component
 	if (this.hoveredComponent && !this.hoveredComponent.MouseIntersects(x, y)) {
-		this.hoveredComponent.OnMouseOut(x, y);
+		this.hoveredComponent.DispatchEvent(new UI.Component.MouseOut(x, y));
 		this.hoveredComponent = null;
 	}
 	// Loop backwards so topmost components get priority
@@ -210,15 +223,40 @@ UI.GUI.prototype.OnMouseMove = function(x, y) {
         if (!(component instanceof UI.Component)) continue;
         
         // If the mouse is in the bounds of a component that can receive hover events
- 		if (component.MouseIntersects(x, y) && Mixins.HasMixins(component, Mixins.Hoverable)) {
-        	// If there's already a hovered component, tell it the mouse has left
-        	if (this.hoveredComponent) this.hoveredComponent.OnMouseOut(x, y);
+ 		if (component.MouseIntersects(x, y)) {
+        	// If there is already some other hovered component, tell it the mouse has left
+        	if (this.hoveredComponent && this.hoveredComponent !== component)
+        		this.hoveredComponent.DispatchEvent(new UI.Component.MouseOut(x, y));
         	// Set a new hovered component, and tell it the mouse has entered
-    		component.OnMouseIn(x, y);
-			this.hoveredComponent = component;
+        	this.hoveredComponent = component;
+        	component.DispatchEvent(new UI.Component.MouseIn(x, y));
 			// The rest of the loop would be looking at components underneath what the user is
-			// hovering over, so break
-			break;
+			// hovering over, so return
+			return true;
         }
     }
+  
+    return false;
+}
+
+/**
+ * @param {UI.Component} component
+ */
+UI.GUI.prototype.AddComponent = function(component) {
+	component.validate(UI.Component)
+	if (component.gui && component.gui !== this)
+		throw new Error("AddComponent(): The specified Component already belongs to a different GUI.");
+	component.gui = this;
+	this.components.push(component);
+}
+/**
+ * @param {UI.Component} component
+ */
+UI.GUI.prototype.RemoveComponent = function(component) {
+	component.validate(UI.Component)
+	let index = this.components.indexOf(component);
+	if (index < 0 || component.gui !== this)
+		throw new Error("RemoveComponent(): The specified Component does not exist in the context of this GUI.");
+	this.components.splice(index, 1);
+	component.gui = null;
 }
