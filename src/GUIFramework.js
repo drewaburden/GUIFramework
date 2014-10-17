@@ -37,7 +37,12 @@ var UI = UI || {};
 ///////////////
 // Variables //
 ///////////////
+UI.started = false;
+UI.updateIntervalId = null;
 UI.fps = 30;
+UI.fpsActual = 0;
+UI.fpsCalcStartTime = 0;
+UI.fpsFrameCount = 0;
 UI.context = null;
 UI.canvas = null;
 UI.gui = null;
@@ -69,7 +74,8 @@ UI.Init = function() {
     window.addEventListener('resize',       UI.OnResize, false);
     UI.canvas.focus(); // Focus the canvas for key input
 
-    setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
+    UI.updateIntervalId = setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
+    UI.started = true;
 }
 /**
  * Provides GUIFramework with a {@link UI.GUI} to render.
@@ -82,11 +88,21 @@ UI.SetGUI = function(gui) {
 /**
  * @param {number} fps - How many times per second GUIFramework should update what is displayed on the screen.
  */
-UI.SetFPS = function(fps) { UI.fps = fps.validate(Number); }
+UI.SetFPS = function(fps) {
+    UI.fps = fps.validate(Number);
+    if (UI.started) {
+        clearInterval(UI.updateIntervalId);
+        UI.updateIntervalId = setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
+    }
+}
 /**
  * @returns {number} How many times per second GUIFramework should update what is displayed on the screen.
  */
-UI.GetFPS = function(fps) { return UI.fps; }
+UI.GetFPS = function() { return UI.fps; }
+/**
+ * @returns {number} How many times per second GUIFramework is actually updating what is displayed on the screen.
+ */
+UI.GetFPSActual = function() { return UI.fpsActual; }
 /**
  * Sets the user's currently displayed mouse cursor inside the browser.
  * @param {string} cursorName
@@ -161,6 +177,15 @@ UI.OnResize = function(ev) {
 // Drawing //
 /////////////
 UI.Update = function() {
+    // Update the actual fps
+    UI.fpsFrameCount++;
+    let currentTime = (new Date().getTime() - UI.fpsCalcStartTime) / 1000;
+    UI.fpsActual = Math.round(UI.fpsFrameCount / currentTime);
+    if(currentTime > 1) {
+        UI.fpsCalcStartTime = new Date().getTime();
+        UI.fpsFrameCount = 0;
+    }
+
     if (UI.gui && UI.context) {
         UI.DrawRect(0, 0, UI.gui.width, UI.gui.height, true, UI.gui.bgStyle); // Clear the canvas
         

@@ -12,6 +12,7 @@
 // Web app entry-point
 function main() {
     UI.Init();
+    UI.SetFPS(30);
 
     let gui = CreateGUI();
     UI.SetGUI(gui);
@@ -145,6 +146,16 @@ function CreateGUI() {
     textbox.AddListener('keyup', function(event) {
         if (!event.detail.shift && !event.detail.alt && !event.detail.ctrl) textboxKeyState.SetText("normal");
     }.bind(this));
+    /////////////////
+    // FPS display //
+    /////////////////
+    let fps = new UI.Label("true fps: " + UI.GetFPSActual(), 3, 7, 75, 14,
+        '#808080', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    let targetfps = new UI.Label("target fps: " + UI.GetFPS(), fps.GetX() + fps.GetWidth(), 7, 75, 14,
+        '#808080', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    // Keep the displays updated
+    setInterval(function() { fps.SetText("true fps: " + UI.GetFPSActual()); }, 500);
+    setInterval(function() { targetfps.SetText("target fps: " + UI.GetFPS()); }, 500);
     
 
     // Add components to GUI
@@ -160,6 +171,8 @@ function CreateGUI() {
     gui.AddComponent(textboxFocusedState);
     gui.AddComponent(textboxMouseState);
     gui.AddComponent(textboxKeyState);
+    gui.AddComponent(fps);
+    gui.AddComponent(targetfps);
 
 	return gui;
 }
