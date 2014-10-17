@@ -119,3 +119,14 @@ Input.CapturedKeys = [
 	Input.Key.VK_SPACE
 ];
 Object.freeze(Input.CapturedKeys); // Make the array immutable
+
+/**
+ * Array defining the keys for which a character code exists but whose KeyPress event should be bypassed.
+ * @readonly
+ * @type {Input.Key[]}
+ */
+Input.CapturedKeyPresses = [
+	Input.Key.VK_BACKSPACE,
+	Input.Key.VK_ENTER
+];
+Object.freeze(Input.CapturedKeyPresses); // Make the array immutable

@@ -14,13 +14,8 @@
 //////////////
 Util.include('src/util/Class.js');
 Util.include('src/util/MathClamp.js');
-Util.include('src/ui/mixins/Mixins.js');
-Util.include('src/ui/mixins/Observable.js');
-Util.include('src/ui/mixins/Hoverable.js');
-Util.include('src/ui/mixins/Clickable.js');
-Util.include('src/ui/mixins/Typeable.js');
-Util.include('src/ui/input/Input.js');
-Util.include('src/ui/input/Keys.js');
+Util.include('src/input/Input.js');
+Util.include('src/input/Keys.js');
 Util.include('src/ui/Destroyable.js');
 Util.include('src/ui/Drawable.js');
 Util.include('src/ui/TextAlign.js');
@@ -48,6 +43,9 @@ UI.canvas = null;
 UI.gui = null;
 UI.unitTesting = false;
 UI.preventNextDefaultKeyPressAction = false;
+UI.preventThisKeyPressEvent = false;
+UI.isMouseDown = false;
+UI.isKeyDown = false;
 
 ///////////////
 // Functions //
@@ -89,6 +87,22 @@ UI.SetFPS = function(fps) { UI.fps = fps.validate(Number); }
  * @returns {number} How many times per second GUIFramework should update what is displayed on the screen.
  */
 UI.GetFPS = function(fps) { return UI.fps; }
+/**
+ * Sets the user's currently displayed mouse cursor inside the browser.
+ * @param {string} cursorName
+ * @see  http://www.w3schools.com/jsref/prop_style_cursor.asp
+ */
+UI.SetCursor = function(cursorName) {
+    document.body.style.cursor = cursorName.validate(String);
+}
+/**
+ * @returns {boolean}
+ */
+UI.IsMouseDown = function() { return UI.isMouseDown; }
+/**
+ * @returns {boolean}
+ */
+UI.IsKeyDown = function() { return UI.isKeyDown; }
 
 ////////////
 // Events //
@@ -105,15 +119,24 @@ UI.MouseEvent = function(handler, ev) {
 	}
 	handler(x, y, ev.button);
 }
-UI.OnMouseDown = function(x, y, button) { if (UI.gui) UI.gui.OnMouseDown(x, y, button); }
-UI.OnMouseUp = function(x, y, button) { if (UI.gui) UI.gui.OnMouseUp(x, y, button); }
+UI.OnMouseDown = function(x, y, button) {
+    UI.isMouseDown = true;
+    if (UI.gui) UI.gui.OnMouseDown(x, y, button);
+}
+UI.OnMouseUp = function(x, y, button) {
+    UI.isMouseDown = false;
+    if (UI.gui) UI.gui.OnMouseUp(x, y, button);
+}
 UI.OnMouseMove = function(x, y) { if (UI.gui) UI.gui.OnMouseMove(x, y); }
 UI.KeyEvent = function(handler, ev) { handler(ev); }
 UI.OnKeyDown = function(ev) {
+    UI.isKeyDown = true;
     if (Input.CapturedKeys.indexOf(ev.keyCode) >= 0) UI.preventNextDefaultKeyPressAction = true;
+    if (Input.CapturedKeyPresses.indexOf(ev.keyCode) >= 0) UI.preventThisKeyPressEvent = true;
     if (UI.gui) UI.gui.OnKeyDown(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
 }
 UI.OnKeyUp = function(ev) {
+    UI.isKeyDown = false;
     if (UI.gui) UI.gui.OnKeyUp(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
 }
 UI.OnKeyPress = function(ev) {
@@ -121,7 +144,10 @@ UI.OnKeyPress = function(ev) {
         ev.preventDefault();
         UI.preventNextDefaultKeyPressAction = false;
     }
-    if (ev.which && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
+    if (UI.preventThisKeyPressEvent) {
+        UI.preventThisKeyPressEvent = false;
+    }
+    else if (ev.which && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
         if (UI.gui) UI.gui.OnKeyPress(ev.which, ev.shiftKey, ev.altKey, ev.ctrlKey);
     }
 }

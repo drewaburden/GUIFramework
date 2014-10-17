@@ -143,7 +143,8 @@ UI.Component.prototype.ShouldCatchEnter = function() { return this.catchEnter; }
 UI.Component.prototype.DispatchEvent = function(event) {
 	event.validate(Event);
 	if (this.listeners[event.type]) {
-		for (let callback of this.listeners[event.type]) {
+		for (let index = 0; index < this.listeners[event.type].length; ++index) {
+			let callback = this.listeners[event.type][index];
 			callback.call(this, event);
 		}
 	}
@@ -189,7 +190,7 @@ UI.Component.prototype.RemoveListener = function(message, callback) {
  */
 UI.Component.FocusChanged = function(focused) {
 	focused.validate(Boolean);
-	return new CustomEvent('focuschanged', { detail: { focused } });
+	return new CustomEvent('focuschanged', { bubbles: true, cancelable: true, detail: { focused } });
 };
 /**
  * Event triggered when a mouse button is pressed on this {@link UI.Component}.
@@ -208,7 +209,7 @@ UI.Component.FocusChanged = function(focused) {
 
 UI.Component.MouseDown = function(x, y, button) {
 	x.validate(Number); y.validate(Number); button.validate(Number);
-	return new CustomEvent('mousedown', { detail: { x, y, button } });
+	return new CustomEvent('mousedown', { bubbles: true, cancelable: true, detail: { x, y, button } });
 };
 /**
  * Event triggered when a mouse button is released on this {@link UI.Component}.
@@ -226,7 +227,7 @@ UI.Component.MouseDown = function(x, y, button) {
  */
 UI.Component.MouseUp = function(x, y, button) {
 	x.validate(Number); y.validate(Number); button.validate(Number);
-	return new CustomEvent('mouseup', { detail: { x, y, button } });
+	return new CustomEvent('mouseup', { bubbles: true, cancelable: true, detail: { x, y, button } });
 };
 /**
  * Event triggered when the mouse enters the bounds of this {@link UI.Component}.
@@ -243,7 +244,7 @@ UI.Component.MouseUp = function(x, y, button) {
  */
 UI.Component.MouseIn = function(x, y) {
 	x.validate(Number); y.validate(Number);
-	return new CustomEvent('mousein', { detail: { x, y } });
+	return new CustomEvent('mousein', { bubbles: true, cancelable: true, detail: { x, y } });
 };
 /**
  * Event triggered when the mouse exits the bounds of this {@link UI.Component}.
@@ -260,7 +261,7 @@ UI.Component.MouseIn = function(x, y) {
  */
 UI.Component.MouseOut = function(x, y) {
 	x.validate(Number); y.validate(Number);
-	return new CustomEvent('mouseout', { detail: { x, y } });
+	return new CustomEvent('mouseout', { bubbles: true, cancelable: true, detail: { x, y } });
 };
 /**
  * Event triggered when a key is down while this {@link UI.Component} has focus.
@@ -283,7 +284,7 @@ UI.Component.MouseOut = function(x, y) {
  */
 UI.Component.KeyDown = function(key=undefined, shift=false, alt=false, ctrl=false) {
 	key.validate(Number); shift.validate(Boolean); alt.validate(Boolean); ctrl.validate(Boolean);
-	return new CustomEvent('keydown', { detail: { key, shift, alt, ctrl } });
+	return new CustomEvent('keydown', { bubbles: true, cancelable: true, detail: { key, shift, alt, ctrl } });
 };
 /**
  * Event triggered when a key is released for this {@link UI.Component}.
@@ -306,7 +307,7 @@ UI.Component.KeyDown = function(key=undefined, shift=false, alt=false, ctrl=fals
  */
 UI.Component.KeyUp = function(key=undefined, shift=false, alt=false, ctrl=false) {
 	key.validate(Number); shift.validate(Boolean); alt.validate(Boolean); ctrl.validate(Boolean);
-	return new CustomEvent('keyup', { detail: { key, shift, alt, ctrl } });
+	return new CustomEvent('keyup', { bubbles: true, cancelable: true, detail: { key, shift, alt, ctrl } });
 };
 /**
  * Event triggered when a key is pressed while this {@link UI.Component} has focus.
@@ -323,7 +324,7 @@ UI.Component.KeyUp = function(key=undefined, shift=false, alt=false, ctrl=false)
  */
 UI.Component.KeyPress = function(key) {
 	key.validate(Number);
-	return new CustomEvent('keypress', { detail: { key } });
+	return new CustomEvent('keypress', { bubbles: true, cancelable: true, detail: { key } });
 };
 
 /////////////////////////////

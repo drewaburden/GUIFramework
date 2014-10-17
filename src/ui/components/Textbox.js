@@ -22,8 +22,7 @@
  * var btn = new UI.Textbox("text", 5, 5, 150, 50, true);
  */
 UI.Textbox = function(text="", x=0, y=0, width=0, height=0, visible=true) {
-	UI.Textbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
-	Mixins.Mix(this, Mixins.Hoverable, Mixins.Clickable, Mixins.Typeable);
+	UI.Textbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
 
 	///////////////
 	// Variables //
@@ -48,57 +47,6 @@ UI.Textbox = function(text="", x=0, y=0, width=0, height=0, visible=true) {
     let caretOffsetY = -8;
 	this.caret = new UI.Caret(this.label, this.label.style, caretOffsetX, caretOffsetY,
 		this.height-caretHeightPadding, this.focused);
-
-    /////////////////////
-    // Internal events //
-    /////////////////////
-    // OnMouseIn
-    this.onMouseIn.push(function(x, y) {
-    	document.body.style.cursor = 'text';
-    	if (this.focused) this.background = this.background_focused_hover;
-    	else this.background = this.background_hover;
-	}.bind(this));
-	// OnMouseOut
-	this.onMouseOut.push(function() {
-		if (this.focused) this.background = this.background_focused;
-    	else this.background = this.background_normal;
-		document.body.style.cursor = 'auto';
-	}.bind(this));
-	// OnKeyDown
-	this.onKeyDown.push(function(key, shift, alt, ctrl) {
-		switch (key) {
-			case Input.Key.VK_ARROW_RIGHT:
-				this.caret.Advance(); break;
-			case Input.Key.VK_ARROW_LEFT:
-				this.caret.Retreat(); break;
-			case Input.Key.VK_HOME:
-			case Input.Key.VK_ARROW_UP:
-				this.caret.Home(); break;
-			case Input.Key.VK_END:
-			case Input.Key.VK_ARROW_DOWN:
-				this.caret.End(); break;
-			case Input.Key.VK_BACKSPACE:
-				this.Backspace(); break;
-			case Input.Key.VK_DELETE:
-				this.Delete(); break;
-		}
-	}.bind(this));
-	// OnKeyPress
-	this.onKeyPress.push(function(key) {
-		let charToInsert = String.fromCharCode(key);
-		// Insert at beginning
-		if (this.caret.position == 0)
-			this.label.text = charToInsert + this.label.text;
-		// Insert at end
-		else if (this.caret.position == this.label.text.length)
-			this.label.text = this.label.text + charToInsert;
-		// Insert at somewhere in the middle
-		else 
-			this.label.text = this.label.text.slice(0, this.caret.position)
-				+ charToInsert
-				+ this.label.text.slice(this.caret.position, this.label.text.length)
-		this.caret.Advance();
-	}.bind(this));
 }.inherits(UI.Component);
 
 ///////////////
@@ -111,22 +59,22 @@ UI.Textbox = function(text="", x=0, y=0, width=0, height=0, visible=true) {
  */
 UI.Textbox.prototype.Draw = function(context) {
 	let keepDrawing = UI.Textbox.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
+	if (!keepDrawing || this.GetWidth() <= 0 || this.GetHeight() <= 0) return false;
 
 	this.background.Draw(context);
 
 	// Adjust the label position so that the caret can stay within the Textbox's bounds.
-	while (this.label.x+this.caret.x >= this.x+this.width-this.textBoundsPadding*2-1)
-		this.label.x -= this.width-this.width/2;
-	while (this.label.x+this.caret.x <= this.x+this.textBoundsPadding-1)
-		this.label.x += this.width-this.width/2;
+	while (this.label.GetX()+this.caret.GetX() >= this.GetX()+this.GetWidth()-this.textBoundsPadding*2-1)
+		this.label.SetX(this.label.GetX()-this.GetWidth()-this.GetWidth()/2);
+	while (this.label.GetX()+this.caret.GetX() <= this.GetX()+this.textBoundsPadding-1)
+		this.label.SetX(this.label.GetX()+this.GetWidth()-this.GetWidth()/2);
 
 	// Draw text only within the textbox bounds; i.e., clip off the overflowing text.
 	// Define a rectangle with the dimensions of the text bounds; apply rectangle as
 	// a mask; render text within the rectangle.
 	context.save();
-	context.rect(this.x+this.textBoundsPadding, this.y+this.textBoundsPadding,
-		this.width-this.textBoundsPadding*2, this.height-this.textBoundsPadding*2); // Define the mask area
+	context.rect(this.GetX()+this.textBoundsPadding, this.GetY()+this.textBoundsPadding,
+		this.GetWidth()-this.textBoundsPadding*2, this.GetHeight()-this.textBoundsPadding*2); // Define the mask area
 	context.clip(); // Apply the mask
 	this.label.Draw(context); // Draw the label within the mask
 	// Draw the caret within the mask, and use the label's styles set in the previous statement to do
@@ -143,16 +91,16 @@ UI.Textbox.prototype.Draw = function(context) {
 UI.Textbox.prototype.SetFocused = function(focused) {
 	UI.Textbox.parent.SetFocused.apply(this, arguments);
 
-	if (this.focused) {
+	if (this.IsFocused()) {
 		this.caret.StartBlinking();
 		this.label.SetStyle(this.labelStyle_focused);
-		if (this.isMouseOver) this.background = this.background_focused_hover;
+		if (this.IsMouseOver()) this.background = this.background_focused_hover;
 		else this.background = this.background_focused;
 	}
 	else {
 		this.caret.StopBlinking();
 		this.label.SetStyle(this.labelStyle_normal);
-		if (this.isMouseOver) this.background = this.background_hover;
+		if (this.IsMouseOver()) this.background = this.background_hover;
 		else this.background = this.background_normal;
 	}
 }
@@ -162,8 +110,7 @@ UI.Textbox.prototype.Backspace = function() {
 	let caretPosition = this.caret.GetPosition();
 	let labelText = this.label.GetText();
 	if (caretPosition != 0) {
-		this.label.SetText(
-			labelText.slice(0, caretPosition-1) + labelText.slice(caretPosition, labelText.length));
+		this.label.SetText(labelText.slice(0, caretPosition-1) + labelText.slice(caretPosition, labelText.length));
 		this.caret.Retreat();
 	}
 }
@@ -176,4 +123,89 @@ UI.Textbox.prototype.Delete = function() {
 			labelText.slice(0, caretPosition) + labelText.slice(caretPosition+1, labelText.length));
 	}
 	this.caret.ResetBlinking();
+}
+
+/////////////////////////////
+// Internal Event Handling //
+/////////////////////////////
+/**
+ * @override
+ * @param {UI.Component.event:KeyDown} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Textbox.prototype.OnKeyDown = function(event) {
+	UI.Textbox.parent.OnKeyDown.apply(this, arguments); // super function call
+	switch (event.detail.key) {
+		case Input.Key.VK_ARROW_RIGHT:
+			this.caret.Advance(); break;
+		case Input.Key.VK_ARROW_LEFT:
+			this.caret.Retreat(); break;
+		case Input.Key.VK_HOME:
+		case Input.Key.VK_ARROW_UP:
+			this.caret.Home(); break;
+		case Input.Key.VK_END:
+		case Input.Key.VK_ARROW_DOWN:
+			this.caret.End(); break;
+		case Input.Key.VK_BACKSPACE:
+			this.Backspace(); break;
+		case Input.Key.VK_DELETE:
+			this.Delete(); break;
+	}
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:KeyPress} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Textbox.prototype.OnKeyPress = function(event) {
+	UI.Textbox.parent.OnKeyPress.apply(this, arguments); // super function call
+	let charToInsert = String.fromCharCode(event.detail.key);
+	let labelText = this.label.GetText();
+	let caretPosition = this.caret.GetPosition();
+	// Insert at beginning
+	if (caretPosition == 0)
+		this.label.SetText(charToInsert + labelText);
+	// Insert at end
+	else if (caretPosition == labelText.length)
+		this.label.SetText(labelText + charToInsert);
+	// Insert at somewhere in the middle
+	else
+		this.label.SetText(labelText.slice(0, caretPosition)
+			+ charToInsert
+			+ labelText.slice(caretPosition, labelText.length));
+	this.caret.Advance();
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseIn} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Textbox.prototype.OnMouseIn = function(event) {
+	UI.Textbox.parent.OnMouseIn.apply(this, arguments); // super function call
+	// If the mouse isn't down at all, or it is down on only this component.
+	if (this.IsMouseDown() || !UI.IsMouseDown()) {
+		UI.SetCursor('text');
+		if (this.IsFocused()) this.background = this.background_focused_hover;
+		else this.background = this.background_hover;
+		return true;
+	}
+	else return false;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseOut} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Textbox.prototype.OnMouseOut = function(event) {
+	UI.Textbox.parent.OnMouseOut.apply(this, arguments); // super function call
+	// Only if the mouse isn't down.
+	if (!UI.IsMouseDown()) {
+		UI.SetCursor('auto');
+		if (this.IsFocused()) this.background = this.background_focused;
+		else this.background = this.background_normal;
+		return true;
+	}
+	else return false;
 }

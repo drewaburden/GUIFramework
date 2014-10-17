@@ -25,8 +25,6 @@
 UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
 	UI.Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
 
-	Mixins.Mix(this, Mixins.Hoverable, Mixins.Clickable);
-
 	///////////////
 	// Variables //
 	///////////////
@@ -158,13 +156,15 @@ UI.Checkbox.prototype.OnMouseUp = function(event) {
  */
 UI.Checkbox.prototype.OnMouseIn = function(event) {
 	UI.Checkbox.parent.OnMouseIn.apply(this, arguments); // super function call
-	document.body.style.cursor = 'pointer';
 	if (this.IsMouseDown()) {
+		UI.SetCursor('pointer');
 		this.label.SetStyle(this.labelStyle_down_hover);
 		if (this.checked) this.image = this.checked_down_hover;
 		else this.image = this.unchecked_down_hover;
 	}
-	else {
+	// If the mouse isn't down on something else
+	else if (!UI.IsMouseDown()) {
+		UI.SetCursor('pointer');
 		this.label.SetStyle(this.labelStyle_hover);
 		if (this.IsChecked()) this.image = this.checked_hover;
 		else this.image = this.unchecked_hover;
@@ -183,8 +183,8 @@ UI.Checkbox.prototype.OnMouseOut = function(event) {
 		if (this.IsChecked()) this.image = this.checked_down_normal;
 		else this.image = this.unchecked_down_normal;
 	}
-	else {
-		document.body.style.cursor = 'auto';
+	else if (!UI.IsMouseDown()) {
+		UI.SetCursor('auto');
 		this.label.SetStyle(this.labelStyle_normal);
 		if (this.IsChecked()) this.image = this.checked_normal;
 		else this.image = this.unchecked_normal;

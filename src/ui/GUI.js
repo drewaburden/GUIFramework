@@ -136,7 +136,7 @@ UI.GUI.prototype.ClearFocus = function() {
  */
 UI.GUI.prototype.OnKeyDown = function(key, shift, alt, ctrl) {
 	if (this.focusedComponent)
-		return this.focusedComponent.DispatchEvent(UI.Component.KeyDown, { key, shift, alt, ctrl });
+		return this.focusedComponent.DispatchEvent(new UI.Component.KeyDown(key, shift, alt, ctrl));
 	else
 		return false;
 }

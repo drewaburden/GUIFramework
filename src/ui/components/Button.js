@@ -114,12 +114,14 @@ UI.Button.prototype.OnMouseUp = function(event) {
  */
 UI.Button.prototype.OnMouseIn = function(event) {
 	UI.Button.parent.OnMouseIn.apply(this, arguments); // super function call
-	document.body.style.cursor = 'pointer';
 	if (this.IsMouseDown()) {
+		UI.SetCursor('pointer');
 		this.background = this.background_down_hover;
 		this.label.SetStyle(this.labelStyle_down_hover);
 	}
-	else {
+	// If the mouse isn't down on something else
+	else if (!UI.IsMouseDown()) {
+		UI.SetCursor('pointer');
 		this.background = this.background_hover;
 		this.label.SetStyle(this.labelStyle_hover);
 	}
@@ -136,8 +138,9 @@ UI.Button.prototype.OnMouseOut = function(event) {
 		this.background = this.background_down;
 		this.label.SetStyle(this.labelStyle_down);
 	}
-	else {
-		document.body.style.cursor = 'auto';
+	// If the mouse isn't down on something else
+	else if (!UI.IsMouseDown()) {
+		UI.SetCursor('auto');
 		this.background = this.background_normal;
 		this.label.SetStyle(this.labelStyle_normal);
 	}
