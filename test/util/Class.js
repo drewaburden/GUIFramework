@@ -14,11 +14,11 @@ QUnit.module("Util.Class");
 QUnit.test("Object.validate(type)", function(assert) {
 	let obj = 0;
 	obj.validate(Number); assert.ok(true, "Normal use case (constructor)"); // expect no exceptions
-	obj = new Drawable();
-	obj.validate(Destroyable); assert.ok(true, "Normal use case (instanceof)"); // expect no exceptions
+	obj = new UI.Drawable();
+	obj.validate(UI.Destroyable); assert.ok(true, "Normal use case (instanceof)"); // expect no exceptions
 	obj = 'test';
 	obj.validate(String); assert.ok(true, "Normal use case (string)"); // expect no exceptions
-	obj.validate(String, Image, Number); assert.ok(true, "Normal use case (multiple types)"); // expect no exceptions
+	obj.validate(String, UI.Image, Number); assert.ok(true, "Normal use case (multiple types)"); // expect no exceptions
 	assert.throws(function() {obj.validate(Number);}, TypeError, "Normal use case (validation fail)"); // expect TypeError exception
 	assert.throws(function() {obj.validate();}, TypeError, "No arguments"); // expect TypeError exception
 	assert.throws(function() {obj.validate('string');}, TypeError, "Wrong argument type"); // expect TypeError exception
