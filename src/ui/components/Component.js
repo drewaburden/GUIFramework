@@ -92,8 +92,8 @@ UI.Component.prototype.SetFocusable = function(focusable) { this.focusable = foc
  * @returns {boolean}
  */
 UI.Component.prototype.IsFocusable = function() {
-	if (!this.focusable || !this.IsEnabled() || !this.IsVisible()) return false
-;	else return true;
+	if (!this.focusable || !this.IsEnabled() || !this.IsVisible()) return false;
+	else return true;
 }
 
 /**
