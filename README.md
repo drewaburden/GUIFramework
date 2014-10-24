@@ -1,5 +1,5 @@
 IMPORTANT:
-This has only been tested on Firefox Aurora build 34.0a2. Chances are, if you aren't running Firefox Aurora 34.0a2, this framework will probably NOT work AT ALL on your browser, unless you are running a more recent version of Firefox or it is far in the future from when this was written (probably sometime around the latter half of 2015). This is because this framework uses Javascript features that are still in development (EMCAScript 6) and therefore only implemented by a very limited set of browsers and browser versions.
+This has only been tested on Firefox Aurora builds 34.0a2 and 35.0a2. Chances are, if you aren't running one of these browsers, this framework will probably NOT work AT ALL on your browser, unless you are running a more recent version of Firefox or it is far in the future from when this was written (probably sometime around the latter half of 2015). This is because this framework uses Javascript features that are still in development (EMCAScript 6) and therefore currently only implemented by a very limited set of browsers and browser versions.
 
 At the time of writing, you can see the compatibility of browsers and browser versions with EMCAScript 6 features here: http://kangax.github.io/compat-table/es6/
 
