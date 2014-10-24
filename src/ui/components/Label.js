@@ -19,19 +19,19 @@
  * @param {number} [height=0]
  * @param {string|CanvasGradient|CanvasPattern} [style='rgb(0, 0, 0)'] - Text style.
  * @param {string} [font='normal 12px Arial']
- * @param {TextHAlign|string} [textHAlignment=TextHAlign.START] - Horizontal alignment string to
+ * @param {UI.TextHAlign|string} [textHAlignment=UI.TextHAlign.START] - Horizontal alignment string to
  *                                                            	 pass to the context.textAlign
  *                                                            	 property. You may pass this
  *                                                            	 using the provided enum values
  *                                                            	 or as a literal string.
- * @param {TextVAlign|string} [textVAlignment=TextVAlign.ALPHABETIC] - Vertical alignment string to
+ * @param {UI.TextVAlign|string} [textVAlignment=UI.TextVAlign.ALPHABETIC] - Vertical alignment string to
  *                                                            	 pass to the context.textBaseline
  *                                                            	 property. You may pass this
  *                                                            	 using the provided enum values
  *                                                            	 or as a literal string.
  * @param {boolean} [visible=true]
  * @example
- * var label = new UI.Label("text", 5, 5, 150, 50, 'black', 'bold 18px Arial', TextHAlign.CENTER, TextVAlign.MIDDLE, true);
+ * var label = new UI.Label("text", 5, 5, 150, 50, 'black', 'bold 18px Arial', UI.TextHAlign.CENTER, UI.TextVAlign.MIDDLE, true);
  */
 UI.Label = function(text="", x=0, y=0, width=0, height=0, style='black', font='normal 12px Arial',
 	textHAlignment=TextHAlign.START, textVAlignment=TextVAlign.ALPHABETIC, visible=true) {
@@ -66,18 +66,18 @@ UI.Label = function(text="", x=0, y=0, width=0, height=0, style='black', font='n
  */
 UI.Label.prototype.Draw = function(context) {
 	let keepDrawing = UI.Label.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || this.height <= 0) return false;
+	if (!keepDrawing || this.GetHeight() <= 0) return false;
 	
 	// Set text font and style
-    context.font = this.font;
-    context.fillStyle = this.style;
+    context.font = this.GetFont();
+    context.fillStyle = this.GetStyle();
 	// Set text alignments
-	context.textAlign = this.textHAlignment;
-	context.textBaseline = this.textVAlignment;
+	context.textAlign = this.GetHAlignment();
+	context.textBaseline = this.GetVAlignment();
 	// If a width was specified, constrain the text to render within that width.
 	// Otherwise, allow the text to take as much space as necessary.
-	if (this.width > 0) context.fillText(this.text, this.x, this.y, this.width);
-	else context.fillText(this.text, this.x, this.y);
+	if (this.GetWidth() > 0) context.fillText(this.GetText(), this.GetX(), this.GetY(), this.GetWidth());
+	else context.fillText(this.GetText(), this.GetX(), this.GetY());
 
 	return true;
 }
@@ -113,25 +113,25 @@ UI.Label.prototype.SetFont = function(font) { this.font = font.validate(String);
 UI.Label.prototype.GetFont = function() { return this.font; }
 
 /**
- * @param {TextHAlign|string} textHAlignment - New horizontal alignment to apply to the {@link UI.Label}'s display text.
+ * @param {UI.TextHAlign|string} textHAlignment - New horizontal alignment to apply to the {@link UI.Label}'s display text.
  */
 UI.Label.prototype.SetHAlignment = function(textHAlignment) {
 	// Validate as string, because that's actually what it is behind the scenes
 	this.textHAlignment = textHAlignment.validate(String);
 }
 /**
- * @returns {TextHAlign|string} The horizontal alignment of this {@link UI.Label}'s display text.
+ * @returns {UI.TextHAlign|string} The horizontal alignment of this {@link UI.Label}'s display text.
  */
 UI.Label.prototype.GetHAlignment = function() { return this.textHAlignment; }
 
 /**
- * @param {TextVAlign|string} textVAlignment - New vertical alignment to apply to the {@link UI.Label}'s display text.
+ * @param {UI.TextVAlign|string} textVAlignment - New vertical alignment to apply to the {@link UI.Label}'s display text.
  */
 UI.Label.prototype.SetVAlignment = function(textVAlignment) {
 	// Validate as string, because that's actually what it is behind the scenes
 	this.textVAlignment = textVAlignment.validate(String);
 }
 /**
- * @returns {TextVAlign|string} The vertical alignment of this {@link UI.Label}'s display text.
+ * @returns {UI.TextVAlign|string} The vertical alignment of this {@link UI.Label}'s display text.
  */
 UI.Label.prototype.GetVAlignment = function() { return this.textVAlignment; }

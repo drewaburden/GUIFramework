@@ -44,9 +44,9 @@ UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visib
 	this.labelStyle_down = '#B1E77D';
 	this.labelStyle_down_hover = '#D5F3B7';
 	var textPadding_left = 30;
-    this.label = new UI.Label(this.text, this.x+textPadding_left, this.y+this.height/2,
-    	this.width-textPadding_left, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono",
-    	TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+    this.label = new UI.Label(this.text, this.GetX()+textPadding_left, this.GetY()+this.GetHeight()/2,
+    	this.GetWidth()-textPadding_left, this.GetHeight(), this.labelStyle_normal, "normal 12px Share Tech Mono",
+    	UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
 }.inherits(UI.Component);
 
 ///////////////
@@ -59,7 +59,7 @@ UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visib
  */
 UI.Checkbox.prototype.Draw = function(context) {
 	let keepDrawing = UI.Checkbox.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
+	if (!keepDrawing || this.GetWidth() <= 0 || this.GetHeight() <= 0) return false;
 
 	this.image.Draw(context);
 	this.label.Draw(context);
@@ -69,7 +69,7 @@ UI.Checkbox.prototype.Draw = function(context) {
 /**
  * @returns {boolean}
  */
-UI.Checkbox.prototype.IsChecked = function(checked) { return this.checked; }
+UI.Checkbox.prototype.IsChecked = function() { return this.checked; }
 /**
  * Sets the checked state of the {@link UI.Checkbox} to the specified boolean value.
  * @param {boolean} checked
@@ -92,7 +92,7 @@ UI.Checkbox.prototype.SetChecked = function(checked) {
  * Toggles the checked state of the {@link UI.Checkbox}.
  */
 UI.Checkbox.prototype.Toggle = function() {
-	this.SetChecked(!this.checked);
+	this.SetChecked(!this.IsChecked());
 }
 
 /////////////////////

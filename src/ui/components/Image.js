@@ -29,41 +29,17 @@ UI.Image = function(imgsrc=undefined, x=0, y=0, width=undefined, height=undefine
 	///////////////
 	this.image = new Image(); // js Image, not UI.Image
 	this.loaded = false;
-
-	/////////////////////
-	// Event delegates //
-	/////////////////////
-	/** Event functions called when all loading and initialization has been completed for this {@link UI.Image}.
-	 * @type {function[]}
-	 * @example
-	 * var img = new UI.Image("image.jpg");
-	 * img.onload.push(function() {console.log("image loaded!");});
-	 */
-	this.onload = [];
+	this.width = width;
+	this.height = height;
 	
 	////////////////////
 	// Initialization //
 	////////////////////
 	this.SetFocusable(false);
 	this.image.src = imgsrc.validate(String);
-	this.image.onload = function() {
-		if (!this.image || !this.image.complete || this.image.naturalWidth === undefined
-		|| this.image.naturalWidth <= 0) {
-			throw new Error("Image(): Failed to load image '" + this.image.src + "'.");
-		}
-
-		// Executed after the image has successfully loaded, because we need to use the width and height
-		if (width === undefined) this.width = this.image.width;
-		else this.width = width.validate(Number);
-		if (height === undefined) this.height = this.image.height;
-		else this.height = height.validate(Number);
-
-		this.loaded = true;
-		for (let listener of this.onload) {
-			listener.validate(Function);
-			listener();
-		}
-	}.bind(this);
+	this.image.onload = function() { this.DispatchEvent(new UI.Image.Loaded()); }.bind(this);
+	// Listen to our own events so we can do any processing before other listeners are triggered
+	this.AddListener('loaded', this.OnLoaded);
 }.inherits(UI.Component);
 
 ///////////////
@@ -86,9 +62,55 @@ UI.Image.prototype.Destroy = function() {
  */
 UI.Image.prototype.Draw = function(context) {
 	let keepDrawing = UI.Image.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || !this.loaded || this.width <= 0 || this.height <= 0) return false;
+	if (!keepDrawing || !this.IsLoaded() || this.GetWidth() <= 0 || this.GetHeight() <= 0) return false;
 
-	context.drawImage(this.image, this.x, this.y, this.width, this.height);
+	context.drawImage(this.image, this.GetX(), this.GetY(), this.GetWidth(), this.GetHeight());
 
+	return true;
+}
+/**
+ * @returns {boolean}
+ */
+UI.Image.prototype.IsLoaded = function() { return this.loaded; }
+
+/////////////////////
+// Event Delegates //
+/////////////////////
+/**
+ * Event triggered when the {@link UI.Image} is loaded. Listeners added after the image has
+ * been loaded will not be called.
+ * @event UI.Image.Loaded
+ * @type {CustomEvent}
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
+ * @example
+ * let image = new UI.Image("assets/checkbox/unchecked_normal.png", 5, 5);
+ * image.AddListener('loaded', function(event) {
+ *     console.log("image loaded");
+ * }.bind(this));
+ */
+UI.Image.Loaded = function() {
+	return new CustomEvent('loaded');
+};
+
+/////////////////////////////
+// Internal Event Handling //
+/////////////////////////////
+/**
+ * @param {UI.Image.event:Loaded} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Image.prototype.OnLoaded = function(event) {
+	if (!this.image || !this.image.complete || this.image.naturalWidth === undefined
+		|| this.image.naturalWidth <= 0) {
+		throw new Error("Image(): Failed to load image '" + this.image.src + "'.");
+	}
+
+	// Executed after the image has successfully loaded, because we need to use the width and height
+	if (this.GetWidth() === undefined) this.SetWidth(this.image.width);
+	else this.width.validate(Number);
+	if (this.GetHeight() === undefined) this.SetHeight(this.image.height);
+	else this.height.validate(Number);
+
+	this.loaded = true;
 	return true;
 }

@@ -13,21 +13,21 @@
  * @readonly
  * @enum {string}
  */
-const TextHAlign = {
+UI.TextHAlign = {
 	START: 'start',
 	END: 'end',
 	LEFT: 'left',
 	RIGHT: 'right',
 	CENTER: 'center'
 };
-Object.freeze(TextHAlign); // Make the enum immutable
+Object.freeze(UI.TextHAlign); // Make the enum immutable
 
 /**
  * Enum defining the possible vertical text alignment options
  * @readonly
  * @enum {string}
  */
-const TextVAlign = {
+UI.TextVAlign = {
 	TOP: 'top',
 	BOTTOM: 'bottom',
 	MIDDLE: 'middle',
@@ -35,4 +35,4 @@ const TextVAlign = {
 	HANGING: 'hanging',
 	IDEOGRAPHIC: 'ideographic'
 };
-Object.freeze(TextVAlign); // Make the enum immutable
+Object.freeze(UI.TextVAlign); // Make the enum immutable

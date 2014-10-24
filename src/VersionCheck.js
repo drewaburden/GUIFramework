@@ -10,7 +10,7 @@
 //
 // ================================================================================================
 
-var testedOnVersions = ['Firefox/34.0'];
+var testedOnVersions = ['Firefox/34.0', 'Firefox/35.0'];
 
 var matchingVersion = false;
 // Version check
@@ -28,7 +28,7 @@ if (!matchingVersion) {
         error.textContent = "Warning: This framework has not been tested on your browser and/or the version " +
             "of your browser. It will likely not work correctly on your browser. This framework requires some " + 
             "very experimental EMCAScript 6 features, and was tested on the Aurora build of Firefox (version " + 
-            "34.0, at the time of writing).";
+            "35.0, at the time of writing).";
         console.log("Your browser: " + userAgent);
     }
 }

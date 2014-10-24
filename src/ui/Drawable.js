@@ -51,7 +51,7 @@ UI.Drawable = function(x=0, y=0, width=0, height=0, visible=false) {
  */
 UI.Drawable.prototype.Draw = function(context) {
 	context.validate(CanvasRenderingContext2D);
-	if (!this.visible) return false;
+	if (!this.IsVisible()) return false;
 
 	return true;
 }

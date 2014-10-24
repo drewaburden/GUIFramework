@@ -28,8 +28,8 @@ UI.Caret = function(label=undefined, style='white', offsetX=undefined, offsetY=u
 	///////////////
 	this.label = label.validate(UI.Label);
 	this.style;
-	this.position = 0;
-	this.blinkFrequency = 450; // Milliseconds between blinks
+	this.position;
+	this.blinkFrequency; // Milliseconds between blinks
 	this.blinking = false;
 	this.blinkIntervalId = null; // Holds the id that refers to the active interval that's handling the blinking.
 	this.offsetX;
@@ -40,6 +40,8 @@ UI.Caret = function(label=undefined, style='white', offsetX=undefined, offsetY=u
 	////////////////////
 	this.SetFocusable(false);
 	this.SetStyle(style);
+	this.SetPosition(0);
+	this.SetBlinkFrequency(450);
 	this.SetOffsetX(offsetX);
 	this.SetOffsetY(offsetY);
 	if (startBlinking) this.StartBlinking();
@@ -55,12 +57,12 @@ UI.Caret = function(label=undefined, style='white', offsetX=undefined, offsetY=u
  */
 UI.Caret.prototype.Draw = function(context) {
 	let keepDrawing = UI.Caret.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || !this.blinking || this.height <= 0) return false;
+	if (!keepDrawing || !this.IsBlinking() || this.GetHeight() <= 0) return false;
 
 	// Determine the position of the caret within the bounds of the corresponding Label
-	if (this.position == 0) this.x = 0;
+	if (this.GetPosition() == 0) this.SetX(0);
 	else {
-		let text = this.label.GetText().substring(0, this.position);
+		let text = this.label.GetText().substring(0, this.GetPosition());
 		this.SetX(context.measureText(text).width);
 	}
 	// Set the Caret style
@@ -68,8 +70,12 @@ UI.Caret.prototype.Draw = function(context) {
 	context.lineWidth = this.width;
 	// Draw the caret line
 	context.beginPath();
-	context.moveTo(Math.round(this.label.x+this.x)+this.offsetX, Math.round(this.label.y+this.y)+this.offsetY);
-	context.lineTo(Math.round(this.label.x+this.x)+this.offsetX, Math.round(this.label.y+this.y+this.height)+this.offsetY);
+	context.moveTo(
+		Math.round(this.label.GetX()+this.GetX()) + this.GetOffsetX(),
+		Math.round(this.label.GetY()+this.GetY()) + this.GetOffsetY());
+	context.lineTo(
+		Math.round(this.label.GetX()+this.GetX()) + this.GetOffsetX(),
+		Math.round(this.label.GetY()+this.GetY()+this.GetHeight()) + this.GetOffsetY());
 	context.stroke();
 
 	return true;
@@ -80,13 +86,13 @@ UI.Caret.prototype.Draw = function(context) {
  * Assigns a new id to the `blinkIntervalId` class variable.
  */
 UI.Caret.prototype.StartBlinking = function() {
-	if (!this.blinking) {
+	if (!this.IsBlinking()) {
 		// Set up a recurring function call that toggles the visibility of this component
 		// every `blinkFrequency` milliseconds.
 		this.blinkIntervalId = setInterval(
-			function() { this.visible = !this.visible; }.bind(this),
+			function() { this.visible = !this.IsVisible(); }.bind(this),
 			this.blinkFrequency);
-		this.visible = true;
+		this.SetVisible(true);
 		this.blinking = true;
 	}
 }
@@ -94,7 +100,7 @@ UI.Caret.prototype.StartBlinking = function() {
  * If the {@link UI.Caret} is currently blinking, stop blinking.
  */
 UI.Caret.prototype.StopBlinking = function() {
-	if (this.blinking) {
+	if (this.IsBlinking()) {
 		clearInterval(this.blinkIntervalId);
 		this.blinking = false;
 		this.visible = false;
@@ -105,11 +111,15 @@ UI.Caret.prototype.StopBlinking = function() {
  * restart the blink interval.
  */
 UI.Caret.prototype.ResetBlinking = function() {
-	if (this.blinking) {
+	if (this.IsBlinking()) {
 		this.StopBlinking();
 		this.StartBlinking();
 	}
 }
+/**
+ * @returns {boolean}
+ */
+UI.Caret.prototype.IsBlinking= function() { return this.blinking; }
 
 /**
  * Place the {@link UI.Caret} at the very beginning of the text.
@@ -118,15 +128,15 @@ UI.Caret.prototype.Home = function() { this.SetPosition(0); }
 /**
  * Place the {@link UI.Caret} at the very end of the text.
  */
-UI.Caret.prototype.End = function() { this.SetPosition(this.label.text.length); }
+UI.Caret.prototype.End = function() { this.SetPosition(this.label.GetText().length); }
 /**
  * Move the {@link UI.Caret} position one character forward, if possible.
  */
-UI.Caret.prototype.Advance = function() { this.SetPosition(this.position+1); }
+UI.Caret.prototype.Advance = function() { this.SetPosition(this.GetPosition()+1); }
 /**
  * Place the {@link UI.Caret} one character backward, if possible.
  */
-UI.Caret.prototype.Retreat = function() { this.SetPosition(this.position-1); }
+UI.Caret.prototype.Retreat = function() { this.SetPosition(this.GetPosition()-1); }
 
 //////////////////////////
 // Mutators & Accessors //
@@ -136,7 +146,7 @@ UI.Caret.prototype.Retreat = function() { this.SetPosition(this.position-1); }
  *                         and `index`-1; i.e., the Caret comes before the specified `index`.
  */
 UI.Caret.prototype.SetPosition = function(index) {
-	this.position = Math.clamp(index.validate(Number), 0, this.label.text.length);
+	this.position = Math.clamp(index.validate(Number), 0, this.label.GetText().length);
 	this.ResetBlinking();
 }
 /**

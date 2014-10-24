@@ -30,13 +30,13 @@ function CreateGUI() {
     let buttonTimesClicked = 0;
     let buttonFocusedState = new UI.Label("unfocused", 
         150+button.x+button.width/2, button.y+button.height/2, 100, button.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let buttonMouseState = new UI.Label("normal", 
         115+buttonFocusedState.x, button.y+button.height/2, 100, button.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let buttonInfoTimesClicked = new UI.Label("clicked " + buttonTimesClicked + " times",
         85+buttonMouseState.x, buttonMouseState.y, 150, buttonMouseState.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     ///////////////////
     // button events //
     ///////////////////
@@ -70,13 +70,13 @@ function CreateGUI() {
     let checkbox = new UI.Checkbox("test checkbox", 25, 100, 120, 24);
     let checkboxFocusedState = new UI.Label("unfocused", 
         150+checkbox.x+checkbox.width/2, checkbox.y+checkbox.height/2, 100, checkbox.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let checkboxMouseState = new UI.Label("normal", 
         115+checkboxFocusedState.x, checkbox.y+checkbox.height/2, 100, checkbox.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let checkboxInfoChecked = new UI.Label("checked: " + checkbox.IsChecked(),
         85+checkboxMouseState.x, checkboxMouseState.y, 150, checkboxMouseState.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     /////////////////////
     // checkbox events //
     /////////////////////
@@ -109,13 +109,13 @@ function CreateGUI() {
     let textbox = new UI.Textbox("test textbox test textbox test textbox", 25, 160, 120, 30, true);
     let textboxFocusedState = new UI.Label("unfocused", 
         150+textbox.x+textbox.width/2, textbox.y+textbox.height/2, 100, textbox.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let textboxMouseState = new UI.Label("normal", 
         115+textboxFocusedState.x, textbox.y+textbox.height/2, 100, textbox.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let textboxKeyState = new UI.Label("normal",
         85+textboxMouseState.x, textboxMouseState.y, 150, textboxMouseState.height,
-        '#d2d2d2', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#d2d2d2', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     ////////////////////
     // textbox events //
     ////////////////////
@@ -150,9 +150,9 @@ function CreateGUI() {
     // FPS display //
     /////////////////
     let fps = new UI.Label("true fps: " + UI.GetFPSActual(), 3, 7, 75, 14,
-        '#808080', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#808080', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     let targetfps = new UI.Label("target fps: " + UI.GetFPS(), fps.GetX() + fps.GetWidth(), 7, 75, 14,
-        '#808080', "normal 10px Share Tech Mono", TextHAlign.LEFT, TextVAlign.MIDDLE, true);
+        '#808080', "normal 10px Share Tech Mono", UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
     // Keep the displays updated
     setInterval(function() { fps.SetText("true fps: " + UI.GetFPSActual()); }, 500);
     setInterval(function() { targetfps.SetText("target fps: " + UI.GetFPS()); }, 500);

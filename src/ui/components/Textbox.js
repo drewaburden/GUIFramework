@@ -28,25 +28,25 @@ UI.Textbox = function(text="", x=0, y=0, width=0, height=0, visible=true) {
 	// Variables //
 	///////////////
 	// Background
-	this.background_normal = new UI.NinePatch("assets/textbox/textbox_normal.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
-	this.background_hover = new UI.NinePatch("assets/textbox/textbox_hover.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
-	this.background_focused = new UI.NinePatch("assets/textbox/textbox_focused.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
-	this.background_focused_hover = new UI.NinePatch("assets/textbox/textbox_focused_hover.png", this.x, this.y, this.width, this.height, 10, 10, 10, 10, true);
+	this.background_normal = new UI.NinePatch("assets/textbox/textbox_normal.png", this.GetX(), this.GetY(), this.GetWidth(), this.GetHeight(), 10, 10, 10, 10, true);
+	this.background_hover = new UI.NinePatch("assets/textbox/textbox_hover.png", this.GetX(), this.GetY(), this.GetWidth(), this.GetHeight(), 10, 10, 10, 10, true);
+	this.background_focused = new UI.NinePatch("assets/textbox/textbox_focused.png", this.GetX(), this.GetY(), this.GetWidth(), this.GetHeight(), 10, 10, 10, 10, true);
+	this.background_focused_hover = new UI.NinePatch("assets/textbox/textbox_focused_hover.png", this.GetX(), this.GetY(), this.GetWidth(), this.GetHeight(), 10, 10, 10, 10, true);
 	this.background = this.background_normal;
 	// Label
 	this.labelStyle_normal = '#e6e6e6';
 	this.labelStyle_focused = '#ffffff';
 	let textPadding_left = 8;
 	this.textBoundsPadding = 5;
-    this.label = new UI.Label(text.validate(String), this.x+textPadding_left, this.y+this.height/2,
-    	0, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono", TextHAlign.LEFT,
-    	TextVAlign.MIDDLE, true);
+    this.label = new UI.Label(text.validate(String), this.GetX()+textPadding_left, this.GetY()+this.GetHeight()/2,
+    	0, this.GetHeight(), this.labelStyle_normal, "normal 12px Share Tech Mono", UI.TextHAlign.LEFT,
+    	UI.TextVAlign.MIDDLE, true);
     // Caret
     let caretHeightPadding = 15;
     let caretOffsetX = 0;
     let caretOffsetY = -8;
-	this.caret = new UI.Caret(this.label, this.label.style, caretOffsetX, caretOffsetY,
-		this.height-caretHeightPadding, this.focused);
+	this.caret = new UI.Caret(this.label, this.label.GetStyle(), caretOffsetX, caretOffsetY,
+		this.GetHeight()-caretHeightPadding, this.IsFocused());
 }.inherits(UI.Component);
 
 ///////////////

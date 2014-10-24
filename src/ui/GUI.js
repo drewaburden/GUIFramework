@@ -244,9 +244,6 @@ UI.GUI.prototype.OnMouseMove = function(x, y) {
  */
 UI.GUI.prototype.AddComponent = function(component) {
 	component.validate(UI.Component)
-	if (component.gui && component.gui !== this)
-		throw new Error("AddComponent(): The specified Component already belongs to a different GUI.");
-	component.gui = this;
 	this.components.push(component);
 }
 /**
@@ -255,8 +252,7 @@ UI.GUI.prototype.AddComponent = function(component) {
 UI.GUI.prototype.RemoveComponent = function(component) {
 	component.validate(UI.Component)
 	let index = this.components.indexOf(component);
-	if (index < 0 || component.gui !== this)
+	if (index < 0)
 		throw new Error("RemoveComponent(): The specified Component does not exist in the context of this GUI.");
 	this.components.splice(index, 1);
-	component.gui = null;
 }

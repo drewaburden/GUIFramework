@@ -73,10 +73,10 @@ UI.Component.prototype.Draw = function(context) {
 UI.Component.prototype.MouseIntersects = function(mouseX, mouseY) {
 	mouseX.validate(Number);
 	mouseY.validate(Number);
-	if (!this.visible) return false;
+	if (!this.IsVisible()) return false;
 
-	if (mouseX >= this.x && mouseY >= this.y
-		&& mouseX <= this.x+this.width && mouseY <= this.y+this.height)
+	if (mouseX >= this.GetX() && mouseY >= this.GetY()
+		&& mouseX <= this.GetX()+this.GetWidth() && mouseY <= this.GetY()+this.GetHeight())
 		return true;
 	else return false;
 }
@@ -92,8 +92,8 @@ UI.Component.prototype.SetFocusable = function(focusable) { this.focusable = foc
  * @returns {boolean}
  */
 UI.Component.prototype.IsFocusable = function() {
-	if (!this.focusable || !this.enabled || !this.visible) return false;
-	else return true;
+	if (!this.focusable || !this.IsEnabled() || !this.IsVisible()) return false
+;	else return true;
 }
 
 /**
@@ -102,17 +102,25 @@ UI.Component.prototype.IsFocusable = function() {
  */
 UI.Component.prototype.SetFocused = function(focused) {
 	focused.validate(Boolean);
-	if (!this.enabled) return;
-	if (!this.visible) return;
+	if (!this.IsEnabled()) return;
+	if (!this.IsVisible()) return;
 
 	this.focused = focused;
 
-	this.DispatchEvent(new UI.Component.FocusChanged(this.focused));
+	this.DispatchEvent(new UI.Component.FocusChanged(this.IsFocused()));
 }
 /**
  * @returns {boolean}
  */
 UI.Component.prototype.IsFocused = function() { return this.focused; }
+/**
+ * @param {boolean} enabled
+ */
+UI.Component.prototype.SetEnabled = function(enabled) { this.enabled = enabled.validate(Boolean); }
+/**
+ * @returns {boolean}
+ */
+UI.Component.prototype.IsEnabled = function() { return this.enabled; }
 /**
  * @returns {boolean}
  */

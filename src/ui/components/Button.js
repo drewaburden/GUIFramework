@@ -37,9 +37,9 @@ UI.Button = function(text="", x=0, y=0, width=0, height=0, visible=true) {
 	this.labelStyle_hover = '#D5F3B7';
 	this.labelStyle_down = '#B1E77D';
 	this.labelStyle_down_hover = '#D5F3B7';
-    this.label = new UI.Label(this.text, this.x+this.width/2, this.y+this.height/2,
-    	this.width, this.height, this.labelStyle_normal, "normal 12px Share Tech Mono",
-    	TextHAlign.CENTER, TextVAlign.MIDDLE, true);
+    this.label = new UI.Label(this.text, this.GetX()+this.GetWidth()/2, this.GetY()+this.GetHeight()/2,
+    	this.GetWidth(), this.GetHeight(), this.labelStyle_normal, "normal 12px Share Tech Mono",
+    	UI.TextHAlign.CENTER, UI.TextVAlign.MIDDLE, true);
 }.inherits(UI.Component);
 
 ///////////////
@@ -52,7 +52,7 @@ UI.Button = function(text="", x=0, y=0, width=0, height=0, visible=true) {
  */
 UI.Button.prototype.Draw = function(context) {
 	let keepDrawing = UI.Button.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || this.width <= 0 || this.height <= 0) return false;
+	if (!keepDrawing || this.GetWidth() <= 0 || this.GetHeight() <= 0) return false;
 
 	this.background.Draw(context);
 	this.label.Draw(context);

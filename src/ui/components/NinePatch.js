@@ -12,7 +12,7 @@
 /**
  * NinePatch
  * @class
- * @extends {UI.Component}
+ * @extends {UI.Image}
  * @param {string} imgsrc
  * @param {number} [x=0]
  * @param {number} [y=0]
@@ -29,7 +29,7 @@
  */
 UI.NinePatch = function(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargin=0, topMargin=0, rightMargin=0,
 	bottomMargin=0, fillCenter=true, visible=true) {
-	UI.NinePatch.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
+	UI.NinePatch.parent.constructor.call(this, imgsrc, x, y, width, height, visible); // Super constructor
 
 	///////////////
 	// Variables //
@@ -39,46 +39,7 @@ UI.NinePatch = function(imgsrc=undefined, x=0, y=0, width=0, height=0, leftMargi
 	this.rightMargin = Math.abs(rightMargin.validate(Number));
 	this.bottomMargin = Math.abs(bottomMargin.validate(Number));
 	this.fillCenter = fillCenter.validate(Boolean);	
-	this.image = new Image();
-	this.loaded = false;
-
-	/////////////////////
-	// Event delegates //
-	/////////////////////
-	/** Event functions called when all loading and initialization has been completed for this {@link UI.NinePatch}.
-	 * @type {function[]}
-	 * @example
-	 * var img = new UI.NinePatch("image.jpg");
-	 * img.onload.push(function() {console.log("image loaded!");});
-	 */
-	this.onload = [];
-	
-	////////////////////
-	// Initialization //
-	////////////////////
-	this.SetFocusable(false);
-	this.image.src = imgsrc.validate(String);
-	this.image.onload = function() {
-		if (!this.image || !this.image.complete || this.image.naturalWidth === undefined
-		|| this.image.naturalWidth <= 0) {
-			throw new Error("NinePatch(): Failed to load image '" + this.image.src + "'.");
-		}
-
-		// Clamp the margins and dimensions to make sure they make sense
-		// Executed after the image has successfully loaded, because we need to use the width and height
-		this.leftMargin = Math.clamp(this.leftMargin, 0, this.image.width);
-		this.topMargin = Math.clamp(this.topMargin, 0, this.image.height);
-		this.rightMargin = Math.clamp(this.rightMargin, 0, this.image.width-this.leftMargin);
-		this.bottomMargin = Math.clamp(this.bottomMargin, 0, this.image.height-this.topMargin);
-		this.width = Math.clamp(this.width, this.leftMargin+this.rightMargin, Number.MAX_VALUE);
-		this.height = Math.clamp(this.height, this.topMargin+this.bottomMargin, Number.MAX_VALUE);
-		this.loaded = true;
-		for (let listener of this.onload) {
-			listener.validate(Function);
-			listener();
-		}
-	}.bind(this);
-}.inherits(UI.Component);
+}.inherits(UI.Image);
 
 ///////////////
 // Functions //
@@ -99,15 +60,18 @@ UI.NinePatch.prototype.Destroy = function() {
  * @param {CanvasRenderingContext2D} context
  */
 UI.NinePatch.prototype.Draw = function(context) {
-	let keepDrawing = UI.NinePatch.parent.Draw.apply(this, arguments); // super function call
-	if (!keepDrawing || !this.loaded || this.width <= 0 || this.height <= 0) return false;
+	// Call UI.Image's super Draw function, not the actual UI.Image.Draw function.
+	// We do this because, the inherited UI.Image.Draw function would draw an incorrect, additional image
+	// underneath what is drawn by UI.NinePatch.Draw, and we don't want that.
+	let keepDrawing = UI.Image.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || !this.IsLoaded() || this.GetWidth() <= 0 || this.GetHeight() <= 0) return false;
 
 	// Re-scope the variables so we don't have to use the "this" keyword so much throughout this function
 	let image = this.image,
-		x = this.x,
-		y = this.y,
-		width = this.width,
-		height = this.height,
+		x = this.GetX(),
+		y = this.GetY(),
+		width = this.GetWidth(),
+		height = this.GetHeight(),
 		leftMargin = this.leftMargin,
 		topMargin = this.topMargin,
 		rightMargin = this.rightMargin,
@@ -160,5 +124,25 @@ UI.NinePatch.prototype.Draw = function(context) {
 		0, image.height-bottomMargin, leftMargin, bottomMargin,
 		x, y+height-bottomMargin, leftMargin, bottomMargin);
 
+	return true;
+}
+
+/////////////////////////////
+// Internal Event Handling //
+/////////////////////////////
+/**
+ * @param {UI.Image.event:Loaded} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.NinePatch.prototype.OnLoaded = function(event) {
+	UI.NinePatch.parent.OnLoaded.apply(this, arguments); // super function call
+	// Clamp the margins and dimensions to make sure they make sense
+	// Executed after the image has successfully loaded, because we need to use the width and height
+	this.leftMargin = Math.clamp(this.leftMargin, 0, this.image.width);
+	this.topMargin = Math.clamp(this.topMargin, 0, this.image.height);
+	this.rightMargin = Math.clamp(this.rightMargin, 0, this.image.width-this.leftMargin);
+	this.bottomMargin = Math.clamp(this.bottomMargin, 0, this.image.height-this.topMargin);
+	this.width = Math.clamp(this.width, this.leftMargin+this.rightMargin, Number.MAX_VALUE);
+	this.height = Math.clamp(this.height, this.topMargin+this.bottomMargin, Number.MAX_VALUE);
 	return true;
 }

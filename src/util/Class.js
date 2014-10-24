@@ -83,7 +83,7 @@ Object.prototype.validate = function(...types) {
 		// if (someBool) {}  or
 		// if (!someBool) {}
 		// would always return true, because an instantiated object isn't falsey.
-		if (typeof this !== Boolean && this.constructor === Boolean) return !!this; // Cast to boolean
+		if (typeof this !== Boolean && this.constructor === Boolean) return Boolean(this); // Cast to boolean
 		else return this;
 	}
 	else throw new TypeError("validate(): The caller '" + this.name + "' failed to validate as " +
