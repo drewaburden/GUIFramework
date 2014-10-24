@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/components/Checkbox.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/components/Checkbox.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
+//
+//  ui\components\Checkbox.js
+//
+//  Created by:     Drew Burden (drewaburden@gmail.com)
+//
+//      
+//
+// ================================================================================================
+
+/**
+ * 
+ * @class
+ * @extends {UI.Component}
+ * @param {string} [text=""]
+ * @param {number} [x=0]
+ * @param {number} [y=0]
+ * @param {number} [width=0]
+ * @param {number} [height=0]
+ * @param {boolean} [checked=true]
+ * @param {boolean} [visible=true]
+ * @example
+ * var checkbox = new UI.Checkbox("text", 5, 5, 150, 50, true, true);
+ */
+UI.Checkbox = function(text="", x=0, y=0, width=0, height=0, checked=true, visible=true) {
+	UI.Checkbox.parent.constructor.call(this, x, y, width, height, visible); // Super constructor	
+
+	///////////////
+	// Variables //
+	///////////////
+	this.text = text.validate(String);
+	this.checked = checked.validate(Boolean);
+	this.unchecked_normal = new UI.Image("assets/checkbox/unchecked_normal.png", this.x, this.y);
+	this.unchecked_hover = new UI.Image("assets/checkbox/unchecked_hover.png", this.x, this.y);
+	this.unchecked_down_normal = new UI.Image("assets/checkbox/unchecked_down_normal.png", this.x, this.y);
+	this.unchecked_down_hover = new UI.Image("assets/checkbox/unchecked_down_hover.png", this.x, this.y);
+	this.checked_normal = new UI.Image("assets/checkbox/checked_normal.png", this.x, this.y);
+	this.checked_hover = new UI.Image("assets/checkbox/checked_hover.png", this.x, this.y);
+	this.checked_down_normal = new UI.Image("assets/checkbox/checked_down_normal.png", this.x, this.y);
+	this.checked_down_hover = new UI.Image("assets/checkbox/checked_down_hover.png", this.x, this.y);
+	this.image = (this.checked) ? (this.checked_normal) : (this.unchecked_normal);
+	this.labelStyle_normal = '#B1E77D';
+	this.labelStyle_hover = '#D5F3B7';
+	this.labelStyle_down = '#B1E77D';
+	this.labelStyle_down_hover = '#D5F3B7';
+	var textPadding_left = 30;
+    this.label = new UI.Label(this.text, this.GetX()+textPadding_left, this.GetY()+this.GetHeight()/2,
+    	this.GetWidth()-textPadding_left, this.GetHeight(), this.labelStyle_normal, "normal 12px Share Tech Mono",
+    	UI.TextHAlign.LEFT, UI.TextVAlign.MIDDLE, true);
+}.inherits(UI.Component);
+
+///////////////
+// Functions //
+///////////////
+/**
+ * Handles all the drawing to the canvas for this object.
+ * @override
+ * @param {CanvasRenderingContext2D} context
+ */
+UI.Checkbox.prototype.Draw = function(context) {
+	let keepDrawing = UI.Checkbox.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || this.GetWidth() &lt;= 0 || this.GetHeight() &lt;= 0) return false;
+
+	this.image.Draw(context);
+	this.label.Draw(context);
+
+	return true;
+}
+/**
+ * @returns {boolean}
+ */
+UI.Checkbox.prototype.IsChecked = function() { return this.checked; }
+/**
+ * Sets the checked state of the {@link UI.Checkbox} to the specified boolean value.
+ * @param {boolean} checked
+ * @fires UI.Checkbox.CheckedChanged
+ */
+UI.Checkbox.prototype.SetChecked = function(checked) {
+	checked.validate(Boolean);
+	this.checked = checked;
+	if (this.IsChecked()) {
+		if (this.IsMouseOver()) this.image = this.checked_hover;
+		else this.image = this.checked_normal;
+	}
+	else {
+		if (this.IsMouseOver()) this.image = this.unchecked_hover;
+		else this.image = this.unchecked_normal;
+	}
+	this.DispatchEvent(new UI.Checkbox.CheckedChanged(this.IsChecked()));
+}
+/**
+ * Toggles the checked state of the {@link UI.Checkbox}.
+ */
+UI.Checkbox.prototype.Toggle = function() {
+	this.SetChecked(!this.IsChecked());
+}
+
+/////////////////////
+// Event Delegates //
+/////////////////////
+/**
+ * Event triggered when this {@link UI.Checkbox} is either checked or unchecked.
+ * 
+ * @event UI.Checkbox.CheckedChanged
+ * @type {CustomEvent}
+ * @property {boolean} checked - Whether or not the {@link UI.Checkbox} is now checked or not.
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
+ * @example
+ * let checkbox = new UI.Checkbox("test checkbox", 25, 100, 120, 24);
+ * checkbox.AddListener('checkedchanged', function(event) {
+ *     console.log(event.detail.checked);
+ * }.bind(this));
+ */
+UI.Checkbox.CheckedChanged = function(checked) {
+	checked.validate(Boolean);
+	return new CustomEvent('checkedchanged', { detail: { checked } });
+};
+
+/////////////////////////////
+// Internal Event Handling //
+/////////////////////////////
+/**
+ * @override
+ * @param {UI.Component.event:MouseDown} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Checkbox.prototype.OnMouseDown = function(event) {
+	UI.Checkbox.parent.OnMouseDown.apply(this, arguments); // super function call
+	this.label.SetStyle(this.labelStyle_down_hover);
+	if (this.IsChecked()) this.image = this.checked_down_hover;
+	else this.image = this.unchecked_down_hover;
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseUp} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Checkbox.prototype.OnMouseUp = function(event) {
+	UI.Checkbox.parent.OnMouseUp.apply(this, arguments); // super function call
+	if (this.IsMouseOver()) {
+		this.label.SetStyle(this.labelStyle_hover);
+		this.Toggle();
+	}
+	else {
+		this.label.SetStyle(this.labelStyle_normal);
+		if (this.IsChecked()) this.image = this.checked_normal;
+		else this.image = this.unchecked_normal;
+	}
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseIn} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Checkbox.prototype.OnMouseIn = function(event) {
+	UI.Checkbox.parent.OnMouseIn.apply(this, arguments); // super function call
+	if (this.IsMouseDown()) {
+		UI.SetCursor('pointer');
+		this.label.SetStyle(this.labelStyle_down_hover);
+		if (this.checked) this.image = this.checked_down_hover;
+		else this.image = this.unchecked_down_hover;
+	}
+	// If the mouse isn't down on something else
+	else if (!UI.IsMouseDown()) {
+		UI.SetCursor('pointer');
+		this.label.SetStyle(this.labelStyle_hover);
+		if (this.IsChecked()) this.image = this.checked_hover;
+		else this.image = this.unchecked_hover;
+	}
+	return true;
+}
+/**
+ * @override
+ * @param {UI.Component.event:MouseOut} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Checkbox.prototype.OnMouseOut = function(event) {
+	UI.Checkbox.parent.OnMouseOut.apply(this, arguments); // super function call
+	if (this.IsMouseDown()) {
+		this.label.SetStyle(this.labelStyle_down);
+		if (this.IsChecked()) this.image = this.checked_down_normal;
+		else this.image = this.unchecked_down_normal;
+	}
+	else if (!UI.IsMouseDown()) {
+		UI.SetCursor('auto');
+		this.label.SetStyle(this.labelStyle_normal);
+		if (this.IsChecked()) this.image = this.checked_normal;
+		else this.image = this.unchecked_normal;
+	}
+	return true;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Externals</h3><ul><li><a href="external-Function.html">Function</a></li><li><a href="external-Object.html">Object</a></li><li><a href="external-Math.html">Math</a></li></ul><h3>Classes</h3><ul><li><a href="UI.Button.html">Button</a></li><li><a href="UI.Caret.html">Caret</a></li><li><a href="UI.Checkbox.html">Checkbox</a></li><li><a href="UI.Component.html">Component</a></li><li><a href="UI.Image.html">Image</a></li><li><a href="UI.Label.html">Label</a></li><li><a href="UI.NinePatch.html">NinePatch</a></li><li><a href="UI.Textbox.html">Textbox</a></li><li><a href="UI.Destroyable.html">Destroyable</a></li><li><a href="UI.Drawable.html">Drawable</a></li><li><a href="UI.GUI.html">GUI</a></li></ul><h3>Events</h3><ul><li><a href="UI.Button.html#event:Clicked">Clicked</a></li><li><a href="UI.Checkbox.html#event:CheckedChanged">CheckedChanged</a></li><li><a href="UI.Component.html#event:FocusChanged">FocusChanged</a></li><li><a href="UI.Component.html#event:MouseDown">MouseDown</a></li><li><a href="UI.Component.html#event:MouseUp">MouseUp</a></li><li><a href="UI.Component.html#event:MouseIn">MouseIn</a></li><li><a href="UI.Component.html#event:MouseOut">MouseOut</a></li><li><a href="UI.Component.html#event:KeyDown">KeyDown</a></li><li><a href="UI.Component.html#event:KeyUp">KeyUp</a></li><li><a href="UI.Component.html#event:KeyPress">KeyPress</a></li><li><a href="UI.Image.html#event:Loaded">Loaded</a></li></ul><h3>Namespaces</h3><ul><li><a href="UI.html">UI</a></li><li><a href="Input.html">Input</a></li><li><a href="Util.html">Util</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Oct 24 2014 17:47:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

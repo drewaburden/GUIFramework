@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/Drawable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/Drawable.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
+//
+//  ui\Drawable.js
+//
+//  Created by:     Drew Burden (drewaburden@gmail.com)
+//
+// ================================================================================================
+
+/**
+ * Abstract definition of an object that can be drawn on the canvas.
+ * @abstract
+ * @class
+ * @extends {UI.Destroyable}
+ * @param {number} [x=0]
+ * @param {number} [y=0]
+ * @param {number} [width=0]
+ * @param {number} [height=0]
+ * @param {boolean} [visible=true]
+ */
+UI.Drawable = function(x=0, y=0, width=0, height=0, visible=false) {
+	UI.Drawable.parent.constructor.call(this); // Super constructor
+
+	///////////////
+	// Variables //
+	///////////////
+	this.x;
+	this.y;
+	this.width;
+	this.height;
+	this.visible;
+
+	////////////////////
+	// Initialization //
+	////////////////////
+	this.SetX(x);
+	this.SetY(y);
+	this.SetWidth(width);
+	this.SetHeight(height);
+	this.SetVisible(visible);
+}.inherits(UI.Destroyable);
+
+///////////////
+// Functions //
+///////////////
+/**
+ * Handles all the drawing to the canvas for this {@link UI.Drawable}. Override in subclasses.
+ * @abstract
+ * @override
+ * @param {CanvasRenderingContext2D} context
+ * @returns {boolean} Whether or not derivative classes should continue drawing for this tick.
+ */
+UI.Drawable.prototype.Draw = function(context) {
+	context.validate(CanvasRenderingContext2D);
+	if (!this.IsVisible()) return false;
+
+	return true;
+}
+
+//////////////////////////
+// Mutators &amp; Accessors //
+//////////////////////////
+/**
+ * @param {number} x - New x-position for the {@link UI.Drawable}.
+ */
+UI.Drawable.prototype.SetX = function(x) { this.x = x.validate(Number); }
+/**
+ * @returns {number} This {@link UI.Drawable}'s current x-position.
+ */
+UI.Drawable.prototype.GetX = function() { return this.x; }
+/**
+ * @param {number} y - New y-position for the {@link UI.Drawable}.
+ */
+UI.Drawable.prototype.SetY = function(y) { this.y = y.validate(Number); }
+/**
+ * @returns {number} This {@link UI.Drawable}'s current y-position.
+ */
+UI.Drawable.prototype.GetY = function() { return this.y; }
+/**
+ * @param {number} width - New width for the {@link UI.Drawable}. Must be non-negative.
+ */
+UI.Drawable.prototype.SetWidth = function(width) { this.width = Math.abs(width.validate(Number)); }
+/**
+ * @returns {number} This {@link UI.Drawable}'s current width.
+ */
+UI.Drawable.prototype.GetWidth = function() { return this.width; }
+/**
+ * @param {number} height - New height for the {@link UI.Drawable}. Must be non-negative.
+ */
+UI.Drawable.prototype.SetHeight = function(height) { this.height = Math.abs(height.validate(Number)); }
+/**
+ * @returns {number} This {@link UI.Drawable}'s current height.
+ */
+UI.Drawable.prototype.GetHeight = function() { return this.height; }
+/**
+ * @param {boolean} visible - Set visibility state for the {@link UI.Drawable}.
+ */
+UI.Drawable.prototype.SetVisible = function(visible) { this.visible = visible.validate(Boolean); }
+/**
+ * @returns {boolean} This {@link UI.Drawable}'s current visibility state.
+ */
+UI.Drawable.prototype.IsVisible = function() { return this.visible; }</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Externals</h3><ul><li><a href="external-Function.html">Function</a></li><li><a href="external-Object.html">Object</a></li><li><a href="external-Math.html">Math</a></li></ul><h3>Classes</h3><ul><li><a href="UI.Button.html">Button</a></li><li><a href="UI.Caret.html">Caret</a></li><li><a href="UI.Checkbox.html">Checkbox</a></li><li><a href="UI.Component.html">Component</a></li><li><a href="UI.Image.html">Image</a></li><li><a href="UI.Label.html">Label</a></li><li><a href="UI.NinePatch.html">NinePatch</a></li><li><a href="UI.Textbox.html">Textbox</a></li><li><a href="UI.Destroyable.html">Destroyable</a></li><li><a href="UI.Drawable.html">Drawable</a></li><li><a href="UI.GUI.html">GUI</a></li></ul><h3>Events</h3><ul><li><a href="UI.Button.html#event:Clicked">Clicked</a></li><li><a href="UI.Checkbox.html#event:CheckedChanged">CheckedChanged</a></li><li><a href="UI.Component.html#event:FocusChanged">FocusChanged</a></li><li><a href="UI.Component.html#event:MouseDown">MouseDown</a></li><li><a href="UI.Component.html#event:MouseUp">MouseUp</a></li><li><a href="UI.Component.html#event:MouseIn">MouseIn</a></li><li><a href="UI.Component.html#event:MouseOut">MouseOut</a></li><li><a href="UI.Component.html#event:KeyDown">KeyDown</a></li><li><a href="UI.Component.html#event:KeyUp">KeyUp</a></li><li><a href="UI.Component.html#event:KeyPress">KeyPress</a></li><li><a href="UI.Image.html#event:Loaded">Loaded</a></li></ul><h3>Namespaces</h3><ul><li><a href="UI.html">UI</a></li><li><a href="Input.html">Input</a></li><li><a href="Util.html">Util</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Oct 24 2014 17:47:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

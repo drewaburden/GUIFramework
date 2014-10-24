@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: ui/components/Image.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: ui/components/Image.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
+//
+//  ui\components\Image.js
+//
+//  Created by:     Drew Burden (drewaburden@gmail.com)
+//
+//      Defines an object that can be used to load and display an image.
+//
+// ================================================================================================
+
+/**
+ * Image
+ * @class
+ * @extends {UI.Component}
+ * @param {string} imgsrc
+ * @param {number} [x=0]
+ * @param {number} [y=0]
+ * @param {number} [width=image.width]
+ * @param {number} [height=image.height]
+ * @param {boolean} [visible=true]
+ * @example
+ * var image = new UI.Image("assets/bg.png", 5, 5, 150, 50, true);
+ */
+UI.Image = function(imgsrc=undefined, x=0, y=0, width=undefined, height=undefined, visible=true) {
+	UI.Image.parent.constructor.call(this, x, y, width, height, visible); // Super constructor
+
+	///////////////
+	// Variables //
+	///////////////
+	this.image = new Image(); // js Image, not UI.Image
+	this.loaded = false;
+	this.width = width;
+	this.height = height;
+	
+	////////////////////
+	// Initialization //
+	////////////////////
+	this.SetFocusable(false);
+	this.image.src = imgsrc.validate(String);
+	this.image.onload = function() { this.DispatchEvent(new UI.Image.Loaded()); }.bind(this);
+	// Listen to our own events so we can do any processing before other listeners are triggered
+	this.AddListener('loaded', this.OnLoaded);
+}.inherits(UI.Component);
+
+///////////////
+// Functions //
+///////////////
+/**
+ * "Frees" loaded image.
+ * @override
+ */
+UI.Image.prototype.Destroy = function() {
+	UI.Image.parent.Destroy.apply(this, arguments); // super function call
+
+	if (this.image) delete this.image;
+}
+
+/**
+ * Handles all the drawing to the canvas for this object.
+ * @override
+ * @param {CanvasRenderingContext2D} context
+ */
+UI.Image.prototype.Draw = function(context) {
+	let keepDrawing = UI.Image.parent.Draw.apply(this, arguments); // super function call
+	if (!keepDrawing || !this.IsLoaded() || this.GetWidth() &lt;= 0 || this.GetHeight() &lt;= 0) return false;
+
+	context.drawImage(this.image, this.GetX(), this.GetY(), this.GetWidth(), this.GetHeight());
+
+	return true;
+}
+/**
+ * @returns {boolean}
+ */
+UI.Image.prototype.IsLoaded = function() { return this.loaded; }
+
+/////////////////////
+// Event Delegates //
+/////////////////////
+/**
+ * Event triggered when the {@link UI.Image} is loaded. Listeners added after the image has
+ * been loaded will not be called.
+ * @event UI.Image.Loaded
+ * @type {CustomEvent}
+ * @see https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent
+ * @example
+ * let image = new UI.Image("assets/checkbox/unchecked_normal.png", 5, 5);
+ * image.AddListener('loaded', function(event) {
+ *     console.log("image loaded");
+ * }.bind(this));
+ */
+UI.Image.Loaded = function() {
+	return new CustomEvent('loaded');
+};
+
+/////////////////////////////
+// Internal Event Handling //
+/////////////////////////////
+/**
+ * @param {UI.Image.event:Loaded} event
+ * @returns {boolean} Whether or not the event was handled.
+ */
+UI.Image.prototype.OnLoaded = function(event) {
+	if (!this.image || !this.image.complete || this.image.naturalWidth === undefined
+		|| this.image.naturalWidth &lt;= 0) {
+		throw new Error("Image(): Failed to load image '" + this.image.src + "'.");
+	}
+
+	// Executed after the image has successfully loaded, because we need to use the width and height
+	if (this.GetWidth() === undefined) this.SetWidth(this.image.width);
+	else this.width.validate(Number);
+	if (this.GetHeight() === undefined) this.SetHeight(this.image.height);
+	else this.height.validate(Number);
+
+	this.loaded = true;
+	return true;
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Externals</h3><ul><li><a href="external-Function.html">Function</a></li><li><a href="external-Object.html">Object</a></li><li><a href="external-Math.html">Math</a></li></ul><h3>Classes</h3><ul><li><a href="UI.Button.html">Button</a></li><li><a href="UI.Caret.html">Caret</a></li><li><a href="UI.Checkbox.html">Checkbox</a></li><li><a href="UI.Component.html">Component</a></li><li><a href="UI.Image.html">Image</a></li><li><a href="UI.Label.html">Label</a></li><li><a href="UI.NinePatch.html">NinePatch</a></li><li><a href="UI.Textbox.html">Textbox</a></li><li><a href="UI.Destroyable.html">Destroyable</a></li><li><a href="UI.Drawable.html">Drawable</a></li><li><a href="UI.GUI.html">GUI</a></li></ul><h3>Events</h3><ul><li><a href="UI.Button.html#event:Clicked">Clicked</a></li><li><a href="UI.Checkbox.html#event:CheckedChanged">CheckedChanged</a></li><li><a href="UI.Component.html#event:FocusChanged">FocusChanged</a></li><li><a href="UI.Component.html#event:MouseDown">MouseDown</a></li><li><a href="UI.Component.html#event:MouseUp">MouseUp</a></li><li><a href="UI.Component.html#event:MouseIn">MouseIn</a></li><li><a href="UI.Component.html#event:MouseOut">MouseOut</a></li><li><a href="UI.Component.html#event:KeyDown">KeyDown</a></li><li><a href="UI.Component.html#event:KeyUp">KeyUp</a></li><li><a href="UI.Component.html#event:KeyPress">KeyPress</a></li><li><a href="UI.Image.html#event:Loaded">Loaded</a></li></ul><h3>Namespaces</h3><ul><li><a href="UI.html">UI</a></li><li><a href="Input.html">Input</a></li><li><a href="Util.html">Util</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Oct 24 2014 17:47:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

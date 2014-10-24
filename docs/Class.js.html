@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: util/Class.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: util/Class.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
+//
+//  util\Class.js
+//
+//  Created by:     Drew Burden (drewaburden@gmail.com)
+//
+//      
+//
+// ================================================================================================
+
+/**
+ * The built-in Javascript Function class.
+ * @external Function
+ * @see {@link http://www.w3schools.com/js/js_functions.asp Function}
+ */
+
+/**
+ * Allows class inheritance. The calling class will inherit the specified parent class's
+ * properties. This also adds a new property to the child class called `parent`. This lets
+ * the child class access the parent's original properties; i.e., like the super keyword
+ * in Java.
+ * @function external:Function#inherits
+ * @param  {function} parent - The class that the calling class will inherit from.
+ * @example
+ * function ParentClass() {
+ *     this.thing = "hello";
+ * }
+ * ChildClass.inherits(ParentClass);
+ * function ChildClass() {
+ *     ChildClass.parent.constructor.apply(this, arguments); // Call parent constructor
+ * }
+ * console.log((new ChildClass()).thing); // outputs "hello"
+ */
+Function.prototype.inherits = function(parent) {
+	if (parent.constructor !== Function) throw new TypeError("inherits(): `parent` argument was not of type function.");
+	let child = this;
+	child.prototype = Object.create(parent.prototype);
+	child.prototype.constructor = child;
+	child.parent = parent.prototype;
+	return this;
+}
+
+/**
+ * The built-in Javascript Object class.
+ * @external Object
+ * @see {@link http://www.w3schools.com/js/js_object_definition.asp Object}
+ */
+
+/**
+ * @function external:Object#validate
+ * @param  {...*} types - The types the object is allowed to be
+ * @return {this}
+ * @example
+ * function someClass(someBool) {
+ *     this.someBoolean = someBool.validate(Boolean);
+ * }
+ * var obj1 = new someClass(true);
+ * console.log(obj1.someBoolean) // outputs "true"
+ * var obj2 = new someClass("hello"); // throws TypeError
+ */
+Object.prototype.validate = function(...types) {
+	if (types.length == 0 || types.constructor === undefined)
+		throw new TypeError("validate(): `types` argument(s) not specified correctly.");
+	
+	let passed = false;
+	for (let type of types) {
+		// Make sure they didn't pass the type as something like 'number' instead of Number
+		if (type.constructor === String) throw new TypeError("validate(): One or more of the `types` arguments " +
+			"was a string. Do not pass the type as a string. Instead, pass the actual class type; e.g., " +
+			"numObj.validate(Number) instead of numObj.validate('number'), strObj.validate(String) instead of " +
+			"strObj.validate('string'), etc.");
+		// If the caller is of the specified type or is an instance of a class
+		if (this.constructor === type
+			|| (type.constructor === Function &amp;&amp; this instanceof type)) {
+			passed = true; break;
+		}
+	}
+
+	if (passed) {
+		// Returning "this" allows us to call this function within variable assignments.
+		// If "this" is a boolean, make sure we actualy return a boolean and not an object. Otherwise, things
+		// like:
+		// if (someBool) {}  or
+		// if (!someBool) {}
+		// would always return true, because an instantiated object isn't falsey.
+		if (typeof this !== Boolean &amp;&amp; this.constructor === Boolean) return Boolean(this); // Cast to boolean
+		else return this;
+	}
+	else throw new TypeError("validate(): The caller '" + this.name + "' failed to validate as " +
+		types[0].name + " type.");
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Externals</h3><ul><li><a href="external-Function.html">Function</a></li><li><a href="external-Object.html">Object</a></li><li><a href="external-Math.html">Math</a></li></ul><h3>Classes</h3><ul><li><a href="UI.Button.html">Button</a></li><li><a href="UI.Caret.html">Caret</a></li><li><a href="UI.Checkbox.html">Checkbox</a></li><li><a href="UI.Component.html">Component</a></li><li><a href="UI.Image.html">Image</a></li><li><a href="UI.Label.html">Label</a></li><li><a href="UI.NinePatch.html">NinePatch</a></li><li><a href="UI.Textbox.html">Textbox</a></li><li><a href="UI.Destroyable.html">Destroyable</a></li><li><a href="UI.Drawable.html">Drawable</a></li><li><a href="UI.GUI.html">GUI</a></li></ul><h3>Events</h3><ul><li><a href="UI.Button.html#event:Clicked">Clicked</a></li><li><a href="UI.Checkbox.html#event:CheckedChanged">CheckedChanged</a></li><li><a href="UI.Component.html#event:FocusChanged">FocusChanged</a></li><li><a href="UI.Component.html#event:MouseDown">MouseDown</a></li><li><a href="UI.Component.html#event:MouseUp">MouseUp</a></li><li><a href="UI.Component.html#event:MouseIn">MouseIn</a></li><li><a href="UI.Component.html#event:MouseOut">MouseOut</a></li><li><a href="UI.Component.html#event:KeyDown">KeyDown</a></li><li><a href="UI.Component.html#event:KeyUp">KeyUp</a></li><li><a href="UI.Component.html#event:KeyPress">KeyPress</a></li><li><a href="UI.Image.html#event:Loaded">Loaded</a></li></ul><h3>Namespaces</h3><ul><li><a href="UI.html">UI</a></li><li><a href="Input.html">Input</a></li><li><a href="Util.html">Util</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Oct 24 2014 17:47:25 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

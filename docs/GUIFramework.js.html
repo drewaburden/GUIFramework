@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: GUIFramework.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: GUIFramework.js</h1>
+
+    
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// ==================== Copyright (c) 2014, Drew Burden. All rights reserved. =====================
+//
+//  GUIFramework.js
+//
+//  Created by: 	Drew Burden (drewaburden@gmail.com)
+//
+//      Easily and cleanly loads all necessary Javascript files, performs initialization
+//		and runs the GUI's main draw loop.
+//
+// ================================================================================================
+
+//////////////
+// Includes //
+//////////////
+Util.include('src/util/Class.js');
+Util.include('src/util/MathClamp.js');
+Util.include('src/input/Input.js');
+Util.include('src/input/Keys.js');
+Util.include('src/ui/Destroyable.js');
+Util.include('src/ui/Drawable.js');
+Util.include('src/ui/TextAlign.js');
+Util.include('src/ui/components/Component.js');
+Util.include('src/ui/components/Image.js');
+Util.include('src/ui/components/NinePatch.js');
+Util.include('src/ui/components/Label.js');
+Util.include('src/ui/components/Button.js');
+Util.include('src/ui/components/Checkbox.js');
+Util.include('src/ui/components/Caret.js');
+Util.include('src/ui/components/Textbox.js');
+Util.include('src/ui/GUI.js');
+
+/**
+ * @namespace
+ */
+var UI = UI || {};
+
+///////////////
+// Variables //
+///////////////
+UI.started = false;
+UI.updateIntervalId = null;
+UI.fps = 30;
+UI.fpsActual = 0;
+UI.fpsCalcStartTime = 0;
+UI.fpsFrameCount = 0;
+UI.context = null;
+UI.canvas = null;
+UI.gui = null;
+UI.unitTesting = false;
+UI.preventNextDefaultKeyPressAction = false;
+UI.preventThisKeyPressEvent = false;
+UI.isMouseDown = false;
+UI.isKeyDown = false;
+
+///////////////
+// Functions //
+///////////////
+/**
+ * Initialize the GUIFramework. This must be done before any other parts of GUIFramework will
+ * work properly.
+ */
+UI.Init = function() {
+    // Set up context references
+    UI.canvas = document.getElementById("maincanvas");
+    UI.context = UI.canvas.getContext("2d");
+
+    // Set up raw canvas events
+	UI.canvas.addEventListener('mousedown', UI.MouseEvent.bind(null, UI.OnMouseDown), false);	
+	UI.canvas.addEventListener('mouseup',   UI.MouseEvent.bind(null, UI.OnMouseUp), false);	
+	UI.canvas.addEventListener('mousemove', UI.MouseEvent.bind(null, UI.OnMouseMove), false);
+    UI.canvas.addEventListener('keydown',   UI.KeyEvent.bind(null, UI.OnKeyDown), false); 
+    UI.canvas.addEventListener('keyup',     UI.KeyEvent.bind(null, UI.OnKeyUp), false);
+    UI.canvas.addEventListener('keypress',  UI.KeyEvent.bind(null, UI.OnKeyPress), false); 
+    window.addEventListener('resize',       UI.OnResize, false);
+    UI.canvas.focus(); // Focus the canvas for key input
+
+    UI.updateIntervalId = setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
+    UI.started = true;
+}
+/**
+ * Provides GUIFramework with a {@link UI.GUI} to render.
+ * @param {UI.GUI} gui
+ */
+UI.SetGUI = function(gui) {
+    UI.gui = gui.validate(UI.GUI);
+    UI.OnResize();
+}
+/**
+ * @param {number} fps - How many times per second GUIFramework should update what is displayed on the screen.
+ */
+UI.SetFPS = function(fps) {
+    UI.fps = fps.validate(Number);
+    if (UI.started) {
+        clearInterval(UI.updateIntervalId);
+        UI.updateIntervalId = setInterval(UI.Update, 1000/UI.fps.validate(Number)); // Start Update loop
+    }
+}
+/**
+ * @returns {number} How many times per second GUIFramework should update what is displayed on the screen.
+ */
+UI.GetFPS = function() { return UI.fps; }
+/**
+ * @returns {number} How many times per second GUIFramework is actually updating what is displayed on the screen.
+ */
+UI.GetFPSActual = function() { return UI.fpsActual; }
+/**
+ * Sets the user's currently displayed mouse cursor inside the browser.
+ * @param {string} cursorName
+ * @see  http://www.w3schools.com/jsref/prop_style_cursor.asp
+ */
+UI.SetCursor = function(cursorName) {
+    document.body.style.cursor = cursorName.validate(String);
+}
+/**
+ * @returns {boolean}
+ */
+UI.IsMouseDown = function() { return UI.isMouseDown; }
+/**
+ * @returns {boolean}
+ */
+UI.IsKeyDown = function() { return UI.isKeyDown; }
+
+////////////
+// Events //
+////////////
+UI.MouseEvent = function(handler, ev) { 
+	let x, y;
+	// Get the mouse position relative to the canvas element.
+	if (ev.layerX || ev.layerX == 0) { // Firefox
+		x = ev.layerX;
+		y = ev.layerY;
+	} else if (ev.offsetX || ev.offsetX == 0) { // Opera
+		x = ev.offsetX;
+		y = ev.offsetY;
+	}
+	handler(x, y, ev.button);
+}
+UI.OnMouseDown = function(x, y, button) {
+    UI.isMouseDown = true;
+    if (UI.gui) UI.gui.OnMouseDown(x, y, button);
+}
+UI.OnMouseUp = function(x, y, button) {
+    UI.isMouseDown = false;
+    if (UI.gui) UI.gui.OnMouseUp(x, y, button);
+}
+UI.OnMouseMove = function(x, y) { if (UI.gui) UI.gui.OnMouseMove(x, y); }
+UI.KeyEvent = function(handler, ev) { handler(ev); }
+UI.OnKeyDown = function(ev) {
+    UI.isKeyDown = true;
+    if (Input.CapturedKeys.indexOf(ev.keyCode) >= 0) UI.preventNextDefaultKeyPressAction = true;
+    if (Input.CapturedKeyPresses.indexOf(ev.keyCode) >= 0) UI.preventThisKeyPressEvent = true;
+    if (UI.gui) UI.gui.OnKeyDown(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
+}
+UI.OnKeyUp = function(ev) {
+    UI.isKeyDown = false;
+    if (UI.gui) UI.gui.OnKeyUp(ev.keyCode, ev.shiftKey, ev.altKey, ev.ctrlKey);
+}
+UI.OnKeyPress = function(ev) {
+    if (UI.preventNextDefaultKeyPressAction) {
+        ev.preventDefault();
+        UI.preventNextDefaultKeyPressAction = false;
+    }
+    if (UI.preventThisKeyPressEvent) {
+        UI.preventThisKeyPressEvent = false;
+    }
+    else if (ev.which &amp;&amp; !ev.altKey &amp;&amp; !ev.ctrlKey &amp;&amp; !ev.metaKey) {
+        if (UI.gui) UI.gui.OnKeyPress(ev.which, ev.shiftKey, ev.altKey, ev.ctrlKey);
+    }
+}
+UI.OnResize = function(ev) {
+    UI.canvas.width = document.body.clientWidth;
+    UI.canvas.height = document.body.clientHeight;
+    if (UI.gui) UI.gui.Resize(document.body.clientWidth, document.body.clientHeight, true);
+}
+
+/////////////
+// Drawing //
+/////////////
+UI.Update = function() {
+    // Update the actual fps
+    UI.fpsFrameCount++;
+    let currentTime = (new Date().getTime() - UI.fpsCalcStartTime) / 1000;
+    UI.fpsActual = Math.round(UI.fpsFrameCount / currentTime);
+    if(currentTime > 1) {
+        UI.fpsCalcStartTime = new Date().getTime();
+        UI.fpsFrameCount = 0;
+    }
+
+    if (UI.gui &amp;&amp; UI.context) {
+        UI.DrawRect(0, 0, UI.gui.width, UI.gui.height, true, UI.gui.bgStyle); // Clear the canvas
+        
+        UI.gui.Draw(UI.context);
+    }
+}
+UI.DrawRect = function(x, y, width, height, filled, style) {
+    if (filled) {
+        UI.context.fillStyle = style;
+        UI.context.fillRect(x, y, width, height);
+    }
+    else {
+        UI.context.strokeStyle = style;
+        UI.context.strokeRect(x, y, width, height);
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Index</a></h2><h3>Externals</h3><ul><li><a href="external-Function.html">Function</a></li><li><a href="external-Object.html">Object</a></li><li><a href="external-Math.html">Math</a></li></ul><h3>Classes</h3><ul><li><a href="UI.Button.html">Button</a></li><li><a href="UI.Caret.html">Caret</a></li><li><a href="UI.Checkbox.html">Checkbox</a></li><li><a href="UI.Component.html">Component</a></li><li><a href="UI.Image.html">Image</a></li><li><a href="UI.Label.html">Label</a></li><li><a href="UI.NinePatch.html">NinePatch</a></li><li><a href="UI.Textbox.html">Textbox</a></li><li><a href="UI.Destroyable.html">Destroyable</a></li><li><a href="UI.Drawable.html">Drawable</a></li><li><a href="UI.GUI.html">GUI</a></li></ul><h3>Events</h3><ul><li><a href="UI.Button.html#event:Clicked">Clicked</a></li><li><a href="UI.Checkbox.html#event:CheckedChanged">CheckedChanged</a></li><li><a href="UI.Component.html#event:FocusChanged">FocusChanged</a></li><li><a href="UI.Component.html#event:MouseDown">MouseDown</a></li><li><a href="UI.Component.html#event:MouseUp">MouseUp</a></li><li><a href="UI.Component.html#event:MouseIn">MouseIn</a></li><li><a href="UI.Component.html#event:MouseOut">MouseOut</a></li><li><a href="UI.Component.html#event:KeyDown">KeyDown</a></li><li><a href="UI.Component.html#event:KeyUp">KeyUp</a></li><li><a href="UI.Component.html#event:KeyPress">KeyPress</a></li><li><a href="UI.Image.html#event:Loaded">Loaded</a></li></ul><h3>Namespaces</h3><ul><li><a href="UI.html">UI</a></li><li><a href="Input.html">Input</a></li><li><a href="Util.html">Util</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Oct 24 2014 17:47:24 GMT-0500 (Central Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
